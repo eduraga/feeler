@@ -15,7 +15,7 @@ Create an instance
 
 	feelerSerial feelerS;
 
-In setup create the connection, choose bluetooth adress.
+In setup create the connection, choose bluetooth address.
 
 	feelerS = new feelerSerial(this);
 
