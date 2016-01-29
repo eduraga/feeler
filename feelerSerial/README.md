@@ -2,9 +2,8 @@
 
 ## Installation
 
--Copy folder feelerSerial to your processing libraries folder
-
--Check the processing example patch
+- Copy folder feelerSerial to your processing libraries folder
+- Check the processing example patch
 
 ##Usage
 
