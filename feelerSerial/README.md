@@ -1,10 +1,6 @@
 # feelerSerial
 
 ## Installation
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 - Copy folder feelerSerial to your processing libraries folder
 - Check the processing example patch
 
@@ -46,7 +42,7 @@ Input:
 	feelerS.getButton3();
 	
 	//This returns a string  with ”playing”, ”stopped” or ”program and device not synced”
-	//Can be used to test the state of the devides. 
+	//Can be used to test the state of the devices. 
 	feelerS.getBoxState();
 
 	//To get the number of boxes connected 0-2
