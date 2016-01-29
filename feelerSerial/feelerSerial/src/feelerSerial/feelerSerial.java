@@ -125,6 +125,7 @@ public class feelerSerial {
 						//Break if sketch already running
 						if(input == 'b'){
 							getSettingsB = true;
+							System.out.println("");
 							System.out.println("No settings sent, sketch already running.");
 							break;
 						}
@@ -152,8 +153,6 @@ public class feelerSerial {
 		}
 		else System.out.println("Serial debug mode started");
 	}
-	
-
 	
 	/*-------------------------------------------------------------------------------------------------------------
 	 * SERIAL INPUT
@@ -213,10 +212,8 @@ public class feelerSerial {
 			// Start parsing if start marker is found, check else if
 			if (parsing == true) {
 				//Parse the numbers to the int array
-				if (isNumber(serialSettings[index])) {
-					intSettings[number] = (intSettings[number] * 10) + (serialSettings[index] - '0');
-					if (intSettings[number] > 65535) return false; //return if int is bigger then an undefined int
-				} else if (serialSettings[index] == limitMarker) {
+				parseInt(index, serialSettings, intSettings, number);
+				if (serialSettings[index] == limitMarker) {
 					//jump over limitmarkers, ',' and start new number
 					number++; 
 					intSettings[number] = 0;
@@ -240,11 +237,11 @@ public class feelerSerial {
 				parsing = true;
 				} else if(serialSettings[index+1] == 'b'){
 					//break if sketch is already dunning
+					System.out.println("");
 					System.out.println("Device already running, restart the device if you have changed the settings");
 					return true;
 				}
 				else {
-						while(mySerial.available() > 0) mySerial.read();
 						break;
 					}
 			}
@@ -268,10 +265,9 @@ public class feelerSerial {
 			//Start parsing if startcharacter is received, see else if
 			if (parsing == true) {
 				//Parse the numbers to the int array
-				if (isNumber(serialSettings[index])) {
-					intSettings[number] = (intSettings[number] * 10) + (serialSettings[index] - '0');
-					if (intSettings[number] > 65535) return false; //return if number too large for unsigned int in arduino
-				} else if (serialSettings[index] == limitMarker) { 
+				parseInt(index, serialSettings, intSettings, number);
+				
+				if (serialSettings[index] == limitMarker) { 
 					//Start new number when limitmarker is reached
 					number++;
 					intSettings[number] = 0;
@@ -298,7 +294,6 @@ public class feelerSerial {
 					parsing = true;
 				}
 				else {
-					while(mySerial.available() > 0) mySerial.read();
 					break;
 				}
 			}
@@ -344,15 +339,7 @@ public class feelerSerial {
 	
 	//Not used
 	//A simple function to parse an int from an char array, return 0 if number is too big
-	/*private static int parseInt(int index){
-		int newNumber = 0;
-		while (isNumber(receivedChars[index])){
-			newNumber = (newNumber * 10) + (receivedChars[index] - '0'); 
-	        if(newNumber > 65535) return 0; 
-	        index++;
-	    }
-	    return newNumber;
-	}
+	/*
 	*/
 	
 
@@ -397,6 +384,14 @@ public class feelerSerial {
 	/*-------------------------------------------------------------------------------------------------------------
 	 * Tools
 	 *------------------------------------------------------------------------------------------------------------*/
+	private static void parseInt(int index, char[] receivedChars, int[] intSettings, byte number){
+		while (isNumber(receivedChars[index])){
+			intSettings[number] = (intSettings[number]  * 10) + (receivedChars[index] - '0'); 
+	        if(intSettings[number] > 65535) break; 
+	        index++;
+	    }
+	}
+	
 	//Is the char an number
 	private static boolean isNumber(char input){
 		if(input >= '0' && input <= '9') return true;
