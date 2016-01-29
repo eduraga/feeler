@@ -19,6 +19,10 @@ void setup() {
   //debug mode
   feelerS.debug();
   
+  //set debug values, these are the values that are received from the arduino
+  //this is run only when debug mode is activated
+  feelerS.debugSet(1,200,300);
+  
   //Set the settings you want to send.
   //The settings are speeds(seconds) for the 3 different boxes.
   feelerS.setSettings(20, 10, 50); //remove this line to use default settings.

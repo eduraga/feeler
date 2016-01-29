@@ -44,6 +44,7 @@ public class feelerSerial {
 	//static int boxNumber = 1;
 	// This works like "last button press"
 	static int box3ButtonTemp = 0;
+	static String debugString = "<b,3,2,1>";
 	
 	// Button bools to activate when button is pressed and deactivate when information is gotten
 	static boolean box3Button1 = false;
@@ -188,7 +189,7 @@ public class feelerSerial {
 	        }
 	    }
 		} else {
-			String temp = "<b,3,2,1>";
+			String temp = debugString;
 			receivedSerial = temp.toCharArray();
 			return receivedSerial;
 					
@@ -412,9 +413,26 @@ public class feelerSerial {
 		}
 	}
 	
+	/*-------------------------------------------------------------------------------------------------------------
+	 * Debug
+	 *------------------------------------------------------------------------------------------------------------*/
+	//activate debug mode
 	public void debug(){
 		debugMode = true;
 	}
+	
+	//set debug send to 
+	public void debugSet(int one, int two, int three){
+		if(debugMode){
+			debugString = startMarker + "b" + limitMarker + Integer.toString(one) + limitMarker + Integer.toString(two) + limitMarker + Integer.toString(three) + endMarker;
+		}
+	}
+	
+	
+	
+	/*-------------------------------------------------------------------------------------------------------------
+	 * temp, not used
+	 *------------------------------------------------------------------------------------------------------------*/
 	/*NOT USED*/
 	/*
 	//List values, maybe using this

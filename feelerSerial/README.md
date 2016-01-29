@@ -29,7 +29,8 @@ In setup create the connection, choose bluetooth address.
 
 
 
-Input:
+Input
+
 	//To get the serial. Do this first.
 	feelerS.get();
 	//OR
@@ -50,7 +51,7 @@ Input:
 	feelerS.getBoxesConnected();
 
 
-Output:
+Output
 
 	//To play
 	feelerS.play();
@@ -58,10 +59,18 @@ Output:
 	//To stop
 	feelerS.stop();
 	
-	//To set box2ledState, defines how many leds are lit. 
+	//To set box2ledState, defines how many led's are lit. 
 	feelerS.setBox2LedState(ledStateInteger);
 
 	//To send the values to the boxes. This needs to be done after everything.
 	feelerS.sendValues();
 
+
+Debug
+	
+	//debug mode activate, do this just after "feelerS = new feelerSerial(this);"
+	feelerS.debug();
+	//set debug values, these are the values that are received from the arduino, this is run only when debug mode is activated
+	feelerS.debugSet(1,200,300);
+	
 	
