@@ -16,6 +16,9 @@ void setup() {
   //Make a new feelerSerial
   feelerS = new feelerSerial(this); 
   
+  //debug mode
+  feelerS.debug();
+  
   //Set the settings you want to send.
   //The settings are speeds(seconds) for the 3 different boxes.
   feelerS.setSettings(20, 10, 50); //remove this line to use default settings.

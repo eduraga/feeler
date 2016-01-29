@@ -1,6 +1,10 @@
 # feelerSerial
 
 ## Installation
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 - Copy folder feelerSerial to your processing libraries folder
 - Check the processing example patch
 
@@ -14,7 +18,7 @@ Create an instance
 
 	feelerSerial feelerS;
 
-In setup create the connection, choose bluetooth adress.
+In setup create the connection, choose bluetooth address.
 
 	feelerS = new feelerSerial(this);
 

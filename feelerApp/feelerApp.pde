@@ -114,7 +114,6 @@ void setup() {
      .setSize(200, 20)
      .setPasswordMode(true)
      .setLabel("password")
-     .setFocus(true)
      ;
   password.setAutoClear(true);
   cp5.getController("password").moveTo("login");
@@ -198,6 +197,7 @@ public void loginBt(int theValue) {
 }
 
 void submit(int theValue) {
+  isEnabled = true;
   username.submit();
   password.submit();
   thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
@@ -208,15 +208,12 @@ void loginCheck(){
   if (client.available() > 0) {    // If there's incoming data from the client...
     data = client.readString();   // ...then grab it and print it
     //println(data);
-    String[] m = match(data, "<tag>(.*?)</tag>");
+    String[] m = match(data, "<logintest>(.*?)</logintest>");
     //println("Found '" + m[1] + "' inside the tag.");
     if(m[1].equals("success")){
       println("success");
       cp5.getController("loginBt").hide();
       cp5.getTab("overall").bringToFront();
-      //cp5.getController("username").hide();
-      //cp5.getController("password").hide();
-      //cp5.getController("submit").hide();
       isLoggedIn = true;
       
     } else {
@@ -227,6 +224,8 @@ void loginCheck(){
 }
 
 void timer() {
+  println("triggered");
+  println("isEnabled: " +isEnabled);
   while (isEnabled) {
     delay(TIMER);
     isEnabled = false;

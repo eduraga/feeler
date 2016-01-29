@@ -15,7 +15,7 @@ public class feelerSerial {
 	PApplet myParent;
 	
 	//	Stored message values to these
-	public static char[] receivedChars = new char[63];
+	public static char[] receivedSerial = new char[63];
 	public static int[] intValues = new int[63]; 
 	
 	//	Message settings
@@ -50,11 +50,11 @@ public class feelerSerial {
 	static boolean box3Button2 = false;
 	static boolean box3Button3 = false;
 	
-	private static final boolean debugMode = false; //SET TRUE FOR DEBUG
+	public static boolean debugMode = false; //SET TRUE FOR DEBUG
 	
 
 	/*-------------------------------------------------------------------------------------------------------------
-	 * INITATE
+	 * INITIATE
 	 *------------------------------------------------------------------------------------------------------------*/
 	
 	// Applet
@@ -160,7 +160,8 @@ public class feelerSerial {
 	
 	// Get the serial information and return it if received successfully, else return NULL
 	private static char[] getSerial(){
-		char[] receivedSerial = new char[maxLengthOfSerial];
+		if(!debugMode){
+		//char[] receivedSerial = new char[maxLengthOfSerial];
 		boolean receiving = false;
 	    int index = 0;
 	    while (mySerial.available() > 0) {
@@ -186,6 +187,12 @@ public class feelerSerial {
 	            index++;
 	        }
 	    }
+		} else {
+			String temp = "<b,3,2,1>";
+			receivedSerial = temp.toCharArray();
+			return receivedSerial;
+					
+		}
 		return null;
 	}
 	
@@ -248,8 +255,6 @@ public class feelerSerial {
 	
 	// Get message from arduino 
 	public  boolean get(){
-	if(!debugMode){
-	if(mySerial.available() > 10){
 		// Get the serial and return if not received
 		char[] serialSettings = getSerial();
 		if (serialSettings == null) return false;
@@ -298,8 +303,6 @@ public class feelerSerial {
 			}
 			index++;
 		}
-	}
-	}
 	return false;
 	}
 	
@@ -354,7 +357,6 @@ public class feelerSerial {
 
 	/*-------------------------------------------------------------------------------------------------------------
 	 * Output
-	 *
 	 *------------------------------------------------------------------------------------------------------------*/
 
 	//Set playing on, sent to arduino
@@ -383,23 +385,26 @@ public class feelerSerial {
 	//Send the set values to arduino
 	public void sendValues(){
 		String write1 = startMarker + "s" + limitMarker + Integer.toString(boxState) + limitMarker + Integer.toString(box2LedState) + endMarker;
-		mySerial.write(write1);
-		//System.out.println(write1);
+		if(!debugMode){
+			mySerial.write(write1);
+		} else{
+		System.out.print("Sent: ");
+		System.out.println(write1);
+		}
 	}
 	
 	/*-------------------------------------------------------------------------------------------------------------
 	 * Tools
-	 *
 	 *------------------------------------------------------------------------------------------------------------*/
 	//Is the char an number
-	static boolean isNumber(char input){
+	private static boolean isNumber(char input){
 		if(input >= '0' && input <= '9') return true;
 		return false;
 	}
 	
 
 	//a simpler way to sleep for int time
-	static void delay(int time){
+	private static void delay(int time){
 		try {
 		    Thread.sleep(time);
 		} catch(InterruptedException ex) {
@@ -407,6 +412,9 @@ public class feelerSerial {
 		}
 	}
 	
+	public void debug(){
+		debugMode = true;
+	}
 	/*NOT USED*/
 	/*
 	//List values, maybe using this
