@@ -152,41 +152,41 @@ unsigned int feelerSerial::parseInt(int index){
 //Parse the serial from the received settings and save to intValues array
 bool feelerSerial::get(char input) {
     if(softSerial == NULL){
-    //if there is new serial
-    if(getSerial() != NULL){
-        int index = 0;
-        boolean parsing = false;
-        byte number = 0;
-        intValues[0] = 0;
-        while (index < maxNumberOfChars) {
-            if (parsing == true) {
-                //parse the int value
-                intValues[number] = parseInt(index);
-                
-                //if limitMarker, advance. Else save values
-                if (receivedChars[index] == limitMarker) {
-                    number++;
-                    intValues[number] = 0;
-                } else if (receivedChars[index] == endMarker) {
-                    boxState = intValues[0];
-                    box2LedState = intValues[1];
-                    return true;
+        //if there is new serial
+        if(getSerial() != NULL){
+            int index = 0;
+            boolean parsing = false;
+            byte number = 0;
+            intValues[0] = 0;
+            while (index < maxNumberOfChars) {
+                if (parsing == true) {
+                    //parse the int value
+                    intValues[number] = parseInt(index);
+                    
+                    //if limitMarker, advance. Else save values
+                    if (receivedChars[index] == limitMarker) {
+                        number++;
+                        intValues[number] = 0;
+                    } else if (receivedChars[index] == endMarker) {
+                        boxState = intValues[0];
+                        box2LedState = intValues[1];
+                        return true;
+                    }
+                } else if (receivedChars[index] == startMarker) {
+                    if(receivedChars[index+1] == input){
+                        index +=2;
+                        parsing = true;
+                    }
+                    /* else if(receivedChars[index+1] == 's'){
+                     return true;
+                     }*/
+                    else {
+                        break;
+                    }
                 }
-            } else if (receivedChars[index] == startMarker) {
-                if(receivedChars[index+1] == input){
-                    index +=2;
-                    parsing = true;
-                }
-               /* else if(receivedChars[index+1] == 's'){
-                    return true;
-                }*/
-                else {
-                    break;
-                }
+                index++;
             }
-            index++;
         }
-    }
     }
     return false;
 }
@@ -209,7 +209,7 @@ bool feelerSerial::getSettings(){
                     number++;
                     intValues[number] = 0;
                 } else if (receivedChars[index] == endMarker) {
-                   
+                    
                     if(intValues[0] > 0) speed1 = (int)intValues[0];
                     if(intValues[1] > 0) speed2 = (int)intValues[1];
                     if(intValues[2] > 0) speed3 = (int)intValues[2];
@@ -226,7 +226,7 @@ bool feelerSerial::getSettings(){
                     return true;
                 }
                 else {
-                   // while(Serial.available() > 0) Serial.read();
+                    // while(Serial.available() > 0) Serial.read();
                     break;
                 }
             }
@@ -281,31 +281,31 @@ void feelerSerial::print(const char *output){
 //Send settings to with starting char
 bool feelerSerial::sendSettings(char value){
     
-        unsigned int array[] = {speed1, speed2, speed3};
+    unsigned int array[] = {speed1, speed2, speed3};
     
-        Serial.print(startMarker);
-        Serial.print(value);
+    Serial.print(startMarker);
+    Serial.print(value);
+    Serial.print(limitMarker);
+    for(unsigned int i = 0; i < 3; i++){
+        int tempNumber = array[i];
+        
+        char charArray[20];
+        unsigned int j = 0;
+        while(true){
+            charArray[j] = (tempNumber % 10) + '0';
+            j++;
+            if(tempNumber <= 9) break;
+            tempNumber = tempNumber/10;
+        }
+        charArray[j] = '\0';
+        for(int b = j; b >= 0; b--) { Serial.print(charArray[b]); }
+        if(2 == i || i > (unsigned int)maxNumberOfChars) break;
         Serial.print(limitMarker);
-        for(unsigned int i = 0; i < 3; i++){
-            int tempNumber = array[i];
-            
-            char charArray[20];
-            unsigned int j = 0;
-            while(true){
-                charArray[j] = (tempNumber % 10) + '0';
-                j++;
-                if(tempNumber <= 9) break;
-                tempNumber = tempNumber/10;
-            }
-            charArray[j] = '\0';
-            for(int b = j; b >= 0; b--) { Serial.print(charArray[b]); }
-            if(2 == i || i > (unsigned int)maxNumberOfChars) break;
-            Serial.print(limitMarker);
-        }
-        Serial.println(endMarker);
-        while(Serial.available() > 0) {
-            if(Serial.read() == 'E') return true;
-        }
+    }
+    Serial.println(endMarker);
+    while(Serial.available() > 0) {
+        if(Serial.read() == 'E') return true;
+    }
     return false;
 }
 
@@ -373,7 +373,7 @@ bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3)
     }
     return success;
 }
- 
+
 bool feelerSerial::isNumber(char input){
     if(input > 47 && input < 58) return true;
     return false;
