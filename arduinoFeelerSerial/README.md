@@ -39,18 +39,21 @@ Input
 	serialPort.getSpeed3();
 
 	//’s’ is the computer
-	serialBox2.get('s');
+	serialBox2.get('s'); 
 
+  	//getBoxState, int
+ 	serialPort.getBoxState();
+	
+	//get play state
+	serialPort.getPlayStop();
 
-  	 //getBoxState, int
- 	 bluetooth.getBoxState();
-
- 	 //getBox2LedState, int
- 	 bluetooth.getBox2LedState();
+ 	//getBox2LedState, int
+ 	serialPort.getBox2LedState();
 
 Output
 
-	//send values, ’b’ is the computer. Send 3 int values.
-	serialBox1.send(’b’, 23, 45, 56);
+	//send values, ’b’ is the computer. Send 5 int values.
+	//only 3 first for the settings, leave rest 0
+	serialBox1.send(’b’,boxesConnected, bluetooth.getPlayStop(), bluetooth.getBoxState(), box3Button, bluetooth.getBox2LedState());
 
 	

@@ -16,7 +16,7 @@ public:
     void setup();
     
     bool sendSettings(char value);
-    bool send(char value, int intValue1, int intValue2, int intValue3);
+    bool send(char value, int intValue1, int intValue2, int intValue3, int intValue4, int intValue5);
     
     char* receivedChars;
     unsigned int* intValues;
@@ -25,11 +25,13 @@ public:
     unsigned int getSpeed2();
     unsigned int getSpeed3();
     
-    int getBoxState();
+    int getPlayStop();
     int getBox2LedState();
+    int getBoxState();
+    
+    int boxState;
 
 private:
-    unsigned int parseInt(int index);
     bool isNumber(char input);
     
     bool getSettings();
@@ -43,7 +45,7 @@ private:
     char startMarker;
     char limitMarker;
     char endMarker;
-    int boxState;
+    int playStop;
     int box2LedState;
     SoftwareSerial* softSerial;
     

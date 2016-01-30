@@ -48,6 +48,10 @@ void feelerSerial::begin(long baudrate){
 
 //Send and get the setup values
 void feelerSerial::setup(){
+    boxState = 0;
+    box2LedState = 0;
+    playStop = 0;
+    
     while(1){
         bool receiveBool = getSettings();
         if(receiveBool == true) {
@@ -138,16 +142,7 @@ char* feelerSerial::getSerial(){
     return NULL;
 }
 
-//Parse one int value from char array
-unsigned int feelerSerial::parseInt(int index){
-    unsigned int newNumber = 0;
-    while (isNumber(receivedChars[index])){
-        newNumber = (newNumber * 10) + (receivedChars[index] - '0');
-        if(newNumber > 65535) return 65535;
-        index++;
-    }
-    return newNumber;
-}
+
 
 //Parse the serial from the received settings and save to intValues array
 bool feelerSerial::get(char input) {
@@ -161,15 +156,19 @@ bool feelerSerial::get(char input) {
             while (index < maxNumberOfChars) {
                 if (parsing == true) {
                     //parse the int value
-                    intValues[number] = parseInt(index);
-                    
+                    while (isNumber(receivedChars[index])){
+                        intValues[number] = (intValues[number] * 10) + (receivedChars[index] - '0');
+                        if(intValues[number] > 65535) return 65535;
+                        index++;
+                    }
                     //if limitMarker, advance. Else save values
                     if (receivedChars[index] == limitMarker) {
                         number++;
                         intValues[number] = 0;
                     } else if (receivedChars[index] == endMarker) {
-                        boxState = intValues[0];
-                        box2LedState = intValues[1];
+                        playStop = intValues[0];
+                        boxState = intValues[1];
+                        box2LedState = intValues[2];
                         return true;
                     }
                 } else if (receivedChars[index] == startMarker) {
@@ -202,17 +201,21 @@ bool feelerSerial::getSettings(){
         while (index < maxNumberOfChars) {
             if (parsing == true) {
                 //parse the int values
-                intValues[number] = parseInt(index);
-                
+                while (isNumber(receivedChars[index])){
+                    intValues[number] = (intValues[number] * 10) + (receivedChars[index] - '0');
+                    if(intValues[number] > 65535) return 65535;
+                    index++;
+                }
+            
                 //if limitMarker, advance. Else save values
                 if (receivedChars[index] == limitMarker) {
                     number++;
                     intValues[number] = 0;
                 } else if (receivedChars[index] == endMarker) {
                     
-                    if(intValues[0] > 0) speed1 = (int)intValues[0];
-                    if(intValues[1] > 0) speed2 = (int)intValues[1];
-                    if(intValues[2] > 0) speed3 = (int)intValues[2];
+                    if(intValues[0] > 0) speed1 = (unsigned int)intValues[0];
+                    if(intValues[1] > 0) speed2 = (unsigned int)intValues[1];
+                    if(intValues[2] > 0) speed3 = (unsigned int)intValues[2];
                     
                     Serial.print('E');
                     return true;
@@ -237,14 +240,19 @@ bool feelerSerial::getSettings(){
 }
 
 
-//return boxState
-int feelerSerial::getBoxState(){
-    return boxState;
+//return playStop
+int feelerSerial::getPlayStop(){
+    return playStop;
 }
 
 //return box2LedState
 int feelerSerial::getBox2LedState(){
     return box2LedState;
+}
+
+//return box2LedState
+int feelerSerial::getBoxState(){
+    return boxState;
 }
 
 //serial read
@@ -310,17 +318,20 @@ bool feelerSerial::sendSettings(char value){
 }
 
 //send these values to the feeler app, char first, then values
-bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3){
+bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3, int intValue4, int intValue5){
     boolean success = false;
+    
+    static uint8_t numberOfValues = 5;
+    
     if(softSerial == NULL){
         //put values into array
-        int array[] = {intValue1, intValue2, intValue3};
+        int array[] = {intValue1, intValue2, intValue3, intValue4, intValue5};
         Serial.print(startMarker);
         Serial.print(value);
         Serial.print(limitMarker);
         
         //send 3 values
-        for(unsigned int i = 0; i < 3; i++){
+        for(uint8_t i = 0; i < numberOfValues; i++){
             int tempNumber = array[i];
             char charArray[10];
             unsigned int j = 0;
@@ -333,8 +344,8 @@ bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3)
             charArray[j] = '\0';
             for(int b = j; b >= 0; b--) { Serial.print(charArray[b]); }
             
-            //break when the 3 values are sent
-            if(2 == i || i > (unsigned int)maxNumberOfChars){
+            //break when the numberOfValues are sent
+            if(numberOfValues-1 == i || i > 10){
                 success = true;
                 break;
             }
@@ -343,13 +354,13 @@ bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3)
         Serial.println(endMarker);
     } else {
         //put values into array
-        int array[] = {intValue1, intValue2, intValue3};
+        int array[] = {intValue1, intValue2, intValue3, intValue4};
         softSerial->print(startMarker);
         softSerial->print(value);
         softSerial->print(limitMarker);
         
         //send 3 values
-        for(unsigned int i = 0; i < 3; i++){
+        for(uint8_t i = 0; i < numberOfValues; i++){
             int tempNumber = array[i];
             char charArray[10];
             unsigned int j = 0;
@@ -363,7 +374,7 @@ bool feelerSerial::send(char value, int intValue1, int intValue2, int intValue3)
             for(int b = j; b >= 0; b--) { softSerial->print(charArray[b]); }
             
             //break when the 3 values are sent
-            if(2 == i || i > (unsigned int)maxNumberOfChars){
+            if(numberOfValues-1 == i || i > 10){
                 success = true;
                 break;
             }

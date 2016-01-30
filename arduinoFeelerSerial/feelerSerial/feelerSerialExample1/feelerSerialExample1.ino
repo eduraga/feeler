@@ -2,6 +2,7 @@
 #include <ardFeelerSerial.h>
 #include <serialParseUInt.h>
 
+int box3Button = 2;
 //create a regular serial connection
 feelerSerial bluetooth(PACKETSIZE);
 
@@ -25,24 +26,29 @@ void setup() {
 void loop() {
    bluetooth.getSpeed1();
    
-  serialBox1.send('l', (int)bluetooth.getBoxState(), bluetooth.getBox2LedState(), 56);
-  serialBox2.send('r', (int)bluetooth.getBoxState(), 99, 88);
+  serialBox1.send('l', (int)bluetooth.getPlayStop(), bluetooth.getBox2LedState(), 56, 0, 0);
+  serialBox2.send('r', (int)bluetooth.getPlayStop(), 99, 88, 0,0);
   serialBox2.get('L');
   serialBox2.get('R');
 
-  //getBoxState, int
-  bluetooth.getBoxState();
+ 
 
-  //getBox2LedState, int
-  bluetooth.getBox2LedState();
   
   //from computer 's'
   boolean test = bluetooth.get('s');
   if(test){
-  //Do somethings
+     //getBoxState, int
+    Serial.print("playStop: ");
+    Serial.println(bluetooth.getPlayStop());
+    Serial.print("boxState: ");
+    Serial.println(bluetooth.getBoxState());
+    //getBox2LedState, int    
+    Serial.print("getBox2LedState: ");
+    Serial.println(bluetooth.getBox2LedState());
+    //Do somethings
  }
  delay(100);
  //to computer 'b'
- bluetooth.send('b', (int)bluetooth.getSpeed1(), (int)bluetooth.getBoxState(), speeds[2]);
+ bluetooth.send('b', bluetooth.getSpeed1(), bluetooth.getPlayStop(), bluetooth.getBoxState(), box3Button, bluetooth.getBox2LedState());
 }
 

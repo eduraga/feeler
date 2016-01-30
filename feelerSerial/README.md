@@ -30,7 +30,8 @@ In setup create the connection, choose bluetooth address.
 
 
 Input
-
+	//The variables are not public if you prefer to use them instead. Otherwise use these commands so you don’t change the wrong values. 
+	
 	//To get the serial. Do this first.
 	feelerS.get();
 	//OR
@@ -42,16 +43,21 @@ Input
 	feelerS.getButton1();
 	feelerS.getButton2();
 	feelerS.getButton3();
-	
-	//This returns a string  with ”playing”, ”stopped” or ”program and device not synced”
-	//Can be used to test the state of the devices. 
-	feelerS.getBoxState();
+
+	//Get the playStop, returns "stopped" or "playing". Or a longer string if program and device is not synced. 
+	feelerS.getPlayStopSync();
+
+	//check if the boxState is synced with the computer. Returns synced is synced. otherwise "not synced".
+  	feelerS.getBoxStateSync();
 
 	//To get the number of boxes connected 0-2
 	feelerS.getBoxesConnected();
 
 
 Output
+
+	//The variables are not public if you prefer to use them instead. Otherwise use these commands so you don’t change the wrong values. 
+	
 
 	//To play
 	feelerS.play();
@@ -61,6 +67,9 @@ Output
 	
 	//To set box2ledState, defines how many led's are lit. 
 	feelerS.setBox2LedState(ledStateInteger);
+	
+	//Set boxState, this specifies the run cue. 0 is start. 1000 = end.
+  	feelerS.setBoxState(4);	
 
 	//To send the values to the boxes. This needs to be done after everything.
 	feelerS.sendValues();
@@ -71,6 +80,7 @@ Debug
 	//debug mode activate, do this just after "feelerS = new feelerSerial(this);"
 	feelerS.debug();
 	//set debug values, these are the values that are received from the arduino, this is run only when debug mode is activated
-	feelerS.debugSet(1,200,300);
+	//(int boxesConnected, int play(1)/stop(0), int boxState,int int box2buttonPress(1-3), int box2Led(1-50))
+	feelerS.debugSet(1, 2, 3, 4, 5);
 	
 	
