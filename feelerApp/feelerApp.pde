@@ -1,6 +1,11 @@
+boolean debug = true;
+
 import processing.net.*;
 import controlP5.*;
 import java.util.*;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.awt.Rectangle;
 
 ControlP5 cp5;
 
@@ -21,6 +26,7 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 // files handling
+File directory1;
 FloatTable data;
 String filenameString;
 String[] fileArray;
@@ -37,6 +43,10 @@ int columnCount;
 int currentColumn = 0; 
 char[] filenameCharArray = new char[20];
 /////////////////////////
+
+// screen capture
+PImage screenshot;
+/////////////////
 
 String host;
 int port;
@@ -156,7 +166,7 @@ void setup() {
   cp5.getController("newSession").moveTo("userHome");
   
   // file handling
-  File directory1 = new java.io.File(sketchPath(""));
+  directory1 = new java.io.File(sketchPath(""));
   String temp = directory1.getAbsolutePath();
   temp += "/log";
   directory2 = new File(temp);
@@ -189,7 +199,6 @@ void draw() {
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
   }
-  
 }
 
 void controlEvent(ControlEvent theControlEvent) {
@@ -246,6 +255,10 @@ public void loginBt(int theValue) {
 
 public void newSession(int theValue) {
   cp5.getTab("newSession").bringToFront();
+  
+  String lastLogin = String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) + ".txt";
+  String[] userLoglist = split(lastLogin, ' ');
+  saveStrings(currentUser + "/last-login.txt", userLoglist);
 }
 
 
@@ -267,12 +280,6 @@ void loginCheck(){
       isLoggedIn = true;
       isWrongPassword = false;
       cp5.getController("logoutBt").show();
-  
-Date d = new Date();
-println(d.getTime());
-      String lastLogin = String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) + ".txt";
-      String[] userLoglist = split(lastLogin, ' ');
-      saveStrings(currentUser + "/last-login.txt", userLoglist);
     } else {
       println("wrong password");
       isLoggedIn = false;
@@ -290,29 +297,15 @@ void timer() {
 }
 
 
-
-
 void loadFiles(int n) {
   /* request the selected item based on index n */
   println(n, cp5.get(ScrollableList.class, "loadFiles").getItem(n));
-  
-  /* here an item is stored as a Map  with the following key-value pairs:
-   * name, the given name of the item
-   * text, the given text of the item by default the same as name
-   * value, the given value of the item, can be changed by using .getItem(n).put("value", "abc"); a value here is of type Object therefore can be anything
-   * color, the given color of the item, how to change, see below
-   * view, a customizable view, is of type CDrawable 
-   */
-  
   CColor c = new CColor();
   c.setBackground(color(0));
   cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);  
-  
-  int i = fileArray.length;
+
   filenameString = fileArray[n];
   data = new FloatTable(directory2 + "/" + filenameString);
-
-  //filenameString = "2015.07.14 11.34.55.tsv";      //comment out for loading the visualisation - copy filename here
   filenameCharArray = filenameString.toCharArray();
 
   rowCount = data.getRowCount(9);
@@ -324,6 +317,8 @@ void loadFiles(int n) {
   state1start = data.getStateStart(1); // state1end = data.getStateEnd(1);
   state2start = data.getStateStart(2); // state2end = data.getStateEnd(2);
   state3start = data.getStateStart(3); // state3end = data.getStateEnd(3);
+  
+  println(data.getColumnMax(0));
 
   deltaMax = (int)data.getColumnMax(0);      deltaMin = (int)data.getColumnMin(0); 
   thetaMax = (int)data.getColumnMax(1);      thetaMin = (int)data.getColumnMin(1);
@@ -336,7 +331,31 @@ void loadFiles(int n) {
   blinkStMax = (int)data.getColumnMax(8);    blinkStMin = (int)data.getColumnMin(8);
   attentionMax = (int)data.getColumnMax(9);  attentionMin = (int)data.getColumnMin(9);
   meditationMax = (int)data.getColumnMax(10);  meditationMin = (int)data.getColumnMin(10);
+}
+
+void keyPressed(){
   
-  println("rowCount: " + rowCount);
-  
+  if(debug){
+    if(key == 'c'){
+      screenshot();
+      PImage newImage = createImage(100, 100, RGB);
+      newImage = screenshot.get();
+      println(directory1.getAbsolutePath() + "/" + currentUser + "/outputImage.jpg");
+      newImage.save(
+                      directory1.getAbsolutePath() + "/" + currentUser + "/" +
+                      String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+                      "-screenshot.png"
+                    );
+    }
+  }
+}
+
+void screenshot() {
+  try{
+    Robot robot_Screenshot = new Robot();
+    screenshot = new PImage(robot_Screenshot.createScreenCapture
+    (new Rectangle(0,0,displayWidth,displayHeight)));
+  }
+  catch (AWTException e){ }
+  frame.setLocation(0, 0);
 }
