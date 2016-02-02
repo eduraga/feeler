@@ -18,14 +18,15 @@
 		// Attempt to login the user - if credentials are valid, it returns the users id, otherwise (bool)false.
 		$res = $SimpleUsers->loginUser($_POST["username"], $_POST["password"]);
 		if(!$res) {
-			echo '<tag>failure</tag>';
+			echo '<logintest>failure</logintest>';
 			//$error = "You supplied the wrong credentials.";
 		}
 		else
 		{
-				header("Location: users.php");
-				echo '<tag>success</tag>';
-				//exit;
+			header("Location: users.php");
+			//header("Location: userinfo.php");
+			echo '<logintest>success</logintest>';
+			exit;
 		}
 
 	} // Validation end

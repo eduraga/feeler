@@ -125,6 +125,8 @@
 				<input type="submit" name="submit" value="Save" />
 			</p>
 
+			<p><a href="logout.php">Logout</a></p>
+
 		</form>
 
 	</body>

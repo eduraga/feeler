@@ -13,6 +13,6 @@
 
 	// This simply logs out the current user
 	$SimpleUsers->logoutUser();
-	header("Location: index.php");
+	header("Location: login.php");
 
 ?>
