@@ -26,7 +26,8 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 // files handling
-File directory1;
+String userDataFolder = "user-data";
+String absolutePath;
 FloatTable data;
 String filenameString;
 String[] fileArray;
@@ -53,7 +54,8 @@ int port;
 String address;
 
 void setup() {
-  size(700,400);
+  size(1200,600);
+  //size(1200, 850);
   noStroke();
   textSize(12);
   
@@ -165,24 +167,6 @@ void setup() {
      ;
   cp5.getController("newSession").moveTo("userHome");
   
-  // file handling
-  directory1 = new java.io.File(sketchPath(""));
-  String temp = directory1.getAbsolutePath();
-  temp += "/log";
-  directory2 = new File(temp);
-  fileArray = directory2.list();
-  
-  cp5.addScrollableList("loadFiles")
-     .setPosition(20, 120)
-     .setLabel("Load session")
-     .setSize(200, 100)
-     .setBarHeight(20)
-     .setItemHeight(20)
-     .addItems(fileArray)
-     // .setType(ScrollableList.LIST)
-     ;
-  cp5.getController("loadFiles").moveTo("userHome");
-  /////////////////////////////
 
 }
 
@@ -199,6 +183,21 @@ void draw() {
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
   }
+  
+  if(debug){
+    textAlign(LEFT);
+    
+    fill(210);
+    rect(0, height-100, width, 100);
+    
+    String s = "Press 'l' to log in" +
+               "\nPress 'c' after logging in to capture screen." +
+               "\nCurrent user:" + currentUser +
+               "\nIs logged in:" + isLoggedIn
+            ;
+    fill(50);
+    text(s, 10, height-90, width-10, height-90);  // Text wraps within text box
+  }
 }
 
 void controlEvent(ControlEvent theControlEvent) {
@@ -209,6 +208,7 @@ void controlEvent(ControlEvent theControlEvent) {
   if(theControlEvent.getLabel() == "Logout"){
     cp5.getController("logoutBt").hide();
     isLoggedIn = false;
+    currentUser = "";
     cp5.getTab("default").bringToFront();
   }
   
@@ -258,7 +258,7 @@ public void newSession(int theValue) {
   
   String lastLogin = String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) + ".txt";
   String[] userLoglist = split(lastLogin, ' ');
-  saveStrings(currentUser + "/last-login.txt", userLoglist);
+  saveStrings(userDataFolder + "/" +currentUser + "/last-login.txt", userLoglist);
 }
 
 
@@ -271,21 +271,75 @@ void submit(int theValue) {
 }
 
 void loginCheck(){
-  if (client.available() > 0) {
-    loginData = client.readString();
-    String[] m = match(loginData, "<logintest>(.*?)</logintest>");
-    if(m[1].equals("success")){
-      println("success");
-      cp5.getTab("userHome").bringToFront();
-      isLoggedIn = true;
-      isWrongPassword = false;
-      cp5.getController("logoutBt").show();
-    } else {
-      println("wrong password");
-      isLoggedIn = false;
-      isWrongPassword = true;
+
+  
+  
+  if(debug){
+    println(currentUser);
+    if(currentUser == ""){
+      currentUser = "someuser";
+    }
+    
+    println("success");
+    cp5.getTab("userHome").bringToFront();
+    isLoggedIn = true;
+    isWrongPassword = false;
+    cp5.getController("logoutBt").show();
+    
+  } else {
+    if (client.available() > 0) {
+      loginData = client.readString();
+      String[] m = match(loginData, "<logintest>(.*?)</logintest>");
+      if(m[1].equals("success")){
+        println("success");
+        cp5.getTab("userHome").bringToFront();
+        isLoggedIn = true;
+        isWrongPassword = false;
+        cp5.getController("logoutBt").show();
+      } else {
+        println("wrong password");
+        isLoggedIn = false;
+        isWrongPassword = true;
+      }
     }
   }
+  
+  
+
+  // file handling
+  File directory1 = new java.io.File(sketchPath(""));
+  absolutePath = directory1.getAbsolutePath();
+  String temp = absolutePath;
+  //temp += "/log";
+  temp += "/" + userDataFolder + "/" + currentUser + "/log";
+  directory2 = new File(temp);
+  fileArray = directory2.list();
+  println("temp: " + temp);
+  
+  cp5.addScrollableList("loadFiles")
+     .setPosition(20, 120)
+     .setLabel("Load session")
+     .setSize(200, 100)
+     .setBarHeight(20)
+     .setItemHeight(20)
+     .addItems(fileArray)
+     ;
+  cp5.getController("loadFiles").moveTo("userHome");
+  
+  cp5.addButton("deleteFile")
+     .setBroadcast(false)
+     .setLabel("delete")
+     .setPosition(230, 120)
+     .setSize(70,20)
+     .setValue(1)
+     .setBroadcast(true)
+     .getCaptionLabel().align(CENTER,CENTER)
+     ;
+  cp5.getController("deleteFile").moveTo("userHome");
+  /////////////////////////////
+  
+  
+
 }
 
 void timer() {
@@ -297,16 +351,28 @@ void timer() {
 }
 
 
+public void deleteFile(int theValue) {
+  String fileName = dataPath("file.txt");
+  File f = new File(fileName);
+  if (f.exists()) {
+    f.delete();
+  }
+  println("filenameString: "+filenameString);
+}
+
 void loadFiles(int n) {
   /* request the selected item based on index n */
   println(n, cp5.get(ScrollableList.class, "loadFiles").getItem(n));
   CColor c = new CColor();
   c.setBackground(color(0));
-  cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);  
+  cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);
 
   filenameString = fileArray[n];
+  
+  
   data = new FloatTable(directory2 + "/" + filenameString);
   filenameCharArray = filenameString.toCharArray();
+  println("data: "+data);
 
   rowCount = data.getRowCount(9);
   rowCount1 = data.getRowCount(1);
@@ -336,17 +402,22 @@ void loadFiles(int n) {
 void keyPressed(){
   
   if(debug){
-    if(key == 'c'){
-      screenshot();
-      PImage newImage = createImage(100, 100, RGB);
-      newImage = screenshot.get();
-      println(directory1.getAbsolutePath() + "/" + currentUser + "/outputImage.jpg");
-      newImage.save(
-                      directory1.getAbsolutePath() + "/" + currentUser + "/" +
-                      String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
-                      "-screenshot.png"
-                    );
+    switch(key){
+      case 'c':
+        screenshot();
+        PImage newImage = createImage(100, 100, RGB);
+        newImage = screenshot.get();
+        newImage.save(
+                        absolutePath + "/user-data/" + currentUser + "/" +
+                        String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+                        "-screenshot.png"
+                      );
+        break;
+      case 'l':
+        loginCheck();
+        break;
     }
+    
   }
 }
 
