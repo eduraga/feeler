@@ -271,9 +271,6 @@ void submit(int theValue) {
 }
 
 void loginCheck(){
-
-  
-  
   if(debug){
     println(currentUser);
     if(currentUser == ""){
@@ -305,16 +302,25 @@ void loginCheck(){
   }
   
   
-
   // file handling
   File directory1 = new java.io.File(sketchPath(""));
   absolutePath = directory1.getAbsolutePath();
   String temp = absolutePath;
   //temp += "/log";
-  temp += "/" + userDataFolder + "/" + currentUser + "/log";
+  temp += "/" + userDataFolder + "/" + currentUser;
+  
+  //create user folder
+  File f1 = new File(dataPath(temp));
+  f1.mkdir();
+  
+  temp += "/log";
+  
+  //create log folder
+  File f2 = new File(dataPath(temp));
+  f2.mkdir();
+  
   directory2 = new File(temp);
   fileArray = directory2.list();
-  println("temp: " + temp);
   
   cp5.addScrollableList("loadFiles")
      .setPosition(20, 120)
@@ -352,12 +358,20 @@ void timer() {
 
 
 public void deleteFile(int theValue) {
-  String fileName = dataPath("file.txt");
-  File f = new File(fileName);
+  String fileName = dataPath("test.json");
+  //File f = new File(fileName);
+  File f = new File(directory2 + "/" + filenameString);
+  println(fileName);
+  println("data: " + directory2 + "/" + filenameString);
+  
   if (f.exists()) {
     f.delete();
+    println("deletou");
+    loginCheck();
+  } else {
+    println("não existe");
   }
-  println("filenameString: "+filenameString);
+  
 }
 
 void loadFiles(int n) {
@@ -369,10 +383,8 @@ void loadFiles(int n) {
 
   filenameString = fileArray[n];
   
-  
   data = new FloatTable(directory2 + "/" + filenameString);
   filenameCharArray = filenameString.toCharArray();
-  println("data: "+data);
 
   rowCount = data.getRowCount(9);
   rowCount1 = data.getRowCount(1);
