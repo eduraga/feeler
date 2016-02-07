@@ -5,7 +5,7 @@
 class feelerSerial
 {
 public:
-    feelerSerial(int maxNumber);
+    feelerSerial(int maxNumber, char startM, char endM, char limitM);
     feelerSerial(int maxNumber, int rx, int tx);
     ~feelerSerial();
     void init();
@@ -49,6 +49,8 @@ private:
     int box2LedState;
     SoftwareSerial* softSerial;
     
+    int indexS;
+    boolean receiving;
     unsigned int speed1;
     unsigned int speed2;
     unsigned int speed3;

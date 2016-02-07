@@ -110,7 +110,7 @@ public class feelerSerial {
 		  System.out.println("Feeler found!");
 		  
 		  //Send settings if there are any set, receive "E" when ready
-		  System.out.print("Sending settings");
+		  System.out.print("Sending settings ");
 		  boolean getSettingsB = false;
 			  	while(true){ 
 			  		mySerial.write(startMarker + "S" + limitMarker + Integer.toString(box1Speed) + limitMarker + Integer.toString(box2Speed) + limitMarker + Integer.toString(box3Speed) + endMarker);
@@ -258,6 +258,8 @@ public class feelerSerial {
 		}
 		return false;
 	}
+	
+	
 	
 	// Get message from arduino 
 	public  boolean get(){
@@ -458,6 +460,12 @@ public class feelerSerial {
 		}
 	}
 	
+	public void listSerial(){
+		String[] temp = Serial.list();
+		for(int i = 0; i < temp.length; i++){
+			System.out.println(temp[i]);
+		}
+	}
 	
 	
 	/*-------------------------------------------------------------------------------------------------------------

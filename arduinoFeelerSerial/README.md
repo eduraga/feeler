@@ -30,7 +30,6 @@ In setup create the connection, choose bluetooth address.
 	//get settings from computer, send them back.
 	serialPort.setup();
 
-
 Input
 
 	//get settings

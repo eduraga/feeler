@@ -2,12 +2,13 @@
 #include "ardFeelerSerial.h"
 
 //Initiate with this if no softwareSerial is added
-feelerSerial::feelerSerial(int maxNumber){
+feelerSerial::feelerSerial(int maxNumber, char startM, char endM, char limitM){
+    
     
     maxNumberOfChars = maxNumber;
-    startMarker = '<';
-    endMarker = '>';
-    limitMarker = ',';
+    startMarker = startM;
+    endMarker = endM;
+    limitMarker = limitM;
     
     if (NULL != receivedChars) delete receivedChars;
     receivedChars = new char[maxNumberOfChars];
@@ -48,10 +49,11 @@ void feelerSerial::begin(long baudrate){
 
 //Send and get the setup values
 void feelerSerial::setup(){
+   
+    receiving = false;
     boxState = 0;
     box2LedState = 0;
     playStop = 0;
-    
     while(1){
         bool receiveBool = getSettings();
         if(receiveBool == true) {
@@ -83,48 +85,58 @@ void feelerSerial::setSettings(unsigned  value1, unsigned value2, unsigned value
 //Get the serial message as a char array, starting with startMarker and ending with endMarker
 char* feelerSerial::getSerial(){
     
-    boolean receiving = false;
-    byte index = 0;
-    
     ///do this if regualar serial is used
     if(softSerial == NULL){
-        while (Serial.available() > 0 ) {
+//        if(Serial.available() > 60){
+        while (Serial.available()) {
+            
             char input = Serial.read();
             
+            // not needed, but does it work?
+            //  if(input == -1) break;
+            
             if (receiving == true) {
-                receivedChars[index] = input;
+                receivedChars[indexS] = input;
+              //  Serial.print(input);
+               // Serial.print(input);
                 //read more only if maxNumberOfChars is not filled
-                if (index > maxNumberOfChars-1) break;
-                else index++;
+                if (indexS > maxNumberOfChars) {
+                    receiving = false;
+                    break;
+                }
+                else indexS++;
                 
                 //stop when startMarker found
                 if (input == endMarker) {
-                    receivedChars[index] = '\0';
+                    receivedChars[indexS] = '\0';
+                    receiving = false;
                     //clear rest
                     while(Serial.available() > 0) Serial.read();
+                 //   Serial.print(receivedChars);
                     return receivedChars;
                 }
             } //start when startMarker found
             else if (input == startMarker) {
+                indexS = 0;
                 receiving = true;
-                receivedChars[index] = input;
-                index++;
+                receivedChars[indexS] = input;
+                indexS++;
             }
-        }
+//        }
+    }
     } else{ //do this if softwareSerial is used
         while (softSerial->available() > 0 ) {
             char input = softSerial->read();
-            
             if (receiving == true) {
-                receivedChars[index] = input;
+                receivedChars[indexS] = input;
                 
                 //read more only if maxNumberOfChars is not filled
-                if (index > maxNumberOfChars-1) break;
-                else index++;
+                if (indexS > maxNumberOfChars-1) break;
+                else indexS++;
                 
                 //stop when startMarker found
                 if (input == endMarker) {
-                    receivedChars[index] = '\0';
+                    receivedChars[indexS] = '\0';
                     
                     //clear rest
                     while(softSerial->available() > 0) softSerial->read();
@@ -132,9 +144,10 @@ char* feelerSerial::getSerial(){
                 }
             }//start when startMarker found
             else if (input == startMarker) {
+                indexS = 0;
                 receiving = true;
-                receivedChars[index] = input;
-                index++;
+                receivedChars[indexS] = input;
+                indexS++;
             }
         }
     }
@@ -200,6 +213,8 @@ bool feelerSerial::getSettings(){
         intValues[0] = 0;
         while (index < maxNumberOfChars) {
             if (parsing == true) {
+                
+                Serial.print(receivedChars[index]);
                 //parse the int values
                 while (isNumber(receivedChars[index])){
                     intValues[number] = (intValues[number] * 10) + (receivedChars[index] - '0');
@@ -212,7 +227,6 @@ bool feelerSerial::getSettings(){
                     number++;
                     intValues[number] = 0;
                 } else if (receivedChars[index] == endMarker) {
-                    
                     if(intValues[0] > 0) speed1 = (unsigned int)intValues[0];
                     if(intValues[1] > 0) speed2 = (unsigned int)intValues[1];
                     if(intValues[2] > 0) speed3 = (unsigned int)intValues[2];

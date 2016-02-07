@@ -23,10 +23,13 @@ void setup() {
   //Set the settings you want to send.
   //The settings are speeds(seconds) for the 3 different boxes.
   feelerS.setSettings(20, 10, 50); //remove this line to use default settings.
-
+  
+  //list serial connections
+  feelerS.listSerial();
+  
   //Initiate connection, bluetooth adress. Send/receive settings
-  feelerS.init("/dev/cu.usbmodem12341");
-
+  //feelerS.init("/dev/cu.usbmodem12341");
+  feelerS.init("/dev/tty.RNBT-65ED-RNI-SPP");
   //this is for the timer
   time = millis();
 }
