@@ -5,7 +5,7 @@
 class feelerSerial
 {
 public:
-    feelerSerial(int maxNumber, char startM, char endM, char limitM);
+    feelerSerial(int maxNumber);
     feelerSerial(int maxNumber, int rx, int tx);
     ~feelerSerial();
     void init();
@@ -34,7 +34,8 @@ public:
 private:
     bool isNumber(char input);
     
-    bool getSettings();
+    bool getSettings(char value);
+    bool getValues(char value);
     char* getSerial();
    
     char read();
