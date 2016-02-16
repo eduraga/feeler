@@ -1,19 +1,43 @@
 boolean debug = true;
 
-import processing.net.*;
-import controlP5.*;
-import java.util.*;
-import java.awt.Robot;
-import java.awt.AWTException;
-import java.awt.Rectangle;
+
+import processing.net.*; 
+import controlP5.*; 
+import java.util.*; 
+import java.awt.Robot; 
+import java.awt.AWTException; 
+import java.awt.Rectangle; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+
+
+
+
 
 ControlP5 cp5;
 
 JSONObject json;
 
+String currentPage = "home";
+
+float attentionAverage;
+float relaxationAverage;
+
+//User session stuff
 String encodedAuth = "";
 Client client;
 String loginData;
+String host;
+int port;
+String address;
 
 boolean isLoggedIn = false;
 boolean isWrongPassword = false;
@@ -24,6 +48,15 @@ Textfield password;
 
 final static int TIMER = 100;
 static boolean isEnabled = true;
+
+//UI variables
+int headerHeight = 100;
+int padding = 5;
+int userTabsX;
+int buttonWidth = 70;
+int buttonHeight = 20;
+int visBarWidth = 300;
+int visBarHeight = 120;
 
 // files handling
 String userDataFolder = "user-data";
@@ -49,15 +82,57 @@ char[] filenameCharArray = new char[20];
 PImage screenshot;
 /////////////////
 
-String host;
-int port;
-String address;
+/*
+Communication stuff
 
-void setup() {
-  size(1200,600);
-  //size(1200, 850);
+setup: feelerS.play();
+
+1. when pressing 'start'
+  feelerS.setBoxState(100);
+2. when pressing 'record' // "meditate"
+  feelerS.setBoxState(200);
+  start timer
+  setBox2LedState(timer mapped to int(0\u201450) ); //loop
+  when timer reaches target send feelerS.setBoxState(299);
+3. when pressing 'record' // "study"
+  feelerS.setBoxState(300);
+  reset timer
+  setBox2LedState(timer mapped to int(0\u201450) ); //loop
+  when timer reaches target send feelerS.setBoxState(399);
+  feelerS.getButton1();
+4. // "assess"
+  if(feelerS.getButton1()){
+    //question 1
+    feelerS.getButton2();
+    feelerS.setBoxState(301);
+  }
+  
+  if(feelerS.getButton2()){
+    //question 2
+    feelerS.getButton3();
+    feelerS.setBoxState(302);
+  }
+
+  if(feelerS.getButton3()){
+    //question 3
+    feelerS.setBoxState(303);
+    // submit answers
+    feelerS.setBoxState(1000);
+    //and success
+  }
+  
+  ????????????????
+
+*/
+
+
+public void setup() {
+  
+  size(1200, 850);
   noStroke();
   textSize(12);
+  
+  userTabsX = width/2;
   
   json = loadJSONObject("config.json");
   host = json.getString("host");
@@ -91,17 +166,6 @@ void setup() {
      .setId(2)
      ;
 
-  cp5.addTab("userHome");
-  cp5.getTab("userHome")
-     .activateEvent(true)
-     .setId(3)
-     ;
-
-  cp5.addTab("newSession");
-  cp5.getTab("newSession")
-     .activateEvent(true)
-     .setId(4)
-     ;
   
   username = cp5.addTextfield("username")
      .setPosition(width/2 - 100, height/2 - 40)
@@ -156,21 +220,11 @@ void setup() {
   cp5.getController("logoutBt").hide();
   
   
-  cp5.addButton("newSession")
-     .setBroadcast(false)
-     .setLabel("start a session")
-     .setPosition(width - 160, 10)
-     .setSize(70,20)
-     .setValue(1)
-     .setBroadcast(true)
-     .getCaptionLabel().align(CENTER,CENTER)
-     ;
-  cp5.getController("newSession").moveTo("userHome");
   
 
 }
 
-void draw() {
+public void draw() {
   background(255);
   fill(0);
   
@@ -183,6 +237,30 @@ void draw() {
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
   }
+  
+  //Visualisation
+  if(currentPage == "overall"){
+    textAlign(CENTER, CENTER);
+  
+    int visX = width/2;
+    fill(220);
+    rect(visX, headerHeight + 50, visBarWidth, visBarHeight);
+    fill(120);
+    rect(visX, headerHeight + 50, map(attentionAverage, 0, 100, 0, visBarWidth), visBarHeight);
+    fill(0);
+    text("Attention " + str(attentionAverage),visX, headerHeight + 50, visBarWidth, visBarHeight);
+  
+    fill(220);
+    rect(visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
+    fill(120);
+    rect(visX, headerHeight + 50 + visBarHeight, map(relaxationAverage, 0, 100, 0, visBarWidth), visBarHeight);
+    fill(0);
+    text("Relaxation " + str(relaxationAverage),visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
+    
+    text("Values based on your EEG data", visX, headerHeight + 50 + visBarHeight*2, visBarWidth, 30);
+    // TODO: button to EEG overall 
+  }
+  
   
   if(debug){
     textAlign(LEFT);
@@ -200,16 +278,35 @@ void draw() {
   }
 }
 
-void controlEvent(ControlEvent theControlEvent) {
+public void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     println("got an event from tab : "+theControlEvent.getTab().getName()+" with id "+theControlEvent.getTab().getId());
   }
   
+  switch(theControlEvent.getName()){
+    case "overall":
+      println("overall page");
+      currentPage = "overall";
+      break;
+    case "newSession":
+      println("newSession page");
+      currentPage = "newSession";
+      break;
+    case "lastSession":
+      println("lastSession page");
+      currentPage = "lastSession";
+      break;
+  }
+  
+  //clean up interface
   if(theControlEvent.getLabel() == "Logout"){
     cp5.getController("logoutBt").hide();
     isLoggedIn = false;
     currentUser = "";
     cp5.getTab("default").bringToFront();
+    cp5.getController("newSession").hide();
+    cp5.getController("overall").hide();
+    cp5.getController("lastSession").hide();
   }
   
   if (theControlEvent.isAssignableFrom(Textfield.class)) {
@@ -222,6 +319,8 @@ void controlEvent(ControlEvent theControlEvent) {
       currentPassword = t.getStringValue();
     }
     
+    //https://forum.processing.org/two/discussion/10423/working-with-client-connection-to-api-with-authentication
+    // post request
     client = new Client(this, host, port);
     client.write("POST "+address+" HTTP/1.0\r\n");
     client.write("Accept: application/xml\r\n");
@@ -246,6 +345,7 @@ void controlEvent(ControlEvent theControlEvent) {
     else {
       println(" but Textfield.isAutoClear() is false, could not setText here.");
     }
+    ///////////////////////////////////
   }
 }
 
@@ -261,8 +361,15 @@ public void newSession(int theValue) {
   saveStrings(userDataFolder + "/" +currentUser + "/last-login.txt", userLoglist);
 }
 
+public void overall(int theValue) {
+  cp5.getTab("overall").bringToFront();
+}
 
-void submit(int theValue) {
+public void lastSession(int theValue) {
+  cp5.getTab("lastSession").bringToFront();
+}
+
+public void submit(int theValue) {
   // use callback instead
   isEnabled = true;
   username.submit();
@@ -270,29 +377,31 @@ void submit(int theValue) {
   thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
 }
 
-void loginCheck(){
+public void loginCheck(){
   if(debug){
     println(currentUser);
     if(currentUser == ""){
       currentUser = "someuser";
     }
     
-    println("success");
-    cp5.getTab("userHome").bringToFront();
+    cp5.getTab("overall").bringToFront();
     isLoggedIn = true;
+  
     isWrongPassword = false;
     cp5.getController("logoutBt").show();
+    
+    addUserAreaControllers();
     
   } else {
     if (client.available() > 0) {
       loginData = client.readString();
       String[] m = match(loginData, "<logintest>(.*?)</logintest>");
       if(m[1].equals("success")){
-        println("success");
-        cp5.getTab("userHome").bringToFront();
+        cp5.getTab("overall").bringToFront();
         isLoggedIn = true;
         isWrongPassword = false;
         cp5.getController("logoutBt").show();
+        addUserAreaControllers();
       } else {
         println("wrong password");
         isLoggedIn = false;
@@ -300,7 +409,6 @@ void loginCheck(){
       }
     }
   }
-  
   
   // file handling
   File directory1 = new java.io.File(sketchPath(""));
@@ -330,7 +438,7 @@ void loginCheck(){
      .setItemHeight(20)
      .addItems(fileArray)
      ;
-  cp5.getController("loadFiles").moveTo("userHome");
+   cp5.getController("loadFiles").moveTo("overall");
   
   cp5.addButton("deleteFile")
      .setBroadcast(false)
@@ -341,14 +449,69 @@ void loginCheck(){
      .setBroadcast(true)
      .getCaptionLabel().align(CENTER,CENTER)
      ;
-  cp5.getController("deleteFile").moveTo("userHome");
+  cp5.getController("deleteFile").moveTo("overall");
   /////////////////////////////
   
-  
-
+  currentPage = "overall";
 }
 
-void timer() {
+public void addUserAreaControllers(){
+  
+  cp5.addTab("newSession");
+  cp5.getTab("newSession")
+     .activateEvent(true)
+     .setId(3)
+     ;
+     
+  cp5.addTab("overall");
+  cp5.getTab("overall")
+     .activateEvent(true)
+     .setId(4)
+     ;
+     
+  cp5.addTab("lastSession");
+  cp5.getTab("lastSession")
+     .activateEvent(true)
+     .setId(5)
+     ;
+  
+  //other controllers
+  cp5.addButton("newSession")
+     .setBroadcast(false)
+     .setLabel("start a session")
+     .setPosition(width - 160, 10)
+     .setSize(buttonWidth, buttonHeight)
+     .setValue(1)
+     .setBroadcast(true)
+     .getCaptionLabel().align(CENTER,CENTER)
+     ;
+  cp5.getController("newSession").moveTo("global");
+  
+  cp5.addButton("overall")
+     .setBroadcast(false)
+     .setLabel("overall")
+     .setPosition(userTabsX, headerHeight + padding)
+     .setSize(buttonWidth, buttonHeight)
+     .setValue(1)
+     .setBroadcast(true)
+     .getCaptionLabel().align(CENTER,CENTER)
+     ;
+  cp5.getController("overall").moveTo("global");
+  
+  cp5.addButton("lastSession")
+     .setBroadcast(false)
+     .setLabel("last session")
+     .setPosition(userTabsX + buttonWidth + padding, headerHeight + padding)
+     .setSize(buttonWidth, buttonHeight)
+     .setValue(1)
+     .setBroadcast(true)
+     .getCaptionLabel().align(CENTER,CENTER)
+     ;
+  cp5.getController("lastSession").moveTo("global");
+  
+}
+
+public void timer() {
   while (isEnabled) {
     delay(TIMER);
     isEnabled = false;
@@ -369,12 +532,12 @@ public void deleteFile(int theValue) {
     println("deletou");
     loginCheck();
   } else {
-    println("não existe");
+    println("n\u00e3o existe");
   }
   
 }
 
-void loadFiles(int n) {
+public void loadFiles(int n) {
   /* request the selected item based on index n */
   println(n, cp5.get(ScrollableList.class, "loadFiles").getItem(n));
   CColor c = new CColor();
@@ -382,6 +545,7 @@ void loadFiles(int n) {
   cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);
 
   filenameString = fileArray[n];
+  // TODO: plot fileArray as graph
   
   data = new FloatTable(directory2 + "/" + filenameString);
   filenameCharArray = filenameString.toCharArray();
@@ -396,22 +560,30 @@ void loadFiles(int n) {
   state2start = data.getStateStart(2); // state2end = data.getStateEnd(2);
   state3start = data.getStateStart(3); // state3end = data.getStateEnd(3);
   
-  println(data.getColumnMax(0));
+  println("attention" + data.getRowCount(10));
+  println("relaxation" + data.getColumnMax(11));
+  
+  attentionAverage = 0;
+  relaxationAverage = 0;
+  for(int i = 0; i < data.data.length ; i++){
+    if(data.data[i][11] == 1 || data.data[i][11] == 2){
+      println("attention: " + data.data[i][9]);
+      attentionAverage += data.data[i][9]/data.data.length;
+      println("meditation: " + data.data[i][10]);
+      relaxationAverage += data.data[i][10]/data.data.length;
+    }
+  }
+  
+  
+  /*
+  // what is relaxation and attention? average?
 
-  deltaMax = (int)data.getColumnMax(0);      deltaMin = (int)data.getColumnMin(0); 
-  thetaMax = (int)data.getColumnMax(1);      thetaMin = (int)data.getColumnMin(1);
-  lowAlphaMax = (int)data.getColumnMax(2);   lowAlphaMin = (int)data.getColumnMin(2); 
-  highAlphaMax = (int)data.getColumnMax(3);  highAlphaMin = (int)data.getColumnMin(3);
-  lowBetaMax = (int)data.getColumnMax(4);    lowBetaMin = (int)data.getColumnMin(4); 
-  highBetaMax = (int)data.getColumnMax(5);   highBetaMin = (int)data.getColumnMin(5);
-  lowGammaMax = (int)data.getColumnMax(6);   lowGammaMin = (int)data.getColumnMin(6); 
-  midGammaMax = (int)data.getColumnMax(7);   midGammaMin = (int)data.getColumnMin(7);
-  blinkStMax = (int)data.getColumnMax(8);    blinkStMin = (int)data.getColumnMin(8);
   attentionMax = (int)data.getColumnMax(9);  attentionMin = (int)data.getColumnMin(9);
   meditationMax = (int)data.getColumnMax(10);  meditationMin = (int)data.getColumnMin(10);
+  */
 }
 
-void keyPressed(){
+public void keyPressed(){
   
   if(debug){
     switch(key){
@@ -433,7 +605,7 @@ void keyPressed(){
   }
 }
 
-void screenshot() {
+public void screenshot() {
   try{
     Robot robot_Screenshot = new Robot();
     screenshot = new PImage(robot_Screenshot.createScreenCapture
