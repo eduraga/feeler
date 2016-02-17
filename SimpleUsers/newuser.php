@@ -27,8 +27,9 @@
 				$error = "Username already taken.";
 			else
 			{
-					header("Location: users.php");
-					exit;
+				header("Location: users.php");
+				echo '<logintest>registered</logintest>';
+				exit;
 			}
 		}
 

@@ -15,7 +15,8 @@ With PHP backend
 
 ## todo/issues
 - [x] Identifying users
-  - Added basic user management, but registration needs to be done on a web page
+  - Added basic user management, but registration needs to be done on a web page (see below)
+- [ ] Registration through the app (not browser), actually everything in the app.
 - [ ] Change folder paths when saving files
 - [ ] Visualization of last activity data (and the different levels)
   - Consider doing this on the browser
@@ -24,4 +25,4 @@ With PHP backend
 - [ ] Download raw data
 - [ ] Capture data screens (these need to be synchronized with the boxes and give some feedback (recording time, connection) indicating everything works ok.
 - [x] In the app, the user should be able to delete a session.
-- [ ] Registration through the app (not browser), actually everything in the app.
+- [ ] Implement visuals
