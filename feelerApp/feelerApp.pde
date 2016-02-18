@@ -1,5 +1,4 @@
-boolean debug = false;
-
+boolean debug = true;
 
 import processing.net.*; 
 import controlP5.*; 
@@ -22,9 +21,6 @@ ControlP5 cp5;
 JSONObject json;
 
 String currentPage = "home";
-
-float attentionAverage;
-float relaxationAverage;
 
 //User session stuff
 String encodedAuth = "";
@@ -57,6 +53,12 @@ int visBarWidth = 300;
 int visBarHeight = 120;
 
 // files handling
+int listSize = 10;
+float attentionAverage = 0;
+float relaxationAverage = 0;
+float[] attentionAverageList = new float[listSize];
+float[] relaxationAverageList = new float[listSize];
+
 String userDataFolder = "user-data";
 String absolutePath;
 FloatTable data;
@@ -247,26 +249,84 @@ public void draw() {
 
   //Visualisation
   if (currentPage == "overall") {
-    textAlign(CENTER, CENTER);
+   
+   
+   int visX = width/4;
+   int visWidth = width - width/3;
+   int visHeight = 300;
+   
+   textAlign(CENTER, CENTER);
+   
+   /*
+   
+   
 
-    int visX = width/2;
-    fill(220);
-    rect(visX, headerHeight + 50, visBarWidth, visBarHeight);
-    fill(120);
-    rect(visX, headerHeight + 50, map(attentionAverage, 0, 100, 0, visBarWidth), visBarHeight);
+   fill(220);
+   rect(visX, headerHeight + 50, visBarWidth, visBarHeight);
+   fill(120);
+   rect(visX, headerHeight + 50, map(attentionAverage, 0, 100, 0, visBarWidth), visBarHeight);
+   fill(0);
+   text("Attention " + str(attentionAverage), visX, headerHeight + 50, visBarWidth, visBarHeight);
+
+   fill(220);
+   rect(visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
+   fill(120);
+   rect(visX, headerHeight + 50 + visBarHeight, map(relaxationAverage, 0, 100, 0, visBarWidth), visBarHeight);
+   fill(0);
+   text("Relaxation " + str(relaxationAverage), visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
+
+   text("Values based on your EEG data", visX, headerHeight + 50 + visBarHeight*2, visBarWidth, 30);
+   // TODO: button to EEG overall
+   */
+   
+    fill(240);
+    rect(visX, headerHeight + 50, visWidth, visHeight);
+
     fill(0);
-    text("Attention " + str(attentionAverage), visX, headerHeight + 50, visBarWidth, visBarHeight);
+    
+    
+    for(int i = 0; i < listSize; i++){
+      String[] fileNames = splitTokens(fileArray[i]);
+      
+      if(fileNames[0].charAt(0) != '.'){
+        String[] fileDate = split(fileNames[0], '.');
+        //println("Mês: " + fileDate[1]);
+        //println("Ano: " + fileDate[0]);
+        //println("Dia: " + fileDate[2]);
+        
+        fill(150);
+        ellipse(i * visWidth/listSize + visX, map(attentionAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
+        text(attentionAverageList[i], i * visWidth/listSize + visX, map(attentionAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50) + 20);
 
-    fill(220);
-    rect(visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
-    fill(120);
-    rect(visX, headerHeight + 50 + visBarHeight, map(relaxationAverage, 0, 100, 0, visBarWidth), visBarHeight);
-    fill(0);
-    text("Relaxation " + str(relaxationAverage), visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
-
-    text("Values based on your EEG data", visX, headerHeight + 50 + visBarHeight*2, visBarWidth, 30);
-    // TODO: button to EEG overall
+        fill(70);
+        ellipse(i * visWidth/listSize + visX, map(relaxationAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
+        text(relaxationAverageList[i], i * visWidth/listSize + visX, map(relaxationAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50) + 20);
+        
+        text(fileDate[2] + "." + fileDate[1], i * visWidth/listSize + visX, visHeight + headerHeight + 70);
+        
+        //println(fileArray[fileArray.length-i-1]);
+      }
+      //println(fileDate.length);
+      //println(fileArray.length);
+      //text(fileNames[0], i * visWidth/listSize + visX, visHeight + i*10);
+      
+    }
+    
+    /*
+    for(int i = 0; i < listSize; i++){
+      //String[] fileNames = splitTokens(fileArray[i]);
+          //println("attentionAverage: " + attentionAverage);
+          //println("relaxationAverage: " + relaxationAverage);
+      //text("fileNames[0]", map(relaxationAverage, 0, 100, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
+      ellipse(i * visWidth/listSize + visX, map(relaxationAverage, 0, 100, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
+      println("relaxationAverageList["+i+"]: " + relaxationAverageList[i]);
+    }
+    */
+    
   }
+  
+  
+
 
 
   if (debug) {
@@ -456,6 +516,43 @@ public void loginCheck() {
   directory2 = new File(temp);
   fileArray = directory2.list();
 
+  
+  for(int i = fileArray.length - listSize; i < fileArray.length; i++){
+    String[] fileNames = splitTokens(fileArray[i]);
+    if(fileNames[0].charAt(0) != '.'){
+      
+      String[] fileDate = split(fileNames[0], '.');
+      //println("Mês: " + fileDate[1]);
+      //println("Ano: " + fileDate[0]);
+      //println("Dia: " + fileDate[2]);
+      
+      data = new FloatTable(directory2 + "/" + fileArray[i]);
+
+      if(data.data != null){
+        for (int j = 0; j < data.data.length; j++) {
+          if (data.data[j][11] == 1 || data.data[j][11] == 2) {
+            attentionAverage += data.data[j][9];
+            relaxationAverage += data.data[j][10];
+          }
+        }
+        
+        attentionAverage /= data.data.length;
+        relaxationAverage /= data.data.length;
+      }
+
+      attentionAverageList[i - fileArray.length + listSize] = attentionAverage;
+      relaxationAverageList[i - fileArray.length + listSize] = relaxationAverage;
+      //println(relaxationAverageList);
+      //println("i: " + (i - fileArray.length + listSize) + " | " + "attentionAverage: " + relaxationAverage);
+      //println("relaxationAverage: " + relaxationAverage);
+      
+    }
+  }
+  //println(relaxationAverageList);
+  
+  
+  
+  
   cp5.addScrollableList("loadFiles")
     .setPosition(20, 120)
     .setLabel("Load session")
@@ -569,7 +666,6 @@ public void loadFiles(int n) {
   cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);
 
   filenameString = fileArray[n];
-  // TODO: plot fileArray as graph
 
   data = new FloatTable(directory2 + "/" + filenameString);
   filenameCharArray = filenameString.toCharArray();
@@ -584,8 +680,8 @@ public void loadFiles(int n) {
   state2start = data.getStateStart(2); // state2end = data.getStateEnd(2);
   state3start = data.getStateStart(3); // state3end = data.getStateEnd(3);
 
-  println("attention" + data.getRowCount(10));
-  println("relaxation" + data.getColumnMax(11));
+  //println("attention" + data.getRowCount(10));
+  //println("relaxation" + data.getColumnMax(11));
 
   attentionAverage = 0;
   relaxationAverage = 0;
@@ -595,6 +691,7 @@ public void loadFiles(int n) {
       attentionAverage += data.data[i][9]/data.data.length;
       println("meditation: " + data.data[i][10]);
       relaxationAverage += data.data[i][10]/data.data.length;
+      //relaxationAverageList[n] = data.data[i][10];
     }
   }
 

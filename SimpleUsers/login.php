@@ -23,8 +23,8 @@
 		}
 		else
 		{
-			header("Location: users.php");
-			//header("Location: userinfo.php");
+			//header("Location: users.php");
+			header("Location: userinfo.php");
 			echo '<logintest>success</logintest>';
 			exit;
 		}

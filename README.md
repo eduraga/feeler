@@ -16,7 +16,8 @@ With PHP backend
 ## todo/issues
 - [x] Identifying users
   - Added basic user management, but registration needs to be done on a web page (see below)
-- [ ] Registration through the app (not browser), actually everything in the app.
+- [X] Registration through the app (not browser)
+  - Added basic registration: to register just click signup instead of login after filling username and password fields
 - [ ] Change folder paths when saving files
 - [ ] Visualization of last activity data (and the different levels)
   - Consider doing this on the browser

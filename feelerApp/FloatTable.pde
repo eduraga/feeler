@@ -19,41 +19,43 @@ class FloatTable {
 
   FloatTable(String filename) {
     String[]  rows = loadStrings(filename);
-    String[] columns = split(rows[0], TAB);
-
-
-    columnNames = subset(columns, 1);               // upper-left corner ignored
-    scrubQuotes(columnNames);
-    columnCount = columnNames.length;
-
-    rowNames = new String[rows.length-1];
-    data = new float[rows.length-1][];
-    // start reading at row 1, because the first row was only the column headers
-
-    for (int i = 1; i < rows.length; i++) {
-      if (trim(rows[i]).length() == 0) {
-        continue; // skip empty rows
+    
+    if(rows.length > 0){ // check if file is not empty
+      String[] columns = split(rows[0], TAB);
+  
+      columnNames = subset(columns, 1);               // upper-left corner ignored
+      scrubQuotes(columnNames);
+      columnCount = columnNames.length;
+  
+      rowNames = new String[rows.length-1];
+      data = new float[rows.length-1][];
+      // start reading at row 1, because the first row was only the column headers
+  
+      for (int i = 1; i < rows.length; i++) {
+        if (trim(rows[i]).length() == 0) {
+          continue; // skip empty rows
+        }
+        if (rows[i].startsWith("#")) {
+          continue;  // skip comment lines
+        }
+  
+        // split the row on the tabs
+        String[] pieces = split(rows[i], TAB);
+        scrubQuotes(pieces);
+  
+  
+        // copy row title
+        rowNames[rowCount] = pieces[0];
+        // copy data into the table starting at pieces[1]
+        data[rowCount] = parseFloat(subset(pieces, 1));
+  
+        // increment the number of valid rows found so far
+  
+        rowCount++;
       }
-      if (rows[i].startsWith("#")) {
-        continue;  // skip comment lines
-      }
-
-      // split the row on the tabs
-      String[] pieces = split(rows[i], TAB);
-      scrubQuotes(pieces);
-
-
-      // copy row title
-      rowNames[rowCount] = pieces[0];
-      // copy data into the table starting at pieces[1]
-      data[rowCount] = parseFloat(subset(pieces, 1));
-
-      // increment the number of valid rows found so far
-
-      rowCount++;
+      // resize the 'data' array as necessary
+      data = (float[][]) subset(data, 0, rowCount);
     }
-    // resize the 'data' array as necessary
-    data = (float[][]) subset(data, 0, rowCount);
   }
 
 
