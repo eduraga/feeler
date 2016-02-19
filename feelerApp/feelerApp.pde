@@ -51,9 +51,14 @@ int buttonWidth = 70;
 int buttonHeight = 20;
 int visBarWidth = 300;
 int visBarHeight = 120;
+int visX;
+int visY;
+int visWidth;
+int visHeight;
+int dotSize = 20;
 
 // files handling
-int listSize = 10;
+int listSize = 20;
 float attentionAverage = 0;
 float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
@@ -134,6 +139,11 @@ public void setup() {
   textSize(12);
 
   userTabsX = width/2;
+  
+  visX = width/4;
+  visY = headerHeight + padding + 30;
+  visWidth = width - width/3;
+  visHeight = 300;
 
   json = loadJSONObject("config.json");
   host = json.getString("host");
@@ -249,79 +259,56 @@ public void draw() {
 
   //Visualisation
   if (currentPage == "overall") {
-   
-   
-   int visX = width/4;
-   int visWidth = width - width/3;
-   int visHeight = 300;
-   
-   textAlign(CENTER, CENTER);
-   
-   /*
-   
-   
-
-   fill(220);
-   rect(visX, headerHeight + 50, visBarWidth, visBarHeight);
-   fill(120);
-   rect(visX, headerHeight + 50, map(attentionAverage, 0, 100, 0, visBarWidth), visBarHeight);
-   fill(0);
-   text("Attention " + str(attentionAverage), visX, headerHeight + 50, visBarWidth, visBarHeight);
-
-   fill(220);
-   rect(visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
-   fill(120);
-   rect(visX, headerHeight + 50 + visBarHeight, map(relaxationAverage, 0, 100, 0, visBarWidth), visBarHeight);
-   fill(0);
-   text("Relaxation " + str(relaxationAverage), visX, headerHeight + 50 + visBarHeight, visBarWidth, visBarHeight);
-
-   text("Values based on your EEG data", visX, headerHeight + 50 + visBarHeight*2, visBarWidth, 30);
    // TODO: button to EEG overall
-   */
    
     fill(240);
-    rect(visX, headerHeight + 50, visWidth, visHeight);
+    rect(visX, visY, visWidth - dotSize/2, visHeight + dotSize/2);
 
     fill(0);
+    
     
     
     for(int i = 0; i < listSize; i++){
       String[] fileNames = splitTokens(fileArray[i]);
       
       if(fileNames[0].charAt(0) != '.'){
+        textAlign(LEFT, CENTER);
+        
         String[] fileDate = split(fileNames[0], '.');
-        //println("Mês: " + fileDate[1]);
-        //println("Ano: " + fileDate[0]);
-        //println("Dia: " + fileDate[2]);
+        
+        float attAvg = map(attentionAverageList[i], 100, 0, visY, visHeight + visY);
+        float rlxAvg = map(relaxationAverageList[i], 100, 0, visY, visHeight + visY);
+        
+        float thisX = i * visWidth/listSize + visX;
+        float thisRlxY = rlxAvg;
+        float thisAttY = attAvg;
+        
+        if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+          fill(250);
+          rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
+          
+          fill(100);
+          if(mouseY >= thisRlxY - dotSize/2 && mouseY <= thisRlxY + dotSize/2){
+            //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // bounding box
+            text(round(relaxationAverageList[i]), thisX + 10, rlxAvg - dotSize);
+          }
+          if(mouseY >= thisAttY - dotSize/2 && mouseY <= thisAttY + dotSize/2){
+            //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // bounding box
+            text(round(attentionAverageList[i]), thisX + 10, attAvg - dotSize);
+          }
+          noStroke();
+        }
         
         fill(150);
-        ellipse(i * visWidth/listSize + visX, map(attentionAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
-        text(attentionAverageList[i], i * visWidth/listSize + visX, map(attentionAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50) + 20);
-
+        ellipse(thisX, attAvg, dotSize, dotSize);
+        
         fill(70);
-        ellipse(i * visWidth/listSize + visX, map(relaxationAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
-        text(relaxationAverageList[i], i * visWidth/listSize + visX, map(relaxationAverageList[i], 100, 0, headerHeight + 50, visHeight + headerHeight + 50) + 20);
+        ellipse(thisX, rlxAvg, dotSize, dotSize);
         
-        text(fileDate[2] + "." + fileDate[1], i * visWidth/listSize + visX, visHeight + headerHeight + 70);
-        
-        //println(fileArray[fileArray.length-i-1]);
+        textAlign(CENTER, CENTER);
+        text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
       }
-      //println(fileDate.length);
-      //println(fileArray.length);
-      //text(fileNames[0], i * visWidth/listSize + visX, visHeight + i*10);
-      
     }
-    
-    /*
-    for(int i = 0; i < listSize; i++){
-      //String[] fileNames = splitTokens(fileArray[i]);
-          //println("attentionAverage: " + attentionAverage);
-          //println("relaxationAverage: " + relaxationAverage);
-      //text("fileNames[0]", map(relaxationAverage, 0, 100, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
-      ellipse(i * visWidth/listSize + visX, map(relaxationAverage, 0, 100, headerHeight + 50, visHeight + headerHeight + 50), 20, 20);
-      println("relaxationAverageList["+i+"]: " + relaxationAverageList[i]);
-    }
-    */
     
   }
   
