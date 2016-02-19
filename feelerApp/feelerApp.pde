@@ -59,6 +59,8 @@ int dotSize = 20;
 
 // files handling
 int listSize = 20;
+boolean loading = false;
+
 float attentionAverage = 0;
 float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
@@ -245,6 +247,7 @@ public void setup() {
 
 public void draw() {
   background(255);
+  
   fill(0);
 
   if (isLoggedIn) {
@@ -260,62 +263,9 @@ public void draw() {
   //Visualisation
   if (currentPage == "overall") {
    // TODO: button to EEG overall
-   
-    fill(240);
-    rect(visX, visY, visWidth - dotSize/2, visHeight + dotSize/2);
-
-    fill(0);
-    
-    
-    
-    for(int i = 0; i < listSize; i++){
-      String[] fileNames = splitTokens(fileArray[i]);
-      
-      if(fileNames[0].charAt(0) != '.'){
-        textAlign(LEFT, CENTER);
-        
-        String[] fileDate = split(fileNames[0], '.');
-        
-        float attAvg = map(attentionAverageList[i], 100, 0, visY, visHeight + visY);
-        float rlxAvg = map(relaxationAverageList[i], 100, 0, visY, visHeight + visY);
-        
-        float thisX = i * visWidth/listSize + visX;
-        float thisRlxY = rlxAvg;
-        float thisAttY = attAvg;
-        
-        if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-          fill(250);
-          rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
-          
-          fill(100);
-          if(mouseY >= thisRlxY - dotSize/2 && mouseY <= thisRlxY + dotSize/2){
-            //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // bounding box
-            text(round(relaxationAverageList[i]), thisX + 10, rlxAvg - dotSize);
-          }
-          if(mouseY >= thisAttY - dotSize/2 && mouseY <= thisAttY + dotSize/2){
-            //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // bounding box
-            text(round(attentionAverageList[i]), thisX + 10, attAvg - dotSize);
-          }
-          noStroke();
-        }
-        
-        fill(150);
-        ellipse(thisX, attAvg, dotSize, dotSize);
-        
-        fill(70);
-        ellipse(thisX, rlxAvg, dotSize, dotSize);
-        
-        textAlign(CENTER, CENTER);
-        text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
-      }
-    }
-    
+   avgGraph();
   }
   
-  
-
-
-
   if (debug) {
     textAlign(LEFT);
 
@@ -327,9 +277,16 @@ public void draw() {
       "\nCurrent user:" + currentUser +
       "\nIs logged in:" + isLoggedIn
       ;
+
     fill(50);
     text(s, 10, height-90, width-10, height-90);  // Text wraps within text box
   }
+  
+  textAlign(CENTER);
+  if(loading){
+    text("Loading...", width/2, height/2);
+  }
+  
 }
 
 public void controlEvent(ControlEvent theControlEvent) {
@@ -449,6 +406,8 @@ public void signup(int theValue) {
 }
 
 public void loginCheck() {
+  println("loginCheck");
+  
   if (debug) {
     println(currentUser);
     if (currentUser == "") {
@@ -482,65 +441,13 @@ public void loginCheck() {
       }
     }
   }
+  
+  loadFiles();
+  
 
-  // file handling
-  File directory1 = new java.io.File(sketchPath(""));
-  absolutePath = directory1.getAbsolutePath();
-  String temp = absolutePath;
-  //temp += "/log";
-  temp += "/" + userDataFolder + "/" + currentUser;
-
-  //create user folder
-  File f1 = new File(dataPath(temp));
-  f1.mkdir();
-
-  temp += "/log";
-
-  //create log folder
-  File f2 = new File(dataPath(temp));
-  f2.mkdir();
-
-  directory2 = new File(temp);
-  fileArray = directory2.list();
 
   
-  for(int i = fileArray.length - listSize; i < fileArray.length; i++){
-    String[] fileNames = splitTokens(fileArray[i]);
-    if(fileNames[0].charAt(0) != '.'){
-      
-      String[] fileDate = split(fileNames[0], '.');
-      //println("Mês: " + fileDate[1]);
-      //println("Ano: " + fileDate[0]);
-      //println("Dia: " + fileDate[2]);
-      
-      data = new FloatTable(directory2 + "/" + fileArray[i]);
-
-      if(data.data != null){
-        for (int j = 0; j < data.data.length; j++) {
-          if (data.data[j][11] == 1 || data.data[j][11] == 2) {
-            attentionAverage += data.data[j][9];
-            relaxationAverage += data.data[j][10];
-          }
-        }
-        
-        attentionAverage /= data.data.length;
-        relaxationAverage /= data.data.length;
-      }
-
-      attentionAverageList[i - fileArray.length + listSize] = attentionAverage;
-      relaxationAverageList[i - fileArray.length + listSize] = relaxationAverage;
-      //println(relaxationAverageList);
-      //println("i: " + (i - fileArray.length + listSize) + " | " + "attentionAverage: " + relaxationAverage);
-      //println("relaxationAverage: " + relaxationAverage);
-      
-    }
-  }
-  //println(relaxationAverageList);
-  
-  
-  
-  
-  cp5.addScrollableList("loadFiles")
+  cp5.addScrollableList("loadFilesList")
     .setPosition(20, 120)
     .setLabel("Load session")
     .setSize(200, 100)
@@ -548,7 +455,7 @@ public void loginCheck() {
     .setItemHeight(20)
     .addItems(fileArray)
     ;
-  cp5.getController("loadFiles").moveTo("overall");
+  cp5.getController("loadFilesList").moveTo("overall");
 
   cp5.addButton("deleteFile")
     .setBroadcast(false)
@@ -563,6 +470,8 @@ public void loginCheck() {
   /////////////////////////////
 
   currentPage = "overall";
+  
+  loading = false;
 }
 
 public void addUserAreaControllers() {
@@ -622,9 +531,9 @@ public void addUserAreaControllers() {
 
 public void timer() {
   while (isEnabled) {
+    loading = true;
     delay(TIMER);
     isEnabled = false;
-    loginCheck();
   }
 }
 
@@ -645,54 +554,21 @@ public void deleteFile(int theValue) {
   }
 }
 
-public void loadFiles(int n) {
+public void loadFilesList(int n) {
   /* request the selected item based on index n */
-  println(n, cp5.get(ScrollableList.class, "loadFiles").getItem(n));
+  println(n, cp5.get(ScrollableList.class, "loadFilesList").getItem(n));
   CColor c = new CColor();
   c.setBackground(color(0));
-  cp5.get(ScrollableList.class, "loadFiles").getItem(n).put("color", c);
+  cp5.get(ScrollableList.class, "loadFilesList").getItem(n).put("color", c);
+  
+  loadFile(n);
+}
 
-  filenameString = fileArray[n];
-
-  data = new FloatTable(directory2 + "/" + filenameString);
-  filenameCharArray = filenameString.toCharArray();
-
-  rowCount = data.getRowCount(9);
-  rowCount1 = data.getRowCount(1);
-  rowCount2 = data.getRowCount(2);
-  rowCount3 = data.getRowCount(3);
-  columnCount = data.getColumnCount();
-
-  state1start = data.getStateStart(1); // state1end = data.getStateEnd(1);
-  state2start = data.getStateStart(2); // state2end = data.getStateEnd(2);
-  state3start = data.getStateStart(3); // state3end = data.getStateEnd(3);
-
-  //println("attention" + data.getRowCount(10));
-  //println("relaxation" + data.getColumnMax(11));
-
-  attentionAverage = 0;
-  relaxationAverage = 0;
-  for (int i = 0; i < data.data.length; i++) {
-    if (data.data[i][11] == 1 || data.data[i][11] == 2) {
-      println("attention: " + data.data[i][9]);
-      attentionAverage += data.data[i][9]/data.data.length;
-      println("meditation: " + data.data[i][10]);
-      relaxationAverage += data.data[i][10]/data.data.length;
-      //relaxationAverageList[n] = data.data[i][10];
-    }
-  }
-
-
-  /*
-  // what is relaxation and attention? average?
-   
-   attentionMax = (int)data.getColumnMax(9);  attentionMin = (int)data.getColumnMin(9);
-   meditationMax = (int)data.getColumnMax(10);  meditationMin = (int)data.getColumnMin(10);
-   */
+public void mousePressed() {
+  //println("clicou");
 }
 
 public void keyPressed() {
-
   if (debug) {
     switch(key) {
     case 'c':
@@ -706,6 +582,9 @@ public void keyPressed() {
         );
       break;
     case 'l':
+      //loginCheck();
+      //thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
+      delay(TIMER);
       loginCheck();
       break;
     }
