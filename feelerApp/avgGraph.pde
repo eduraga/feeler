@@ -1,8 +1,12 @@
 public void avgGraph(){
-  fill(240);
-  rect(visX, visY, visWidth - dotSize/2, visHeight + dotSize/2);
+  fill(graphBgColor);
+  rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
   
-  fill(0);
+  textAlign(LEFT, CENTER);
+  fill(100);
+  text("100%", visX - padding/2, visY);
+  text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
+  text("0%", visX - padding/2, visY + visHeight + dotSize/2);
   
   for(int i = 0; i < listSize; i++){
     String[] fileNames = splitTokens(fileArray[i]);
@@ -24,20 +28,24 @@ public void avgGraph(){
         if(mousePressed){
           println("clicou");
           println(i + fileArray.length - listSize, cp5.get(ScrollableList.class, "loadFilesList").getItem(i + fileArray.length - listSize));
+          currentPage = "singleSession";
+          cp5.getTab("singleSession").bringToFront();
+          currentSession = fileArray[i];
+          currentItem = i;
+          println(currentSession);
         }
-
         
         fill(250);
         rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
         
         fill(100);
         if(mouseY >= thisRlxY - dotSize/2 && mouseY <= thisRlxY + dotSize/2){
-          //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // bounding box
-          text(round(relaxationAverageList[i]), thisX + 10, rlxAvg - dotSize);
+          //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // boundin box
+          text(round(relaxationAverageList[i])+"%", thisX + 10, rlxAvg - dotSize);
         }
         if(mouseY >= thisAttY - dotSize/2 && mouseY <= thisAttY + dotSize/2){
-          //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // bounding box
-          text(round(attentionAverageList[i]), thisX + 10, attAvg - dotSize);
+          //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // boun box
+          text(round(attentionAverageList[i])+"%", thisX + 10, attAvg - dotSize);
         }
         noStroke();
       }
@@ -52,4 +60,7 @@ public void avgGraph(){
       text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
     }
   }
+  
+  textAlign(LEFT);
+  text("Averaged values of EEG data", visX, visHeight + visY + 60);
 }

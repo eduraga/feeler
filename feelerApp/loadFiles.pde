@@ -19,7 +19,7 @@ public void loadFiles(){
   fileArray = directory2.list();
   
   for(int i = fileArray.length - listSize; i < fileArray.length; i++){
-    String[] fileNames = splitTokens(fileArray[i]);
+    fileNames = splitTokens(fileArray[i]);
     
     if(fileNames[0].charAt(0) != '.'){
       loadFile(i);

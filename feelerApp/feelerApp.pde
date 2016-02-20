@@ -34,6 +34,8 @@ String newUserAddress;
 boolean isLoggedIn = false;
 boolean isWrongPassword = false;
 String currentUser = "";
+String currentSession = "";
+int currentItem;
 String currentPassword = "";
 Textfield username;
 Textfield password;
@@ -45,7 +47,7 @@ static boolean isEnabled = true;
 
 //UI variables
 int headerHeight = 100;
-int padding = 5;
+int padding = 20;
 int userTabsX;
 int buttonWidth = 70;
 int buttonHeight = 20;
@@ -56,11 +58,12 @@ int visY;
 int visWidth;
 int visHeight;
 int dotSize = 20;
+color graphBgColor = color(240);
 
 // files handling
 int listSize = 20;
 boolean loading = false;
-
+String[] fileNames;
 float attentionAverage = 0;
 float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
@@ -143,7 +146,7 @@ public void setup() {
   userTabsX = width/2;
   
   visX = width/4;
-  visY = headerHeight + padding + 30;
+  visY = headerHeight + padding + 60;
   visWidth = width - width/3;
   visHeight = 300;
 
@@ -261,9 +264,14 @@ public void draw() {
   }
 
   //Visualisation
-  if (currentPage == "overall") {
-   // TODO: button to EEG overall
-   avgGraph();
+  switch(currentPage){
+    case "overall":
+      // TODO: button to EEG overall
+      avgGraph();
+      break;
+    case "singleSession":
+      overallAvgs(currentItem);
+      break;
   }
   
   if (debug) {
@@ -303,9 +311,9 @@ public void controlEvent(ControlEvent theControlEvent) {
     println("newSession page");
     currentPage = "newSession";
     break;
-  case "lastSession":
-    println("lastSession page");
-    currentPage = "lastSession";
+  case "singleSession":
+    println("singleSession page");
+    currentPage = "singleSession";
     break;
   }
 
@@ -317,7 +325,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getTab("default").bringToFront();
     cp5.getController("newSession").hide();
     cp5.getController("overall").hide();
-    cp5.getController("lastSession").hide();
+    cp5.getController("singleSession").hide();
   }
 
   if (theControlEvent.isAssignableFrom(Textfield.class)) {
@@ -353,7 +361,7 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     println("controlEvent: accessing a string from controller '"
       +t.getName()+"': "+t.getStringValue()
-      );
+    );
 
     print("controlEvent: trying to setText, ");
 
@@ -383,8 +391,8 @@ public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
 }
 
-public void lastSession(int theValue) {
-  cp5.getTab("lastSession").bringToFront();
+public void singleSession(int theValue) {
+  cp5.getTab("singleSession").bringToFront();
 }
 
 public void submit(int theValue) {
@@ -488,8 +496,8 @@ public void addUserAreaControllers() {
     .setId(4)
     ;
 
-  cp5.addTab("lastSession");
-  cp5.getTab("lastSession")
+  cp5.addTab("singleSession");
+  cp5.getTab("singleSession")
     .activateEvent(true)
     .setId(5)
     ;
@@ -517,7 +525,7 @@ public void addUserAreaControllers() {
     ;
   cp5.getController("overall").moveTo("global");
 
-  cp5.addButton("lastSession")
+  cp5.addButton("singleSession")
     .setBroadcast(false)
     .setLabel("last session")
     .setPosition(userTabsX + buttonWidth + padding, headerHeight + padding)
@@ -526,7 +534,7 @@ public void addUserAreaControllers() {
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
     ;
-  cp5.getController("lastSession").moveTo("global");
+  cp5.getController("singleSession").moveTo("global");
 }
 
 public void timer() {
@@ -534,6 +542,7 @@ public void timer() {
     loading = true;
     delay(TIMER);
     isEnabled = false;
+    loginCheck();
   }
 }
 
@@ -582,10 +591,7 @@ public void keyPressed() {
         );
       break;
     case 'l':
-      //loginCheck();
-      //thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
-      delay(TIMER);
-      loginCheck();
+      thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
       break;
     }
   }
