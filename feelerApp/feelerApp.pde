@@ -47,6 +47,7 @@ static boolean isEnabled = true;
 
 //UI variables
 OverallAvgs eegAvg, personalAvg;
+LineChart trends;
 int headerHeight = 100;
 int padding = 20;
 int userTabsX;
@@ -62,7 +63,9 @@ int dotSize = 20;
 
 //Color
 color graphBgColor = color(240);
-color textDarkColor = color(100);  
+color textDarkColor = color(100);
+color attentionColor = color(150);
+color relaxationColor = color(70);
 
 // files handling
 int listSize = 20;
@@ -252,8 +255,10 @@ public void setup() {
   cp5.getController("logoutBt").hide();
   
 
-  eegAvg = new OverallAvgs("left", "Values based on your EEG data");
-  personalAvg = new OverallAvgs("right", "Values based on your personal experience");
+  eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
+  personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
+  
+  trends = new LineChart("averages"); 
 }
 
 public void draw() {
@@ -275,13 +280,13 @@ public void draw() {
   switch(currentPage){
     case "overall":
       // TODO: button to EEG overall
-      avgGraph();
+      trends.display();
       break;
     case "singleSession":
       singleVisPage();
       break;
-    case "sessionActivity":
-      sessionActivity();
+    case "eegActivity":
+      eegActivity();
       break;
   }
   
@@ -326,9 +331,9 @@ public void controlEvent(ControlEvent theControlEvent) {
     println("singleSession page");
     currentPage = "singleSession";
     break;
-  case "sessionActivity":
-    println("sessionActivity page");
-    currentPage = "sessionActivity";
+  case "eegActivity":
+    println("eegActivity page");
+    currentPage = "eegActivity";
     break;
   }
 
@@ -512,8 +517,8 @@ public void addUserAreaControllers() {
     .setId(5)
     ;
 
-  cp5.addTab("sessionActivity");
-  cp5.getTab("sessionActivity")
+  cp5.addTab("eegActivity");
+  cp5.getTab("eegActivity")
     .activateEvent(true)
     .setId(5)
     ;
@@ -583,14 +588,8 @@ public void mousePressed() {
   
   switch(currentPage){
     case "singleSession":
-      if(mouseX >= eegAvg.thisX && mouseX <= eegAvg.thisX + eegAvg.rectWidth){
-        if(mouseY >= eegAvg.thisY && mouseY <= eegAvg.thisY + visHeight){
-          fill(200,0,0);
-          rect(eegAvg.thisX, eegAvg.thisY, eegAvg.rectWidth, visHeight);
-          //currentPage = "sessionActivity";
-          //println(currentSession);
-        }
-      }
+      eegAvg.onClick(mouseX, mouseY);
+      personalAvg.onClick(mouseX, mouseY);
       break;
   }
   

@@ -2,17 +2,17 @@ class OverallAvgs{
   int thisX;
   int thisY;
   int rectWidth = (visWidth - dotSize/2)/2;
-  String position;
+  String type;
   String caption;
   
-  OverallAvgs(String _position, String _caption){
-    position = _position;
+  OverallAvgs(String _type, String _caption){
+    type = _type;
     caption = _caption;
   }
   
   void display(int i){
     
-    if(position == "right"){
+    if(type == "assessment"){
       thisX = visX + rectWidth + padding*3;
     } else {
       thisX = visX;
@@ -29,10 +29,10 @@ class OverallAvgs{
     if(fileNames[0].charAt(0) != '.'){
       String[] fileDate = split(fileNames[0], '.');
       
-      if(position == "left"){
+      if(type == "eeg"){
         fill(textDarkColor);
         textAlign(LEFT, CENTER);
-        text("Session" + fileDate[2] + "." + fileDate[1] + "." + fileDate[0], thisX, thisY);
+        text("Session" + fileDate[2] + "." + fileDate[1] + "." + fileDate[0], thisX, thisY - padding*2);
       }
      
       float rlxAvg = map(relaxationAverageList[i], 0, 100, 0, rectWidth/2);
@@ -52,8 +52,25 @@ class OverallAvgs{
       
       fill(textDarkColor);
       textAlign(LEFT, CENTER);
-      text(caption, thisX, thisY + visHeight);
+      text(caption, thisX, thisY + visHeight + padding*2);
     }
+  }
   
+  void onClick(int x, int y){
+      if(x >= this.thisX && x <= this.thisX + this.rectWidth){
+        if(y >= this.thisY && y <= this.thisY + visHeight){
+          fill(200,0,0);
+          rect(this.thisX, this.thisY, this.rectWidth, visHeight);
+          
+          if(type == "eeg"){
+            currentPage = "eegActivity";
+          } else if(type == "assessment"){
+            //currentPage = "assessmentActivity";
+          }
+          
+          //currentPage = "sessionActivity";
+          //println(currentSession);
+        }
+      }
   }
 }
