@@ -46,6 +46,7 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 //UI variables
+OverallAvgs eegAvg, personalAvg;
 int headerHeight = 100;
 int padding = 20;
 int userTabsX;
@@ -249,6 +250,10 @@ public void setup() {
     ;
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
+  
+
+  eegAvg = new OverallAvgs("left", "Values based on your EEG data");
+  personalAvg = new OverallAvgs("right", "Values based on your personal experience");
 }
 
 public void draw() {
@@ -578,17 +583,15 @@ public void mousePressed() {
   
   switch(currentPage){
     case "singleSession":
-      println(currentSession);
-      if(mouseX >= visX && mouseX <= visX + visWidth){
-       if(mouseY >= visY && mouseY <= visY + visHeight){
-         fill(200,0,0);
-         rect(visX, visY-padding, visWidth/2+padding*2, visHeight+padding*2);
-
-         currentPage = "sessionActivity";
-         println(currentSession);
-       }
+      if(mouseX >= eegAvg.thisX && mouseX <= eegAvg.thisX + eegAvg.rectWidth){
+        if(mouseY >= eegAvg.thisY && mouseY <= eegAvg.thisY + visHeight){
+          fill(200,0,0);
+          rect(eegAvg.thisX - padding*2, eegAvg.thisY - padding*2, eegAvg.rectWidth + padding*2, visHeight + padding*2);
+          //currentPage = "sessionActivity";
+          //println(currentSession);
+        }
       }
-    break;
+      break;
   }
   
 
