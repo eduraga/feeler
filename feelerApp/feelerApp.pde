@@ -58,7 +58,10 @@ int visY;
 int visWidth;
 int visHeight;
 int dotSize = 20;
+
+//Color
 color graphBgColor = color(240);
+color textDarkColor = color(100);  
 
 // files handling
 int listSize = 20;
@@ -270,7 +273,7 @@ public void draw() {
       avgGraph();
       break;
     case "singleSession":
-      overallAvgs(currentItem);
+      singleVisPage();
       break;
   }
   
@@ -325,7 +328,6 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getTab("default").bringToFront();
     cp5.getController("newSession").hide();
     cp5.getController("overall").hide();
-    cp5.getController("singleSession").hide();
   }
 
   if (theControlEvent.isAssignableFrom(Textfield.class)) {
@@ -389,10 +391,6 @@ public void newSession(int theValue) {
 
 public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
-}
-
-public void singleSession(int theValue) {
-  cp5.getTab("singleSession").bringToFront();
 }
 
 public void submit(int theValue) {
@@ -524,17 +522,6 @@ public void addUserAreaControllers() {
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("overall").moveTo("global");
-
-  cp5.addButton("singleSession")
-    .setBroadcast(false)
-    .setLabel("last session")
-    .setPosition(userTabsX + buttonWidth + padding, headerHeight + padding)
-    .setSize(buttonWidth, buttonHeight)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("singleSession").moveTo("global");
 }
 
 public void timer() {
