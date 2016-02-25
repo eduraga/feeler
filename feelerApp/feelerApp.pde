@@ -47,7 +47,7 @@ static boolean isEnabled = true;
 
 //UI variables
 OverallAvgs eegAvg, personalAvg;
-LineChart trends;
+LineChart trends, eegAct;
 int headerHeight = 100;
 int padding = 20;
 int userTabsX;
@@ -144,6 +144,7 @@ Communication stuff
 
 
 public void setup() {
+  smooth();
 
   //size(1200, 850);
   size(1200, 700);
@@ -164,7 +165,14 @@ public void setup() {
   newUserAddress = json.getString("new-user-address");
 
   cp5 = new ControlP5(this);
+  
+  eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
+  personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
+  trends = new LineChart("averages");
+  eegAct = new LineChart("values");
+  
 
+  //Create UI elements
   PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
   cp5.addButton("homeBt")
     .setBroadcast(false)
@@ -253,12 +261,7 @@ public void setup() {
     ;
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
-  
 
-  eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
-  personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
-  
-  trends = new LineChart("averages"); 
 }
 
 public void draw() {
@@ -467,9 +470,6 @@ public void loginCheck() {
   
   loadFiles();
   
-
-
-  
   cp5.addScrollableList("loadFilesList")
     .setPosition(20, 120)
     .setLabel("Load session")
@@ -584,12 +584,12 @@ public void loadFilesList(int n) {
 }
 
 public void mousePressed() {
-  //println("clicou");
   
   switch(currentPage){
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
       personalAvg.onClick(mouseX, mouseY);
+      loadFile(currentItem + fileArray.length - listSize);
       break;
   }
   

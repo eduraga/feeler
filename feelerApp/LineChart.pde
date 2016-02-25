@@ -1,8 +1,15 @@
 class LineChart {
   String type;
+  int _listSize;
 
   LineChart(String _type){
     type = _type;
+    if(type == "averages"){
+      _listSize = listSize;
+    } else {
+      _listSize = 2;
+    }
+    
   }
   
   void display(){
@@ -15,38 +22,40 @@ class LineChart {
     text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
     text("0%", visX - padding/2, visY + visHeight + dotSize/2);
     
-    for(int i = 0; i < listSize; i++){
-      String[] fileNames = splitTokens(fileArray[i]);
-      
+    for(int i = 0; i < _listSize; i++){
       if(fileNames[0].charAt(0) != '.'){
         textAlign(LEFT, CENTER);
         
         String[] fileDate = split(fileNames[0], '.');
         
-        float thisX = i * visWidth/listSize + visX;
-        float previousX = (i-1) * visWidth/listSize + visX;
+        float thisX = i * visWidth/_listSize + visX;
+        float previousX = (i-1) * visWidth/_listSize + visX;
         
         float attAvg = map(attentionAverageList[i], 100, 0, visY, visHeight + visY);
         float rlxAvg = map(relaxationAverageList[i], 100, 0, visY, visHeight + visY);
+        float prevAttAvg = 0;
+        float prevRlxAvg = 0;
         
-        float prevAttAvg = map(attentionAverageList[i-1], 100, 0, visY, visHeight + visY);
-        float prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visY, visHeight + visY);
+        if(i>0){
+          prevAttAvg = map(attentionAverageList[i-1], 100, 0, visY, visHeight + visY);
+          prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visY, visHeight + visY);
+        }
         
         if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
           
-          if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
-            if(mousePressed){
-              println("clicou");
-              println(i + fileArray.length - listSize, cp5.get(ScrollableList.class, "loadFilesList").getItem(i + fileArray.length - listSize));
-              currentPage = "singleSession";
-              cp5.getTab("singleSession").bringToFront();
-              currentSession = fileArray[i];
-              currentItem = i;
-              println(currentSession);
+          if(type == "averages"){
+            if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
+              if(mousePressed){
+                currentPage = "singleSession";
+                cp5.getTab("singleSession").bringToFront();
+                currentSession = fileArray[i];
+                currentItem = i;
+                println(currentSession);
+              }
+              
+              fill(250);
+              rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
             }
-            
-            fill(250);
-            rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
           }
           
           if(mouseY >= rlxAvg - dotSize/2 && mouseY <= rlxAvg + dotSize/2){
@@ -74,12 +83,34 @@ class LineChart {
           text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
         } else {
           noFill();
-          if(i>0){
-            stroke(attentionColor);
-            line(previousX, prevAttAvg, thisX, attAvg);
-            stroke(relaxationColor);
-            line(previousX, prevRlxAvg, thisX, rlxAvg);
+          if(i>0 && data.data != null){
+            for (int j = 0; j < data.data.length; j+=1) {
+              if (data.data[j][11] > 0 && j>0) {
+                ////////////////////////////////////////////////////////////
+                int maxVal = 100; //TODO: what's the maximum value for the EEG?
+                ////////////////////////////////////////////////////////////
+
+                thisX = j * visWidth/data.data.length + visX;
+                previousX = (j-1) * visWidth/data.data.length + visX;
+
+                stroke(attentionColor);
+                line(
+                      previousX,
+                      map(data.data[j-1][9], maxVal, 0, visY, visHeight + visY),
+                      thisX,
+                      map(data.data[j][9], maxVal, 0, visY, visHeight + visY)
+                );
+                stroke(relaxationColor);
+                line(
+                      previousX,
+                      map(data.data[j-1][10], maxVal, 0, visY, visHeight + visY),
+                      thisX,
+                      map(data.data[j][10], maxVal, 0, visY, visHeight + visY)
+                );
+              }
+            }
           }
+          
           noStroke();
         }
 

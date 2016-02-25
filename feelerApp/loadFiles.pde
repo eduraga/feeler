@@ -23,5 +23,6 @@ public void loadFiles(){
     
     if(fileNames[0].charAt(0) != '.'){
       loadFile(i);
-    }}
+    }
+  }
 }

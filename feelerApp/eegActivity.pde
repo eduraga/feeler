@@ -1,3 +1,3 @@
 public void eegActivity(){
-  //text("Session:");
+  eegAct.display();
 }

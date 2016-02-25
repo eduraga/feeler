@@ -24,8 +24,6 @@ class OverallAvgs{
     fill(250);
     rect(thisX, thisY, rectWidth, visHeight);
     
-    String[] fileNames = splitTokens(fileArray[i]);
-    
     if(fileNames[0].charAt(0) != '.'){
       String[] fileDate = split(fileNames[0], '.');
       
@@ -59,17 +57,13 @@ class OverallAvgs{
   void onClick(int x, int y){
       if(x >= this.thisX && x <= this.thisX + this.rectWidth){
         if(y >= this.thisY && y <= this.thisY + visHeight){
-          fill(200,0,0);
-          rect(this.thisX, this.thisY, this.rectWidth, visHeight);
+          text("Loading...", width/2, height/2);
           
           if(type == "eeg"){
             currentPage = "eegActivity";
           } else if(type == "assessment"){
             //currentPage = "assessmentActivity";
           }
-          
-          //currentPage = "sessionActivity";
-          //println(currentSession);
         }
       }
   }
