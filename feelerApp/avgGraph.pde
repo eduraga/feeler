@@ -25,7 +25,7 @@ public void avgGraph(){
       
       if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
         
-        if(mouseY >= visY && mouseY <= visHeight + dotSize/2){
+        if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
           if(mousePressed){
             println("clicou");
             println(i + fileArray.length - listSize, cp5.get(ScrollableList.class, "loadFilesList").getItem(i + fileArray.length - listSize));

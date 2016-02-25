@@ -275,6 +275,9 @@ public void draw() {
     case "singleSession":
       singleVisPage();
       break;
+    case "sessionActivity":
+      sessionActivity();
+      break;
   }
   
   if (debug) {
@@ -317,6 +320,10 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "singleSession":
     println("singleSession page");
     currentPage = "singleSession";
+    break;
+  case "sessionActivity":
+    println("sessionActivity page");
+    currentPage = "sessionActivity";
     break;
   }
 
@@ -500,6 +507,12 @@ public void addUserAreaControllers() {
     .setId(5)
     ;
 
+  cp5.addTab("sessionActivity");
+  cp5.getTab("sessionActivity")
+    .activateEvent(true)
+    .setId(5)
+    ;
+
   //other controllers
   cp5.addButton("newSession")
     .setBroadcast(false)
@@ -562,6 +575,23 @@ public void loadFilesList(int n) {
 
 public void mousePressed() {
   //println("clicou");
+  
+  switch(currentPage){
+    case "singleSession":
+      println(currentSession);
+      if(mouseX >= visX && mouseX <= visX + visWidth){
+       if(mouseY >= visY && mouseY <= visY + visHeight){
+         fill(200,0,0);
+         rect(visX, visY-padding, visWidth/2+padding*2, visHeight+padding*2);
+
+         currentPage = "sessionActivity";
+         println(currentSession);
+       }
+      }
+    break;
+  }
+  
+
 }
 
 public void keyPressed() {
