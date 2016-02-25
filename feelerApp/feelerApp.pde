@@ -586,7 +586,7 @@ public void mousePressed() {
       if(mouseX >= eegAvg.thisX && mouseX <= eegAvg.thisX + eegAvg.rectWidth){
         if(mouseY >= eegAvg.thisY && mouseY <= eegAvg.thisY + visHeight){
           fill(200,0,0);
-          rect(eegAvg.thisX - padding*2, eegAvg.thisY - padding*2, eegAvg.rectWidth + padding*2, visHeight + padding*2);
+          rect(eegAvg.thisX, eegAvg.thisY, eegAvg.rectWidth, visHeight);
           //currentPage = "sessionActivity";
           //println(currentSession);
         }
