@@ -66,6 +66,10 @@ float containerPosY;
 int videoWidth = 640;
 int videoHeight = 480;
 
+int assess1 = 50;
+int assess2 = 50;
+int assessQuestion = 0;
+
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
@@ -104,49 +108,7 @@ char[] filenameCharArray = new char[20];
 PImage screenshot;
 /////////////////
 
-/*
-Communication stuff
- 
- setup: feelerS.play();
- 
- 1. when pressing 'start'
- feelerS.setBoxState(100);
- 2. when pressing 'record' // "meditate"
- feelerS.setBoxState(200);
- start timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(299);
- 3. when pressing 'record' // "study"
- feelerS.setBoxState(300);
- reset timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(399);
- feelerS.getButton1();
- 4. // "assess"
- if(feelerS.getButton1()){
- //question 1
- feelerS.getButton2();
- feelerS.setBoxState(301);
- }
- 
- if(feelerS.getButton2()){
- //question 2
- feelerS.getButton3();
- feelerS.setBoxState(302);
- }
- 
- if(feelerS.getButton3()){
- //question 3
- feelerS.setBoxState(303);
- // submit answers
- feelerS.setBoxState(1000);
- //and success
- }
- 
- ????????????????
- 
- */
-
+int boxState = 0;
 
 public void setup() {
   smooth();
@@ -270,6 +232,79 @@ public void setup() {
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
 
+  
+  //Session assessment
+  cp5.addSlider("assess1")
+    .setPosition(padding, headerHeight + padding * 3)
+    .setRange(0,100)
+    ;
+  cp5.getController("assess1").moveTo("global");
+  cp5.getController("assess1").hide();
+
+  cp5.addButton("assess1Bt")
+    .setBroadcast(false)
+    .setLabel("Next")
+    .setPosition(padding, headerHeight + padding * 4)
+    .setSize(70, 20)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("assess1Bt").moveTo("global");
+  cp5.getController("assess1Bt").hide();
+  
+  cp5.addSlider("assess2")
+    .setPosition(padding, headerHeight + padding * 3)
+    .setRange(0,100)
+    ;
+  cp5.getController("assess2").moveTo("global");
+  cp5.getController("assess2").hide();
+
+  cp5.addButton("assess2Bt")
+    .setBroadcast(false)
+    .setLabel("Next")
+    .setPosition(padding, headerHeight + padding * 4)
+    .setSize(70, 20)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("assess2Bt").moveTo("global");
+  cp5.getController("assess2Bt").hide();
+  
+  cp5.addToggle("assess3Toggle1")
+      .setColorLabel(color(0))
+      .setLabel("yes/no")
+      .setPosition(277, 150)
+      .setSize(70, 20)
+      .setValue(true)
+      .setMode(ControlP5.SWITCH)
+      ;
+  cp5.getController("assess3Toggle1").moveTo("global");
+  cp5.getController("assess3Toggle1").hide();
+  
+  cp5.addToggle("assess3Toggle2")
+      .setColorLabel(color(0))
+      .setLabel("yes/no")
+      .setPosition(181, 185)
+      .setSize(70, 20)
+      .setValue(true)
+      .setMode(ControlP5.SWITCH)
+      ;
+  cp5.getController("assess3Toggle2").moveTo("global");
+  cp5.getController("assess3Toggle2").hide();
+  
+  cp5.addButton("assess3Bt")
+    .setLabel("Submit")
+    .setPosition(padding, headerHeight + padding * 6)
+    .setSize(70, 20)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("assess3Bt").moveTo("global");
+  cp5.getController("assess3Bt").hide();
+  /////////////////////////////////
 }
 
 public void draw() {
@@ -305,6 +340,9 @@ public void draw() {
     case "eegActivity":
       eegActivity();
       break;
+    case "newSession":
+      newSession();
+      break;
   }
   
   if (debug) {
@@ -313,14 +351,29 @@ public void draw() {
     fill(0, 20);
     rect(0, height-100, width, 100);
 
-    String s = "Press 'l' to log in" +
-      "\nPress 'c' after logging in to capture screen." +
+    String s = "Press 'L' to log in" +
+      "\nPress 'C' after logging in to capture screen." +
       "\nCurrent user:" + currentUser +
       "\nIs logged in:" + isLoggedIn
       ;
 
     fill(50);
-    text(s, 10, height-90, width-10, height-90);  // Text wraps within text box
+    text(s, padding, height-90, width/3, height-90);
+
+    
+    if(currentPage == "newSession"){
+      String s2 = "Box state: " + boxState +
+        "\nPress 'P' to to start a session" +
+        "\nPress 'R' to record" +
+        "\nPress 'A' to assess"
+      ;
+      text(s2, width/3 + padding*2, height-90, width/2, height-90);
+      
+      String s3 = "Assessment question 1: " + assess1 + "%" +
+        "\nAssessment question 2: " + assess2 + "%"
+      ;
+      text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
+    }
   }
   
   textAlign(CENTER);
@@ -434,6 +487,50 @@ public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
 }
 
+public void assess1Bt(int theValue) {
+  assessQuestion = 2;
+  cp5.getController("assess1").hide();
+  cp5.getController("assess1Bt").hide();
+  cp5.getController("assess2").show();
+  cp5.getController("assess2Bt").show();
+}
+
+public void assess2Bt(int theValue) {
+  assessQuestion = 3;
+  cp5.getController("assess2").hide();
+  cp5.getController("assess2Bt").hide();
+  cp5.getController("assess3Bt").show();
+  cp5.getController("assess3Toggle1").show();
+  cp5.getController("assess3Toggle2").show();
+}
+
+public void assess3Bt(int theValue) {
+  assessQuestion = 4;
+  //cp5.getController("assess3").hide();
+  cp5.getController("assess3Bt").hide();
+  cp5.getController("assess3Toggle1").hide();
+  cp5.getController("assess3Toggle2").hide();
+}
+
+
+void assess3Toggle1(boolean theFlag) {
+  println(theFlag);
+  if(theFlag==true) {
+    //col = color(255);
+  } else {
+    //col = color(100);
+  }
+}
+
+void assess3Toggle2(boolean theFlag) {
+  println(theFlag);
+  if(theFlag==true) {
+    //col = color(255);
+  } else {
+    //col = color(100);
+  }
+}
+
 public void submit(int theValue) {
   // use callback instead
   isEnabled = true;
@@ -491,26 +588,27 @@ public void loginCheck() {
   
   loadFiles();
   
-  cp5.addScrollableList("loadFilesList")
-    .setPosition(20, 120)
-    .setLabel("Load session")
-    .setSize(200, 100)
-    .setBarHeight(20)
-    .setItemHeight(20)
-    .addItems(fileArray)
-    ;
-  cp5.getController("loadFilesList").moveTo("overall");
+  //cp5.addScrollableList("loadFilesList")
+  //  .setPosition(padding, height/2)
+  //  .setLabel("Load session")
+  //  .setSize(200, 100)
+  //  .setBarHeight(20)
+  //  .setItemHeight(20)
+  //  .addItems(fileArray)
+  //  ;
+  //cp5.getController("loadFilesList").moveTo("overall");
 
-  cp5.addButton("deleteFile")
-    .setBroadcast(false)
-    .setLabel("delete")
-    .setPosition(230, 120)
-    .setSize(70, 20)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("deleteFile").moveTo("overall");
+  //cp5.addButton("deleteFile")
+  //  .setBroadcast(false)
+  //  .setLabel("delete")
+  //  .setPosition(padding, height/2 + 100 + padding)
+  //  .setSize(70, 20)
+  //  .setValue(1)
+  //  .setBroadcast(true)
+  //  .getCaptionLabel().align(CENTER, CENTER)
+  //  ;
+  //cp5.getController("deleteFile").moveTo("overall");
+  
   /////////////////////////////
 
   currentPage = "overall";
@@ -634,6 +732,22 @@ public void keyPressed() {
       break;
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
+      break;
+    case 'p':
+      boxState = 100;
+      break;
+    case 'r':
+      boxState = 200;
+      break;
+    case 'a':
+      if(currentPage == "newSession"){
+        boxState = 300;
+        assessQuestion = 1;
+        if(assessQuestion == 1){
+          cp5.getController("assess1").show();
+          cp5.getController("assess1Bt").show();
+        }
+      }
       break;
     }
   }
