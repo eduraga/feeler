@@ -1,6 +1,7 @@
 class LineChart {
   String type;
   int _listSize;
+  int grainSize = 40;
 
   LineChart(String _type){
     type = _type;
@@ -84,26 +85,26 @@ class LineChart {
         } else {
           noFill();
           if(i>0 && data.data != null){
-            for (int j = 0; j < data.data.length; j+=1) {
+            for (int j = 0; j < data.data.length; j+=grainSize) {
               if (data.data[j][11] > 0 && j>0) {
                 ////////////////////////////////////////////////////////////
                 int maxVal = 100; //TODO: what's the maximum value for the EEG?
                 ////////////////////////////////////////////////////////////
 
                 thisX = j * visWidth/data.data.length + visX;
-                previousX = (j-1) * visWidth/data.data.length + visX;
+                previousX = (j-grainSize) * visWidth/data.data.length + visX;
 
                 stroke(attentionColor);
                 line(
                       previousX,
-                      map(data.data[j-1][9], maxVal, 0, visY, visHeight + visY),
+                      map(data.data[j-grainSize][9], maxVal, 0, visY, visHeight + visY),
                       thisX,
                       map(data.data[j][9], maxVal, 0, visY, visHeight + visY)
                 );
                 stroke(relaxationColor);
                 line(
                       previousX,
-                      map(data.data[j-1][10], maxVal, 0, visY, visHeight + visY),
+                      map(data.data[j-grainSize][10], maxVal, 0, visY, visHeight + visY),
                       thisX,
                       map(data.data[j][10], maxVal, 0, visY, visHeight + visY)
                 );
@@ -117,8 +118,10 @@ class LineChart {
       }
     }
     
-    fill(textDarkColor);
-    textAlign(LEFT);
-    text("Averaged values of EEG data", visX, visHeight + visY + 60);
+    if(type == "averages"){
+      fill(textDarkColor);
+      textAlign(LEFT);
+      text("Averaged values of EEG data", visX, visHeight + visY + 60);
+    }
   }
 }

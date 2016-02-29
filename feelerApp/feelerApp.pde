@@ -60,6 +60,11 @@ int visY;
 int visWidth;
 int visHeight;
 int dotSize = 20;
+float e = 1;
+float containerPosX;
+float containerPosY;
+int videoWidth = 640;
+int videoHeight = 480;
 
 //Color
 color graphBgColor = color(240);
@@ -173,6 +178,9 @@ public void setup() {
   
 
   //Create UI elements
+  containerPosX = width/2 - videoWidth/2;
+  containerPosY = height/2 - videoHeight/2;
+
   PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
   cp5.addButton("homeBt")
     .setBroadcast(false)
@@ -278,9 +286,13 @@ public void draw() {
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
   }
-
+  
+  
   //Visualisation
   switch(currentPage){
+    case "home":
+      home();
+      break;
     case "overall":
       // TODO: button to EEG overall
       trends.display();
@@ -592,8 +604,10 @@ public void mousePressed() {
       loadFile(currentItem + fileArray.length - listSize);
       break;
   }
-  
+}
 
+void mouseWheel(MouseEvent event) {
+  e = event.getCount();
 }
 
 public void keyPressed() {
