@@ -24,8 +24,6 @@ class OverallAvgs{
     fill(250);
     rect(thisX, thisY, rectWidth, visHeight);
     
-    println(i);
-    
     if(fileNames[0].charAt(0) != '.'){
       String[] fileDate = split(fileNames[0], '.');
       
