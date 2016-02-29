@@ -93,6 +93,18 @@ class LineChart {
 
                 thisX = j * visWidth/data.data.length + visX;
                 previousX = (j-grainSize) * visWidth/data.data.length + visX;
+                
+                if(data.data[j][11] == 1){
+                 fill(250);
+                }
+                if(data.data[j][11] == 2){
+                 fill(230);
+                }
+                if(data.data[j][11] == 3){
+                 fill(210);
+                }
+                noStroke();
+                rect(thisX, visY, grainSize, visHeight);
 
                 stroke(attentionColor);
                 line(

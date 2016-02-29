@@ -354,12 +354,13 @@ public void controlEvent(ControlEvent theControlEvent) {
     break;
   }
 
-  //clean up interface
+  //clean up interface on logout
   if (theControlEvent.getLabel() == "Logout") {
     cp5.getController("logoutBt").hide();
     isLoggedIn = false;
     currentUser = "";
     cp5.getTab("default").bringToFront();
+    currentPage = "home";
     cp5.getController("newSession").hide();
     cp5.getController("overall").hide();
   }
@@ -412,12 +413,13 @@ public void controlEvent(ControlEvent theControlEvent) {
 }
 
 public void homeBt(int theValue) {
-  cp5.getTab("home").bringToFront();
+  cp5.getTab("default").bringToFront();
   currentPage = "home";
 }
 
 public void loginBt(int theValue) {
   cp5.getTab("login").bringToFront();
+  currentPage = "login";
 }
 
 public void newSession(int theValue) {

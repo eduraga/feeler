@@ -19,9 +19,8 @@ With PHP backend
 - [X] Registration through the app (not browser)
   - Added basic registration: to register just click signup instead of login after filling username and password fields
 - [ ] Change folder paths when saving files
-- [ ] Visualization of last activity data (and the different levels)
-  - Consider doing this on the browser
-- [ ] Visualization of the overall activity (this could be left for a second stage if it’s too much work)
+- [X] Visualization of last activity data (and the different levels)
+- [X] Visualization of the overall activity (this could be left for a second stage if it’s too much work)
 - [x] Screen capture
 - [ ] Download raw data
 - [ ] Capture data screens (these need to be synchronized with the boxes and give some feedback (recording time, connection) indicating everything works ok.
