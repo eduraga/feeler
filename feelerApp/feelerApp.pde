@@ -291,7 +291,9 @@ public void draw() {
   //Visualisation
   switch(currentPage){
     case "home":
-      home();
+      if(!loading){
+        home();
+      }
       break;
     case "overall":
       // TODO: button to EEG overall
@@ -308,7 +310,7 @@ public void draw() {
   if (debug) {
     textAlign(LEFT);
 
-    fill(210);
+    fill(0, 20);
     rect(0, height-100, width, 100);
 
     String s = "Press 'l' to log in" +
@@ -407,6 +409,11 @@ public void controlEvent(ControlEvent theControlEvent) {
     }
     ///////////////////////////////////
   }
+}
+
+public void homeBt(int theValue) {
+  cp5.getTab("home").bringToFront();
+  currentPage = "home";
 }
 
 public void loginBt(int theValue) {
