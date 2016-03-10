@@ -13,16 +13,21 @@ public void loadFiles(){
 
   //create log folder
   File f2 = new File(dataPath(temp));
-  f2.mkdir();
+  f2.mkdirs();
 
   directory2 = new File(temp);
   fileArray = directory2.list();
   
-  for(int i = fileArray.length - listSize; i < fileArray.length; i++){
-    fileNames = splitTokens(fileArray[i]);
-    
-    if(fileNames[0].charAt(0) != '.'){
-      loadFile(i);
+  if(fileArray != null && fileArray.length > 0){
+    for(int i = fileArray.length - listSize; i < fileArray.length; i++){
+      fileNames = splitTokens(fileArray[i]);
+      
+      if(fileNames[0].charAt(0) != '.'){
+        loadFile(i);
+      }
     }
   }
+  
+  
+  
 }
