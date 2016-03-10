@@ -42,15 +42,21 @@ Communication stuff
  */
 
 
-
-void newSession(){
-  
+void newSession(){  
   switch(boxState){
     case 0:
-      pageH1("Start a session");
+      cp5.getController("startSession").show();
+      pageH1("Gain awareness about mental performance through EEG self-monitoring");
+      text(
+            "Monitor your brain activity while performing the following tasks:\n1. Meditate 2. Study 3. Reflect\nEach task is associated to a box that guides your activity and notifies you once time...",
+            padding, headerHeight + padding + 40);
       break;
     case 100:
-      pageH1("Relax");
+      cp5.getController("startSession").hide();
+      pageH1("Relax and get focused through calm breathing");
+      text(
+            "The box dedicated to meditation will guide your breathing rhythm...",
+            padding, headerHeight + padding + 40);
       break;
     case 200:
       pageH1("Study");

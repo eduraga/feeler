@@ -68,6 +68,8 @@ int videoHeight = 480;
 
 int assess1 = 50;
 int assess2 = 50;
+boolean assess3Toggle1 = true;
+boolean assess3Toggle2 = true;
 int assessQuestion = 0;
 
 //Color
@@ -232,7 +234,22 @@ public void setup() {
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
 
-  
+
+
+  //Session
+  cp5.addButton("startSession")
+    .setBroadcast(false)
+    .setLabel("Start")
+    .setPosition(padding, headerHeight + padding * 7)
+    .setSize(200, 80)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("startSession").moveTo("global");
+  cp5.getController("startSession").hide();
+
+
   //Session assessment
   cp5.addSlider("assess1")
     .setPosition(padding, headerHeight + padding * 3)
@@ -331,7 +348,6 @@ public void draw() {
       }
       break;
     case "overall":
-      // TODO: button to EEG overall
       trends.display();
       break;
     case "singleSession":
@@ -364,13 +380,15 @@ public void draw() {
     if(currentPage == "newSession"){
       String s2 = "Box state: " + boxState +
         "\nPress 'P' to to start a session" +
-        "\nPress 'R' to record" +
+        "\nPress 'S' to study" +
         "\nPress 'A' to assess"
       ;
       text(s2, width/3 + padding*2, height-90, width/2, height-90);
       
       String s3 = "Assessment question 1: " + assess1 + "%" +
-        "\nAssessment question 2: " + assess2 + "%"
+        "\nAssessment question 2: " + assess2 + "%" +
+        "\nAssessment question 3a: " + assess3Toggle1 +
+        "\nAssessment question 3b: " + assess3Toggle2
       ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
     }
@@ -468,6 +486,18 @@ public void controlEvent(ControlEvent theControlEvent) {
 public void homeBt(int theValue) {
   cp5.getTab("default").bringToFront();
   currentPage = "home";
+  if(isLoggedIn){
+    cp5.getController("loginBt").hide();
+  }
+}
+
+public void logoutBt(int theValue) {
+  //cp5.getTab("default").bringToFront();
+  cp5.getController("loginBt").show();
+  currentUser = "";
+  isLoggedIn = false;
+  isEnabled = true;
+  isWrongPassword = false;
 }
 
 public void loginBt(int theValue) {
@@ -486,6 +516,12 @@ public void newSession(int theValue) {
 public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
 }
+
+public void startSession(int theValue) {
+  //currentPage = "meditate";
+  boxState = 100;
+}
+
 
 public void assess1Bt(int theValue) {
   assessQuestion = 2;
@@ -514,21 +550,11 @@ public void assess3Bt(int theValue) {
 
 
 void assess3Toggle1(boolean theFlag) {
-  println(theFlag);
-  if(theFlag==true) {
-    //col = color(255);
-  } else {
-    //col = color(100);
-  }
+  assess3Toggle1 = theFlag;
 }
 
 void assess3Toggle2(boolean theFlag) {
-  println(theFlag);
-  if(theFlag==true) {
-    //col = color(255);
-  } else {
-    //col = color(100);
-  }
+  assess3Toggle1 = theFlag;
 }
 
 public void submit(int theValue) {
@@ -550,14 +576,13 @@ public void signup(int theValue) {
 }
 
 public void loginCheck() {
-  println("loginCheck");
-  
+  println("logincheck");
   if (debug) {
     println(currentUser);
     if (currentUser == "") {
       currentUser = "someuser";
     }
-
+    
     cp5.getTab("overall").bringToFront();
     isLoggedIn = true;
 
@@ -657,7 +682,7 @@ public void addUserAreaControllers() {
   cp5.addButton("overall")
     .setBroadcast(false)
     .setLabel("overall")
-    .setPosition(userTabsX, headerHeight + padding)
+    .setPosition(userTabsX, padding)
     .setSize(buttonWidth, buttonHeight)
     .setValue(1)
     .setBroadcast(true)
@@ -736,7 +761,7 @@ public void keyPressed() {
     case 'p':
       boxState = 100;
       break;
-    case 'r':
+    case 's':
       boxState = 200;
       break;
     case 'a':
