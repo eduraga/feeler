@@ -17,12 +17,6 @@ class LineChart {
     fill(graphBgColor);
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
-    textAlign(LEFT, CENTER);
-    fill(textDarkColor);
-    text("100%", visX - padding/2, visY);
-    text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
-    text("0%", visX - padding/2, visY + visHeight + dotSize/2);
-    
     if(fileNames != null){
       
       for(int i = 0; i < _listSize; i++){
@@ -93,8 +87,8 @@ class LineChart {
                   int maxVal = 100; //TODO: what's the maximum value for the EEG?
                   ////////////////////////////////////////////////////////////
   
-                  thisX = j * visWidth/data.data.length + visX;
-                  previousX = (j-grainSize) * visWidth/data.data.length + visX;
+                  thisX = j * (visWidth - padding*2)/data.data.length + visX + padding;
+                  previousX = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
                   
                   if(data.data[j][11] == 1){
                    fill(250);
@@ -106,7 +100,7 @@ class LineChart {
                    fill(210);
                   }
                   noStroke();
-                  rect(thisX, visY, grainSize, visHeight);
+                  rect(previousX, visY, grainSize, visHeight);
   
                   stroke(attentionColor);
                   line(
@@ -141,6 +135,13 @@ class LineChart {
         textAlign(CENTER);
         text("It seems you have no data yet.\nGo ahead and start a new session to generate some.", visX, visHeight/2 + visY, visWidth, visHeight);
     }
+    
+    //Labels
+    textAlign(LEFT, CENTER);
+    fill(textDarkColor);
+    text("100%", visX - padding/2, visY);
+    text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
+    text("0%", visX - padding/2, visY + visHeight + dotSize/2);
     
   }
 }
