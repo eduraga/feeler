@@ -118,7 +118,7 @@ int boxState = 0;
 
 //MindSet stuff
 MindSet mindSet;
-boolean simulateMindSet = false;
+boolean simulateMindSet = true;
 
 public void setup() {
   smooth();
@@ -333,7 +333,9 @@ public void setup() {
   
   
   //Setup Mindset
-  mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+  if(!simulateMindSet){
+    mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+  }
 }
 
 public void draw() {
@@ -432,6 +434,14 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "newSession":
     println("newSession page");
     currentPage = "newSession";
+    break;
+  case "startSession":
+    println("startSession");
+    //TODO: save file to user folder
+    filename = "test-log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2)+".tsv";
+    output = createWriter(filename);
+    output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
+    datetimestr0 = minute()*60+second();   
     break;
   case "singleSession":
     println("singleSession page");
@@ -743,36 +753,6 @@ public void loadFilesList(int n) {
   cp5.get(ScrollableList.class, "loadFilesList").getItem(n).put("color", c);
   
   loadFile(n);
-}
-
-//MindSet functions
-
-void exit() {
-  println("Exiting");
-  mindSet.quit();
-  super.exit();
-}
-
-void simulate() {
-  poorSignalEvent(int(random(200)));
-  attentionEvent(int(random(100)));
-  meditationEvent(int(random(100)));
-}
-
-public void poorSignalEvent(int sig) {
-  println("sig: " + sig);
-  //signalWidget.add(200-sig);
-}
-
-public void attentionEvent(int attentionLevel) {
-  //attentionWidget.add(attentionLevel);
-  println("attentionLevel: " + attentionLevel);
-}
-
-
-public void meditationEvent(int meditationLevel) {
-  //meditationWidget.add(meditationLevel);
-  println("meditationLevel: " + meditationLevel);
 }
 
 public void mousePressed() {
