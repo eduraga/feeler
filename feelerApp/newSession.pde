@@ -46,20 +46,20 @@ void newSession(){
   switch(boxState){
     case 0:
       cp5.getController("startSession").show();
-      pageH1("Gain awareness about mental performance through EEG self-monitoring");
-      text(
-            "Monitor your brain activity while performing the following tasks:\n1. Meditate 2. Study 3. Reflect\nEach task is associated to a box that guides your activity and notifies you once time...",
+      pageH1("Start a session");
+      text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.",
             padding, headerHeight + padding + 40);
       break;
     case 100:
       cp5.getController("startSession").hide();
-      pageH1("Relax and get focused through calm breathing");
-      text(
-            "The box dedicated to meditation will guide your breathing rhythm...",
+      pageH1("Relax");
+      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
             padding, headerHeight + padding + 40);
       break;
     case 200:
       pageH1("Study");
+      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
+            padding, headerHeight + padding + 40);
       break;
     case 300:
       pageH1("Assess");

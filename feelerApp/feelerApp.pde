@@ -1,7 +1,7 @@
 boolean debug = true;
 
 import processing.net.*; 
-import controlP5.*; 
+import controlP5.*;
 import java.util.*; 
 import java.awt.Robot; 
 import java.awt.AWTException; 
@@ -14,7 +14,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter; 
 import java.io.InputStream; 
 import java.io.OutputStream; 
-import java.io.IOException; 
+import java.io.IOException;
+
+import processing.serial.*;
+import pt.citar.diablu.processing.mindset.*;
+
 
 ControlP5 cp5;
 
@@ -111,6 +115,10 @@ PImage screenshot;
 /////////////////
 
 int boxState = 0;
+
+//MindSet stuff
+MindSet mindSet;
+boolean simulateMindSet = false;
 
 public void setup() {
   smooth();
@@ -239,7 +247,7 @@ public void setup() {
   //Session
   cp5.addButton("startSession")
     .setBroadcast(false)
-    .setLabel("Start")
+    .setLabel("Record (start session)")
     .setPosition(padding, headerHeight + padding * 7)
     .setSize(200, 80)
     .setValue(1)
@@ -322,6 +330,10 @@ public void setup() {
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
   /////////////////////////////////
+  
+  
+  //Setup Mindset
+  mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
 }
 
 public void draw() {
@@ -370,11 +382,17 @@ public void draw() {
     String s = "Press 'L' to log in" +
       "\nPress 'C' after logging in to capture screen." +
       "\nCurrent user:" + currentUser +
-      "\nIs logged in:" + isLoggedIn
+      "\nIs logged in:" + isLoggedIn +
+      "\nPress 'M' to toggle MindSet simulation"
       ;
 
     fill(50);
     text(s, padding, height-90, width/3, height-90);
+    
+    
+    if(simulateMindSet){
+      simulate();
+    }
 
     
     if(currentPage == "newSession"){
@@ -554,7 +572,7 @@ void assess3Toggle1(boolean theFlag) {
 }
 
 void assess3Toggle2(boolean theFlag) {
-  assess3Toggle1 = theFlag;
+  assess3Toggle2 = theFlag;
 }
 
 public void submit(int theValue) {
@@ -727,6 +745,36 @@ public void loadFilesList(int n) {
   loadFile(n);
 }
 
+//MindSet functions
+
+void exit() {
+  println("Exiting");
+  mindSet.quit();
+  super.exit();
+}
+
+void simulate() {
+  poorSignalEvent(int(random(200)));
+  attentionEvent(int(random(100)));
+  meditationEvent(int(random(100)));
+}
+
+public void poorSignalEvent(int sig) {
+  println("sig: " + sig);
+  //signalWidget.add(200-sig);
+}
+
+public void attentionEvent(int attentionLevel) {
+  //attentionWidget.add(attentionLevel);
+  println("attentionLevel: " + attentionLevel);
+}
+
+
+public void meditationEvent(int meditationLevel) {
+  //meditationWidget.add(meditationLevel);
+  println("meditationLevel: " + meditationLevel);
+}
+
 public void mousePressed() {
   
   switch(currentPage){
@@ -774,6 +822,8 @@ public void keyPressed() {
         }
       }
       break;
+    case 'm':
+      simulateMindSet = !simulateMindSet;
     }
   }
 }

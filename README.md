@@ -14,13 +14,17 @@ With PHP backend
 - Run feelerApp.pde and try to log in
 
 ## todo/issues
+- [ ] Fix scroll
+- [ ] Add timer, stop/pause/play button to Session
+- [ ] Add connection feedback information
+- [ ] Save separate file for assessment
 - [x] Identifying users
   - Added basic user management, but registration needs to be done on a web page (see below)
-- [X] Registration through the app (not browser)
+- [x] Registration through the app (not browser)
   - Added basic registration: to register just click signup instead of login after filling username and password fields
 - [ ] Change folder paths when saving files
-- [X] Visualization of last activity data (and the different levels)
-- [X] Visualization of the overall activity (this could be left for a second stage if it’s too much work)
+- [x] Visualization of last activity data (and the different levels)
+- [x] Visualization of the overall activity (this could be left for a second stage if it’s too much work)
 - [x] Screen capture
 - [ ] Download raw data
 - [ ] Capture data screens (these need to be synchronized with the boxes and give some feedback (recording time, connection) indicating everything works ok.
