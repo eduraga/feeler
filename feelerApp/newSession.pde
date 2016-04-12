@@ -41,6 +41,7 @@ Communication stuff
  
  */
 
+boolean isRecordingMind = false;
 
 String filename;
 PrintWriter output;
@@ -72,9 +73,36 @@ void newSession(){
     case 100:
       cp5.getController("startSession").hide();
       pageH1("Relax");
+      isRecordingMind = true;
+      timeline = 1;
       text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
             padding, headerHeight + padding + 40);
+      break;
+    case 200:
+      pageH1("Study");
+      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
+            padding, headerHeight + padding + 40);
+      timeline = 2;
+      break;
+    case 300:
+      pageH1("Assess");
+      if(assessQuestion == 1){
+        assess(assessQuestion, "How attentive were you during the session?");
+      } else if(assessQuestion == 2){
+        assess(assessQuestion, "How relaxed were you during the session?");
+      } else if(assessQuestion == 3){
+        assess(assessQuestion, "Your performance");
+      } else if(assessQuestion == 4){
+        assess(assessQuestion, "Answers saved!");
+      }
+      timeline = 3;
+      break;
+    default:
+      pageH1("Start a session");
+      break;
+  }
   
+  if(isRecordingMind){
       int datetimestr1 = minute()*60+second();
       int datetimestr = datetimestr1 - datetimestr0;
       
@@ -103,28 +131,6 @@ void newSession(){
       output.print(meditation);
       output.print(TAB);
       output.println(timeline);
-      
-      break;
-    case 200:
-      pageH1("Study");
-      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
-            padding, headerHeight + padding + 40);
-      break;
-    case 300:
-      pageH1("Assess");
-      if(assessQuestion == 1){
-        assess(assessQuestion, "How attentive were you during the session?");
-      } else if(assessQuestion == 2){
-        assess(assessQuestion, "How relaxed were you during the session?");
-      } else if(assessQuestion == 3){
-        assess(assessQuestion, "Your performance");
-      } else if(assessQuestion == 4){
-        assess(assessQuestion, "Answers saved!");
-      }
-      break;
-    default:
-      pageH1("Start a session");
-      break;
   }
 }
 
@@ -168,14 +174,15 @@ public void poorSignalEvent(int sig) {
 
 public void attentionEvent(int attentionLevel) {
   //attentionWidget.add(attentionLevel);
-  println("attentionLevel: " + attentionLevel);
+  //println("attentionLevel: " + attentionLevel);
   attention = attentionLevel;
 }
 
 
 public void meditationEvent(int meditationLevel) {
   //meditationWidget.add(meditationLevel);
-  println("meditationLevel: " + meditationLevel);
+  //println("meditationLevel: " + meditationLevel);
+  meditation = meditationLevel;
 }
 
 public void eegEvent(int delta, int theta, int low_alpha, 

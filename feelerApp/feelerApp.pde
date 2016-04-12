@@ -574,6 +574,9 @@ public void assess3Bt(int theValue) {
   cp5.getController("assess3Bt").hide();
   cp5.getController("assess3Toggle1").hide();
   cp5.getController("assess3Toggle2").hide();
+  output.flush();
+  output.close();
+  isRecordingMind = false;
 }
 
 
