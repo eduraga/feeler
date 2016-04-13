@@ -14,11 +14,16 @@ class LineChart {
   }
   
   void display(){
+      
+    float relaxEnd = 0;
+    float studyEnd = 0;
+    float assessEnd = 0;
+    
+    
     fill(graphBgColor);
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
     if(fileNames != null){
-      
       for(int i = 0; i < _listSize; i++){
         if(fileNames[0].charAt(0) != '.'){
           textAlign(LEFT, CENTER);
@@ -91,13 +96,16 @@ class LineChart {
                   previousX = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
                   
                   if(data.data[j][11] == 1){
-                   fill(250);
+                    fill(250);
+                    relaxEnd = thisX;
                   }
                   if(data.data[j][11] == 2){
                    fill(230);
+                   studyEnd = thisX;
                   }
                   if(data.data[j][11] == 3){
-                   fill(210);
+                    fill(210);
+                    assessEnd = thisX;
                   }
                   noStroke();
                   rect(previousX, visY, grainSize, visHeight);
@@ -125,23 +133,29 @@ class LineChart {
         }
       }
       
+      fill(textDarkColor);
       if(type == "averages"){
-        fill(textDarkColor);
         textAlign(LEFT);
         text("Averaged values of EEG data", visX, visHeight + visY + 60);
+      } else if(type == "values"){
+        //rect((visX + padding) + (studyEnd - (visX + padding)), visY, assessEnd - studyEnd, 20);
+    
+        textAlign(CENTER, CENTER);
+        text("RELAX", visX + padding, visY, relaxEnd - (visX + padding), 20);
+        text("STUDY", (visX + padding) + (relaxEnd - (visX + padding)), visY, relaxEnd - visX + padding/2, 20);
+        text("ASSESS", (visX + padding) + (studyEnd - (visX + padding)), visY, assessEnd - studyEnd, 20);
       }
     } else {
-        fill(textDarkColor);
         textAlign(CENTER);
         text("It seems you have no data yet.\nGo ahead and start a new session to generate some.", visX, visHeight/2 + visY, visWidth, visHeight);
     }
     
     //Labels
     textAlign(LEFT, CENTER);
-    fill(textDarkColor);
     text("100%", visX - padding/2, visY);
     text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
     text("0%", visX - padding/2, visY + visHeight + dotSize/2);
+    
     
   }
 }
