@@ -168,7 +168,6 @@ void simulate() {
 }
 
 public void poorSignalEvent(int sig) {
-  println("sig: " + sig);
   //signalWidget.add(200-sig);
 }
 

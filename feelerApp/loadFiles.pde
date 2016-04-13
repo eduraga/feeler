@@ -20,9 +20,10 @@ public void loadFiles(){
   
   if(fileArray != null && fileArray.length > 0){
     for(int i = fileArray.length - listSize; i < fileArray.length; i++){
+      String extension = fileArray[i].substring(fileArray[i].lastIndexOf(".") + 1, fileArray[i].length());
       fileNames = splitTokens(fileArray[i]);
       
-      if(fileNames[0].charAt(0) != '.'){
+      if(fileNames[0].charAt(0) != '.' && new String("tsv").equals(extension)){
         loadFile(i);
       }
     }

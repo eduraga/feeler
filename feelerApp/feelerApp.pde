@@ -86,6 +86,7 @@ color relaxationColor = color(70);
 int listSize = 20;
 boolean loading = false;
 String[] fileNames;
+String filePath;
 float attentionAverage = 0;
 float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
@@ -438,7 +439,8 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "startSession":
     println("startSession");
     //TODO: save file to user folder
-    filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2)+".tsv";
+    filePath = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
+    filename = filePath + ".tsv";
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
@@ -576,6 +578,11 @@ public void assess3Bt(int theValue) {
   cp5.getController("assess3Toggle2").hide();
   output.flush();
   output.close();
+  
+  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
+  // Writes the strings to a file, each on a separate line
+  saveStrings(filePath + "-assessment.txt", assessment);
+  
   isRecordingMind = false;
   loadFiles();
 }
