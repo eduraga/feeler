@@ -91,6 +91,7 @@ float attentionAverage = 0;
 float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
 float[] relaxationAverageList = new float[listSize];
+String[] assessmentData;
 
 String userDataFolder = "user-data";
 String absolutePath;
@@ -768,11 +769,20 @@ public void loadFilesList(int n) {
 
 public void mousePressed() {
   
+  println();
+  
   switch(currentPage){
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
       personalAvg.onClick(mouseX, mouseY);
+      
       loadFile(currentItem + fileArray.length - listSize);
+      //println("directory2: " + fileArray[currentItem + fileArray.length - listSize]);
+      //assessmentData = loadStrings();
+      break;
+    case "overall":
+      trends.onClick();
+      //eegAct.onClick();
       break;
   }
 }

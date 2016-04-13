@@ -46,13 +46,13 @@ class LineChart {
             
             if(type == "averages"){
               if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
-                if(mousePressed){
-                  currentPage = "singleSession";
-                  cp5.getTab("singleSession").bringToFront();
-                  currentSession = fileArray[i];
-                  currentItem = i;
-                  println(currentSession);
-                }
+                //if(mousePressed){
+                //  currentPage = "singleSession";
+                //  cp5.getTab("singleSession").bringToFront();
+                //  currentSession = fileArray[i];
+                //  currentItem = i;
+                //  println(currentSession);
+                //}
                 
                 fill(250);
                 rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
@@ -152,7 +152,30 @@ class LineChart {
     text("100%", visX - padding/2, visY);
     text("50%", visX - padding/2, visY + visHeight/2 + dotSize/2);
     text("0%", visX - padding/2, visY + visHeight + dotSize/2);
-    
-    
   }
+  
+  void onClick(){
+    if(fileNames != null){
+      for(int i = 0; i < _listSize; i++){
+        if(fileNames[0].charAt(0) != '.'){
+          float thisX = i * visWidth/_listSize + visX;
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+            if(type == "averages"){
+              if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
+                currentPage = "singleSession";
+                cp5.getTab("singleSession").bringToFront();
+                currentSession = fileArray[i];
+                currentItem = i;
+                println("currentSession");
+              }
+            } else if(type == "values"){
+              println("values");
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
 }
