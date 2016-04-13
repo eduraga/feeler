@@ -155,6 +155,35 @@ class LineChart {
   }
   
   void onClick(){
+    //println(filePath);
+    //println(directory2 + "/" + fileArray[currentItem + fileArray.length - listSize]);
+
+
+    if(fileAssessmentArray != null && fileAssessmentArray.length > 0){
+      //println(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
+      String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
+      println(lines);
+      assessmentData = lines;
+      
+      for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
+        String extension = fileAssessmentArray[i].substring(fileAssessmentArray[i].lastIndexOf(".") + 1, fileAssessmentArray[i].length());
+        fileNames = splitTokens(fileAssessmentArray[i]);
+        
+        //println(assessmentFolder + "/" + fileAssessmentArray[i]);
+  
+        if(new String("txt").equals(extension)){
+          //String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[i]);
+          //println(lines);
+          //for (int j = 0 ; j < assessmentData.length; j++) {
+          // println(assessmentData[j]); 
+          //}
+          //assessmentData = lines;
+        }
+      }
+    }
+    
+    
+    
     if(fileNames != null){
       for(int i = 0; i < _listSize; i++){
         if(fileNames[0].charAt(0) != '.'){
@@ -166,10 +195,7 @@ class LineChart {
                 cp5.getTab("singleSession").bringToFront();
                 currentSession = fileArray[i];
                 currentItem = i;
-                println("currentSession");
               }
-            } else if(type == "values"){
-              println("values");
             }
           }
         }

@@ -39,8 +39,8 @@ class OverallAvgs{
         attAvg = attentionAverageList[i];
         
       } else if(type == "assessment"){
-        rlxAvg = 10;
-        attAvg = 10;
+        rlxAvg = float(assessmentData[0]);
+        attAvg = float(assessmentData[1]);
       }
 
       textAlign(CENTER, CENTER);

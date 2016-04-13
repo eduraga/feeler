@@ -9,14 +9,19 @@ public void loadFiles(){
   File f1 = new File(dataPath(temp));
   f1.mkdir();
 
-  temp += "/log";
+  //temp += "/log";
+  String log = temp + "/log";
+  String assess = temp + "/assessment";
 
   //create log folder
-  File f2 = new File(dataPath(temp));
+  File f2 = new File(dataPath(log));
   f2.mkdirs();
 
-  directory2 = new File(temp);
+  directory2 = new File(log);
+  assessmentFolder = new File(assess);
+  
   fileArray = directory2.list();
+  fileAssessmentArray = assessmentFolder.list();
   
   if(fileArray != null && fileArray.length > 0){
     for(int i = fileArray.length - listSize; i < fileArray.length; i++){

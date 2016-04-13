@@ -83,7 +83,7 @@ color attentionColor = color(150);
 color relaxationColor = color(70);
 
 // files handling
-int listSize = 20;
+int listSize = 5;
 boolean loading = false;
 String[] fileNames;
 String filePath;
@@ -92,12 +92,14 @@ float relaxationAverage = 0;
 float[] attentionAverageList = new float[listSize];
 float[] relaxationAverageList = new float[listSize];
 String[] assessmentData;
+File assessmentFolder;
 
 String userDataFolder = "user-data";
 String absolutePath;
 FloatTable data;
 String filenameString;
 String[] fileArray;
+String[] fileAssessmentArray;
 File directory2;
 
 float dataMin, dataMax;
@@ -440,8 +442,8 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "startSession":
     println("startSession");
     //TODO: save file to user folder
-    filePath = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
-    filename = filePath + ".tsv";
+    filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
+    filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
@@ -582,7 +584,7 @@ public void assess3Bt(int theValue) {
   
   String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
   // Writes the strings to a file, each on a separate line
-  saveStrings(filePath + "-assessment.txt", assessment);
+  saveStrings(filePath + ".txt", assessment);
   
   isRecordingMind = false;
   loadFiles();
@@ -745,8 +747,8 @@ public void deleteFile(int theValue) {
   String fileName = dataPath("test.json");
   //File f = new File(fileName);
   File f = new File(directory2 + "/" + filenameString);
-  println(fileName);
-  println("data: " + directory2 + "/" + filenameString);
+  //println(fileName);
+  //println("data: " + directory2 + "/" + filenameString);
 
   if (f.exists()) {
     f.delete();
@@ -782,7 +784,6 @@ public void mousePressed() {
       break;
     case "overall":
       trends.onClick();
-      //eegAct.onClick();
       break;
   }
 }
