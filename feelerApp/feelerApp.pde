@@ -83,7 +83,7 @@ color attentionColor = color(150);
 color relaxationColor = color(70);
 
 // files handling
-int listSize = 5;
+int listSize = 10;
 boolean loading = false;
 String[] fileNames;
 String filePath;
@@ -445,6 +445,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "newSession":
     println("newSession page");
     currentPage = "newSession";
+    boxState = 0;
     break;
   case "startSession":
     println("startSession");
