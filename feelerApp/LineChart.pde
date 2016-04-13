@@ -14,11 +14,10 @@ class LineChart {
   }
   
   void display(){
-      
+
     float relaxEnd = 0;
     float studyEnd = 0;
     float assessEnd = 0;
-    
     
     fill(graphBgColor);
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
@@ -138,12 +137,10 @@ class LineChart {
         textAlign(LEFT);
         text("Averaged values of EEG data", visX, visHeight + visY + 60);
       } else if(type == "values"){
-        //rect((visX + padding) + (studyEnd - (visX + padding)), visY, assessEnd - studyEnd, 20);
-    
         textAlign(CENTER, CENTER);
         text("RELAX", visX + padding, visY, relaxEnd - (visX + padding), 20);
-        text("STUDY", (visX + padding) + (relaxEnd - (visX + padding)), visY, relaxEnd - visX + padding/2, 20);
-        text("ASSESS", (visX + padding) + (studyEnd - (visX + padding)), visY, assessEnd - studyEnd, 20);
+        text("STUDY", relaxEnd, visY, studyEnd - relaxEnd, 20);
+        text("ASSESS", studyEnd, visY, assessEnd - studyEnd, 20);
       }
     } else {
         textAlign(CENTER);
