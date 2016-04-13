@@ -372,7 +372,14 @@ public void draw() {
       singleVisPage();
       break;
     case "eegActivity":
-      eegActivity();
+      //eegActivity();
+      eegAct.display();
+      break;
+    case "assessmentActivity":
+      //println("assessmentActivity");
+      assessmentActivity();
+      break;
+    case "assessAct":
       break;
     case "newSession":
       newSession();
@@ -770,17 +777,11 @@ public void loadFilesList(int n) {
 }
 
 public void mousePressed() {
-  
-  println();
-  
   switch(currentPage){
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
       personalAvg.onClick(mouseX, mouseY);
-      
       loadFile(currentItem + fileArray.length - listSize);
-      //println("directory2: " + fileArray[currentItem + fileArray.length - listSize]);
-      //assessmentData = loadStrings();
       break;
     case "overall":
       trends.onClick();

@@ -69,7 +69,7 @@ class OverallAvgs{
         if(type == "eeg"){
           currentPage = "eegActivity";
         } else if(type == "assessment"){
-          //currentPage = "assessmentActivity";
+          currentPage = "assessmentActivity";
         }
       }
     }

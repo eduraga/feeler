@@ -162,7 +162,6 @@ class LineChart {
     if(fileAssessmentArray != null && fileAssessmentArray.length > 0){
       //println(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
       String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
-      println(lines);
       assessmentData = lines;
       
       for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
