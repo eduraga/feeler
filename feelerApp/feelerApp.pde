@@ -577,6 +577,7 @@ public void assess3Bt(int theValue) {
   output.flush();
   output.close();
   isRecordingMind = false;
+  loadFiles();
 }
 
 
