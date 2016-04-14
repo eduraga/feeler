@@ -786,6 +786,7 @@ public void mousePressed() {
       break;
     case "overall":
       trends.onClick();
+      eegAct.onClick();
       break;
   }
 }

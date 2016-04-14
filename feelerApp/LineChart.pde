@@ -4,8 +4,6 @@ class LineChart {
   int grainSize = 40;
 
   LineChart(String _type){
-    //readFilesFolder();
-    
     type = _type;
     if(type == "averages"){
       if(fileArray.length < 10){
@@ -156,26 +154,12 @@ class LineChart {
   }
   
   void onClick(){
-    //println(filePath);
-    //println(directory2 + "/" + fileArray[currentItem + fileArray.length - listSize]);
-
     if(fileAssessmentArray != null && fileAssessmentArray.length > 0){
-      println(currentItem);
       String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
       assessmentData = lines;
       
       for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
-        //String extension = fileAssessmentArray[i].substring(fileAssessmentArray[i].lastIndexOf(".") + 1, fileAssessmentArray[i].length());
         fileNames = splitTokens(fileAssessmentArray[i]);
-        
-        //if(new String("txt").equals(extension)){
-        //  String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[i]);
-        //  println(lines);
-        //  for (int j = 0 ; j < assessmentData.length; j++) {
-        //  println(assessmentData[j]); 
-        //  }
-        //  assessmentData = lines;
-        //}
       }
     }
     
