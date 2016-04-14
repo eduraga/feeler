@@ -2,6 +2,8 @@
 
 ## installation
 
+- Install MindsetProcessing (http://jorgecardoso.eu/processing/MindSetProcessing/) inside Processing3/libraries
+
 Without PHP backend
 - Change the first in feelerApp.pde line to ```boolean debug = true;```
 - The application now runs in 'debug' mode, so you can login by clicking 'L' on the keyboard
