@@ -30,8 +30,8 @@ class OverallAvgs{
     fill(250);
     rect(thisX, thisY, rectWidth, rectHeight);
     
-    if(fileNames[0].charAt(0) != '.'){
-      String[] fileDate = split(fileNames[0], '.');
+    if(fileName[0].charAt(0) != '.'){
+      String[] fileDate = split(fileName[0], '.');
       
       float rlxAvg = 0;
       float attAvg = 0;
@@ -39,7 +39,7 @@ class OverallAvgs{
       if(type == "eeg"){
         fill(textDarkColor);
         textAlign(LEFT, CENTER);
-        text("Session" + fileDate[2] + "." + fileDate[1] + "." + fileDate[0], thisX, thisY - padding*2);
+        text("Session " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0], thisX, thisY - padding*2);
         
         rlxAvg = relaxationAverageList[i];
         attAvg = attentionAverageList[i];

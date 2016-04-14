@@ -88,6 +88,7 @@ float[] attentionAverageList;
 float[] relaxationAverageList;
 
 boolean loading = false;
+String[] fileName;
 String[] fileNames;
 String filePath;
 float attentionAverage = 0;

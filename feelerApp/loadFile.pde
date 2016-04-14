@@ -3,7 +3,8 @@ public void loadFile(int n){
   
   if(n > 0){
     String extension = fileArray[n].substring(fileArray[n].lastIndexOf(".") + 1, fileArray[n].length());
-    fileNames = splitTokens(fileArray[n]);
+    fileName = splitTokens(fileArray[n]);
+    println(fileName);
     
     if(new String("tsv").equals(extension)){
   

@@ -25,12 +25,12 @@ class LineChart {
     fill(graphBgColor);
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
-    if(fileNames != null){
+    if(fileName != null){
       for(int i = 0; i < _listSize; i++){
-        if(fileNames[0].charAt(0) != '.'){
+        if(fileName[0].charAt(0) != '.'){
           textAlign(LEFT, CENTER);
           
-          String[] fileDate = split(fileNames[0], '.');
+          String[] fileDate = split(fileName[0], '.');
           
           float thisX = i * visWidth/_listSize + visX;
           float previousX = (i-1) * visWidth/_listSize + visX;
@@ -159,13 +159,13 @@ class LineChart {
       assessmentData = lines;
       
       for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
-        fileNames = splitTokens(fileAssessmentArray[i]);
+        fileName = splitTokens(fileAssessmentArray[i]);
       }
     }
     
-    if(fileNames != null){
+    if(fileName != null){
       for(int i = 0; i < _listSize; i++){
-        if(fileNames[0].charAt(0) != '.'){
+        if(fileName[0].charAt(0) != '.'){
           float thisX = i * visWidth/_listSize + visX;
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
             if(type == "averages"){
