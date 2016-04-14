@@ -40,7 +40,8 @@ class OverallAvgs{
         
       } else if(type == "assessment"){
         rlxAvg = float(assessmentData[0]);
-        attAvg = float(assessmentData[1]);
+        if(assessmentData.length > 1)
+          attAvg = float(assessmentData[1]);
       }
 
       textAlign(CENTER, CENTER);

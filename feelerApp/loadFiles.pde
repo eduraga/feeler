@@ -2,7 +2,6 @@ public void loadFiles(){
   File directory1 = new java.io.File(sketchPath(""));
   absolutePath = directory1.getAbsolutePath();
   String temp = absolutePath;
-  //temp += "/log";
   temp += "/" + userDataFolder + "/" + currentUser;
 
   //create user folder
@@ -23,14 +22,17 @@ public void loadFiles(){
   fileArray = directory2.list();
   fileAssessmentArray = assessmentFolder.list();
   
-  if(fileArray != null && fileArray.length > 0){
+  listSize = fileArray.length;
+  
+  attentionAverageList = new float[listSize];
+  relaxationAverageList = new float[listSize];
+  
+  eegAct = new LineChart("values");  if(fileArray != null && fileArray.length > 0){
     for(int i = fileArray.length - listSize; i < fileArray.length; i++){
-      String extension = fileArray[i].substring(fileArray[i].lastIndexOf(".") + 1, fileArray[i].length());
-      fileNames = splitTokens(fileArray[i]);
-
-      if(fileNames[0].charAt(0) != '.' && new String("tsv").equals(extension)){
-        loadFile(i);
-      }
-    }
+      loadFile(i);
+   }
   }
+  
+  trends = new LineChart("averages");
+  eegAct = new LineChart("values");
 }

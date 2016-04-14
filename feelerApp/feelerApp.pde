@@ -83,14 +83,15 @@ color attentionColor = color(150);
 color relaxationColor = color(70);
 
 // files handling
-int listSize = 10;
+int listSize;
+float[] attentionAverageList;
+float[] relaxationAverageList;
+
 boolean loading = false;
 String[] fileNames;
 String filePath;
 float attentionAverage = 0;
 float relaxationAverage = 0;
-float[] attentionAverageList = new float[listSize];
-float[] relaxationAverageList = new float[listSize];
 String[] assessmentData;
 File assessmentFolder;
 
@@ -125,6 +126,7 @@ MindSet mindSet;
 boolean simulateMindSet = true;
 
 public void setup() {
+  
   smooth();
 
   //size(1200, 850);
@@ -149,9 +151,6 @@ public void setup() {
   
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
   personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
-  trends = new LineChart("averages");
-  eegAct = new LineChart("values");
-  
 
   //Create UI elements
   containerPosX = width/2 - videoWidth/2;
@@ -627,6 +626,7 @@ public void signup(int theValue) {
 
 public void loginCheck() {
   println("logincheck");
+  
   if (debug) {
     println(currentUser);
     if (currentUser == "") {

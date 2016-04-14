@@ -4,13 +4,18 @@ class LineChart {
   int grainSize = 40;
 
   LineChart(String _type){
+    //readFilesFolder();
+    
     type = _type;
     if(type == "averages"){
-      _listSize = listSize;
+      if(fileArray.length < 10){
+       _listSize = listSize;
+      } else {
+       _listSize = 10;
+      }
     } else {
       _listSize = 2;
     }
-    
   }
   
   void display(){
@@ -46,14 +51,6 @@ class LineChart {
             
             if(type == "averages"){
               if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
-                //if(mousePressed){
-                //  currentPage = "singleSession";
-                //  cp5.getTab("singleSession").bringToFront();
-                //  currentSession = fileArray[i];
-                //  currentItem = i;
-                //  println(currentSession);
-                //}
-                
                 fill(250);
                 rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
               }
@@ -73,11 +70,15 @@ class LineChart {
           }
           
           if(type == "averages"){
-            fill(attentionColor);
-            ellipse(thisX, attAvg, dotSize, dotSize);
+            if(attentionAverageList[i] > 0){
+              fill(attentionColor);
+              ellipse(thisX, attAvg, dotSize, dotSize);
+            }
             
-            fill(relaxationColor);
-            ellipse(thisX, rlxAvg, dotSize, dotSize);
+            if(relaxationAverageList[i] > 0){
+              fill(relaxationColor);
+              ellipse(thisX, rlxAvg, dotSize, dotSize);
+            }
             
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
@@ -158,30 +159,25 @@ class LineChart {
     //println(filePath);
     //println(directory2 + "/" + fileArray[currentItem + fileArray.length - listSize]);
 
-
     if(fileAssessmentArray != null && fileAssessmentArray.length > 0){
-      //println(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
+      println(currentItem);
       String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
       assessmentData = lines;
       
       for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
-        String extension = fileAssessmentArray[i].substring(fileAssessmentArray[i].lastIndexOf(".") + 1, fileAssessmentArray[i].length());
+        //String extension = fileAssessmentArray[i].substring(fileAssessmentArray[i].lastIndexOf(".") + 1, fileAssessmentArray[i].length());
         fileNames = splitTokens(fileAssessmentArray[i]);
         
-        //println(assessmentFolder + "/" + fileAssessmentArray[i]);
-  
-        if(new String("txt").equals(extension)){
-          //String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[i]);
-          //println(lines);
-          //for (int j = 0 ; j < assessmentData.length; j++) {
-          // println(assessmentData[j]); 
-          //}
-          //assessmentData = lines;
-        }
+        //if(new String("txt").equals(extension)){
+        //  String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[i]);
+        //  println(lines);
+        //  for (int j = 0 ; j < assessmentData.length; j++) {
+        //  println(assessmentData[j]); 
+        //  }
+        //  assessmentData = lines;
+        //}
       }
     }
-    
-    
     
     if(fileNames != null){
       for(int i = 0; i < _listSize; i++){
@@ -200,6 +196,7 @@ class LineChart {
         }
       }
     }
+    
   }
   
 
