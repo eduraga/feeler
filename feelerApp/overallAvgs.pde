@@ -1,13 +1,19 @@
 class OverallAvgs{
   int thisX;
   int thisY;
-  int rectWidth = (visWidth - dotSize/2)/2;
+  int rectWidth;
+  int rectHeight;
   String type;
   String caption;
   
   OverallAvgs(String _type, String _caption){
     type = _type;
     caption = _caption;
+  }
+  
+  void setup(int _visWidth, int _visHeight){
+    rectWidth = (_visWidth - dotSize/2)/2;
+    rectHeight = _visHeight; 
   }
   
   void display(int i){
@@ -20,9 +26,9 @@ class OverallAvgs{
     thisY = visY;
     
     fill(graphBgColor);
-    rect(thisX - padding, thisY - padding, rectWidth + padding*2, visHeight + padding*2);
+    rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);
     fill(250);
-    rect(thisX, thisY, rectWidth, visHeight);
+    rect(thisX, thisY, rectWidth, rectHeight);
     
     if(fileNames[0].charAt(0) != '.'){
       String[] fileDate = split(fileNames[0], '.');
@@ -47,24 +53,24 @@ class OverallAvgs{
       textAlign(CENTER, CENTER);
     
       fill(150);
-      rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), visHeight/2);
+      rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
       fill(textDarkColor);
-      text("Relaxation "+round(rlxAvg)+"%", thisX, thisY, visWidth/2, visHeight/2);
+      text("Relaxation "+round(rlxAvg)+"%", thisX, thisY, rectWidth, rectHeight/2);
       
       fill(70);
-      rect(thisX, thisY + visHeight/2, map(attAvg, 0, 100, 0, rectWidth), visHeight/2);
+      rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
       fill(textDarkColor);
-      text("Attention "+round(attAvg)+"%", thisX, thisY + visHeight/2, visWidth/2, visHeight/2);
+      text("Attention "+round(attAvg)+"%", thisX, thisY + rectHeight/2, rectWidth, rectHeight/2);
       
       fill(textDarkColor);
       textAlign(LEFT, CENTER);
-      text(caption, thisX, thisY + visHeight + padding*2);
+      text(caption, thisX, thisY + rectHeight + padding*2);
     }
   }
   
   void onClick(int x, int y){
     if(x >= this.thisX && x <= this.thisX + this.rectWidth){
-      if(y >= this.thisY && y <= this.thisY + visHeight){
+      if(y >= this.thisY && y <= this.thisY + rectHeight){
         text("Loading...", width/2, height/2);
         
         if(type == "eeg"){

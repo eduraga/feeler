@@ -151,6 +151,9 @@ public void setup() {
   
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
   personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
+  
+  eegAvg.setup(visWidth, visHeight);
+  personalAvg.setup(visWidth, visHeight);
 
   //Create UI elements
   containerPosX = width/2 - videoWidth/2;
@@ -782,6 +785,7 @@ public void mousePressed() {
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
       personalAvg.onClick(mouseX, mouseY);
+      personalAvg.setup(visWidth/2, visHeight/2);
       loadFile(currentItem + fileArray.length - listSize);
       break;
     case "overall":
