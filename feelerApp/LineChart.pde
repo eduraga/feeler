@@ -6,7 +6,7 @@ class LineChart {
   LineChart(String _type){
     type = _type;
     if(type == "averages"){
-      if(fileArray.length < 10){
+      if(sessionFolders.length < 10){
        _listSize = listSize;
       } else {
        _listSize = 10;
@@ -30,7 +30,7 @@ class LineChart {
         if(fileName[0].charAt(0) != '.'){
           textAlign(LEFT, CENTER);
           
-          String[] fileDate = split(fileName[0], '.');
+          String[] fileDate = split(fileName[0], '-');
           
           float thisX = i * visWidth/_listSize + visX;
           float previousX = (i-1) * visWidth/_listSize + visX;
@@ -154,14 +154,9 @@ class LineChart {
   }
   
   void onClick(){
-    if(fileAssessmentArray != null && fileAssessmentArray.length > 0){
-      String lines[] = loadStrings(assessmentFolder + "/" + fileAssessmentArray[currentItem + fileAssessmentArray.length - listSize]);
-      assessmentData = lines;
-      
-      for(int i = fileAssessmentArray.length - listSize; i < fileAssessmentArray.length; i++){
-        fileName = splitTokens(fileAssessmentArray[i]);
-      }
-    }
+    String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
+    println(userFolder + "/" + sessionFolders[currentItem]);
+    assessmentData = lines;
     
     if(fileName != null){
       for(int i = 0; i < _listSize; i++){
@@ -172,7 +167,7 @@ class LineChart {
               if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
                 currentPage = "singleSession";
                 cp5.getTab("singleSession").bringToFront();
-                currentSession = fileArray[i];
+                currentSession = sessionFolders[i];
                 currentItem = i;
               }
             }

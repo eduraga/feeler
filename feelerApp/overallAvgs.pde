@@ -31,7 +31,7 @@ class OverallAvgs{
     rect(thisX, thisY, rectWidth, rectHeight);
     
     if(fileName[0].charAt(0) != '.'){
-      String[] fileDate = split(fileName[0], '.');
+      String[] fileDate = split(fileName[0], '-');
       
       float rlxAvg = 0;
       float attAvg = 0;

@@ -91,6 +91,9 @@ boolean loading = false;
 String[] fileName;
 String[] fileNames;
 String filePath;
+String sessionPath;
+String[] sessionFolders;
+String userFolder;
 float attentionAverage = 0;
 float relaxationAverage = 0;
 String[] assessmentData;
@@ -452,9 +455,17 @@ public void controlEvent(ControlEvent theControlEvent) {
     break;
   case "startSession":
     println("startSession");
-    //TODO: save file to user folder
-    filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
-    filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
+    sessionPath = userFolder + "/" + nf(year(),4)+"-"+nf(month(),2)+"-"+nf(day(),2)+"-"+nf(hour(),2)+"-"+nf(minute(),2)+"-"+nf(second(),2);
+    
+    //create user folder
+    File sessionFolder = new File(dataPath(sessionPath));
+    sessionFolder.mkdir();
+    
+    //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
+    //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
+    
+    filename = sessionPath + "/brain-activity.tsv";
+    
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
@@ -595,7 +606,7 @@ public void assess3Bt(int theValue) {
   
   String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
   // Writes the strings to a file, each on a separate line
-  saveStrings(filePath + ".txt", assessment);
+  saveStrings(sessionPath + "/assessment.txt", assessment);
   
   isRecordingMind = false;
   loadFiles();
@@ -787,7 +798,7 @@ public void mousePressed() {
       eegAvg.onClick(mouseX, mouseY);
       personalAvg.onClick(mouseX, mouseY);
       personalAvg.setup(visWidth/2, visHeight/2);
-      loadFile(currentItem + fileArray.length - listSize);
+      loadFile(currentItem);
       break;
     case "overall":
       trends.onClick();
