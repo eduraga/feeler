@@ -5,7 +5,10 @@ import controlP5.*;
 import java.util.*; 
 import java.awt.Robot; 
 import java.awt.AWTException; 
-import java.awt.Rectangle; 
+import java.awt.Rectangle;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -460,6 +463,8 @@ public void controlEvent(ControlEvent theControlEvent) {
     //create user folder
     File sessionFolder = new File(dataPath(sessionPath));
     sessionFolder.mkdir();
+    File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
+    sessionImgFolder.mkdir();
     
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
@@ -819,10 +824,10 @@ public void keyPressed() {
       PImage newImage = createImage(100, 100, RGB);
       newImage = screenshot.get();
       newImage.save(
-        absolutePath + "/user-data/" + currentUser + "/" +
-        String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
-        "-screenshot.png"
-        );
+            absolutePath + "/user-data/" + currentUser + "/" +
+            String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+            "-screenshot.png"
+      );
       break;
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
@@ -851,11 +856,12 @@ public void keyPressed() {
 
 public void screenshot() {
   try {
-    Robot robot_Screenshot = new Robot();
-    screenshot = new PImage(robot_Screenshot.createScreenCapture
-      (new Rectangle(0, 0, displayWidth, displayHeight)));
+   Robot robot_Screenshot = new Robot();
+   screenshot = new PImage(robot_Screenshot.createScreenCapture
+     (new Rectangle(0, 0, displayWidth, displayHeight)));
   }
   catch (AWTException e) {
+   println(e);
   }
   frame.setLocation(0, 0);
 }
