@@ -46,6 +46,7 @@ boolean isRecordingMind = false;
 String filename;
 PrintWriter output;
 int datetimestr0;
+int datetimestr =  0;
 
 int attention = 0;
 int meditation = 0;
@@ -117,7 +118,7 @@ void newSession(){
   
   if(isRecordingMind){
       int datetimestr1 = minute()*60+second();
-      int datetimestr = datetimestr1 - datetimestr0;
+      datetimestr = datetimestr1 - datetimestr0;
       
       output.print(datetimestr);
       output.print(TAB);
@@ -199,6 +200,7 @@ void screenshotThresholds(){
       }
       
       ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
+      
   
       if(meditation > triggerLow){
         if(meditation < 75){
@@ -211,11 +213,6 @@ void screenshotThresholds(){
       }
       ellipse(width/2 + 40, map(meditation, 0, 100, height/2 + height/4, height/4), 20, 20);
     }
-    
-}
-
-static final void logger(String log) {
-  println(log);
 }
 
 
@@ -246,7 +243,7 @@ void triggerScreenshots(final float sec) {
     newImage = screenshot.get();
     newImage.save(
           sessionPath + "/screenshots/" +
-          String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+          String.valueOf(datetimestr + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
           "-screenshot.png"
     );
 }
@@ -273,6 +270,7 @@ float medoff = 0.0;
 void simulate() {
   poorSignalEvent(int(random(200)));
   
+  //simulate with noise
   attoff = attoff + .02;
   attentionEvent(int(noise(attoff) * 100));
   medoff = medoff + .01;

@@ -106,7 +106,7 @@ class LineChart {
                     assessEnd = thisX;
                   }
                   noStroke();
-                  rect(previousX, visY, grainSize, visHeight);
+                  //rect(previousX, visY, grainSize, visHeight);
   
                   stroke(attentionColor);
                   line(
@@ -122,6 +122,22 @@ class LineChart {
                         thisX,
                         map(data.data[j][10], maxVal, 0, visY, visHeight + visY)
                   );
+                  
+                  
+                  if(
+                    mouseX > previousX
+                    &&
+                    mouseX <= thisX
+                  ){
+                    fill(255, 100);
+                    noStroke();
+                    rect(previousX, visY, grainSize/2, visHeight + dotSize/2);
+  
+                    //ellipse(previousX, map(data.data[j-grainSize][10], maxVal, 0, visY, visHeight + visY), 5, 5);
+                    //ellipse(thisX, map(data.data[j][10], maxVal, 0, visY, visHeight + visY), 10, 10);
+                    fill(textDarkColor);
+                    text(data.data[j][10], mouseX, mouseY - 20);
+                  }
                 }
               }
             }
@@ -155,7 +171,7 @@ class LineChart {
   
   void onClick(){
     String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
-    println(userFolder + "/" + sessionFolders[currentItem]);
+    //println(userFolder + "/" + sessionFolders[currentItem]);
     assessmentData = lines;
     
     if(fileName != null){
