@@ -85,7 +85,7 @@ class LineChart {
             noFill();
             if(i>0 && data.data != null){
               for (int j = 0; j < data.data.length; j+=grainSize) {
-                if (data.data[j][11] > 0 && j>0) {
+                if (data.data[j][12] > 0 && j>0) {
                   ////////////////////////////////////////////////////////////
                   int maxVal = 100; //TODO: what's the maximum value for the EEG?
                   ////////////////////////////////////////////////////////////
@@ -93,15 +93,15 @@ class LineChart {
                   thisX = j * (visWidth - padding*2)/data.data.length + visX + padding;
                   previousX = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
                   
-                  if(data.data[j][11] == 1){
+                  if(data.data[j][12] == 1){
                     fill(250);
                     relaxEnd = thisX;
                   }
-                  if(data.data[j][11] == 2){
+                  if(data.data[j][12] == 2){
                    fill(230);
                    studyEnd = thisX;
                   }
-                  if(data.data[j][11] == 3){
+                  if(data.data[j][12] == 3){
                     fill(210);
                     assessEnd = thisX;
                   }
@@ -111,16 +111,16 @@ class LineChart {
                   stroke(attentionColor);
                   line(
                         previousX,
-                        map(data.data[j-grainSize][9], maxVal, 0, visY, visHeight + visY),
+                        map(data.data[j-grainSize][10], maxVal, 0, visY, visHeight + visY),
                         thisX,
-                        map(data.data[j][9], maxVal, 0, visY, visHeight + visY)
+                        map(data.data[j][10], maxVal, 0, visY, visHeight + visY)
                   );
                   stroke(relaxationColor);
                   line(
                         previousX,
-                        map(data.data[j-grainSize][10], maxVal, 0, visY, visHeight + visY),
+                        map(data.data[j-grainSize][11], maxVal, 0, visY, visHeight + visY),
                         thisX,
-                        map(data.data[j][10], maxVal, 0, visY, visHeight + visY)
+                        map(data.data[j][11], maxVal, 0, visY, visHeight + visY)
                   );
                   
                   
@@ -133,10 +133,10 @@ class LineChart {
                     noStroke();
                     rect(previousX, visY, grainSize/2, visHeight + dotSize/2);
   
-                    //ellipse(previousX, map(data.data[j-grainSize][10], maxVal, 0, visY, visHeight + visY), 5, 5);
-                    //ellipse(thisX, map(data.data[j][10], maxVal, 0, visY, visHeight + visY), 10, 10);
+                    //ellipse(previousX, map(data.data[j-grainSize][11], maxVal, 0, visY, visHeight + visY), 5, 5);
+                    //ellipse(thisX, map(data.data[j][11], maxVal, 0, visY, visHeight + visY), 10, 10);
                     fill(textDarkColor);
-                    text(data.data[j][10], mouseX, mouseY - 20);
+                    text(data.data[j][0], mouseX, mouseY - 20);
                   }
                 }
               }

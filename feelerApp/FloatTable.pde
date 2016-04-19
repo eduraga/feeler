@@ -27,11 +27,11 @@ class FloatTable {
       scrubQuotes(columnNames);
       columnCount = columnNames.length;
   
-      rowNames = new String[rows.length-1];
-      data = new float[rows.length-1][];
+      rowNames = new String[rows.length];
+      data = new float[rows.length][];
       // start reading at row 1, because the first row was only the column headers
   
-      for (int i = 1; i < rows.length; i++) {
+      for (int i = 0; i < rows.length; i++) {
         if (trim(rows[i]).length() == 0) {
           continue; // skip empty rows
         }
@@ -47,7 +47,8 @@ class FloatTable {
         // copy row title
         rowNames[rowCount] = pieces[0];
         // copy data into the table starting at pieces[1]
-        data[rowCount] = parseFloat(subset(pieces, 1));
+        //data[rowCount] = parseFloat(subset(pieces, 1));
+        data[rowCount] = parseFloat(pieces);
   
         // increment the number of valid rows found so far
   

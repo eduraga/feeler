@@ -18,9 +18,9 @@ public void loadFile(int n){
     
     if(data.data != null){
       for (int j = 0; j < data.data.length; j++) {
-        if (data.data[j][11] == 1 || data.data[j][11] == 2) {
-          attentionAverage += data.data[j][9];
-          relaxationAverage += data.data[j][10];
+        if (data.data[j][12] == 1 || data.data[j][12] == 2) {
+          attentionAverage += data.data[j][10];
+          relaxationAverage += data.data[j][11];
         }
       }
       
