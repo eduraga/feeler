@@ -133,16 +133,19 @@ MindSet mindSet;
 boolean simulateMindSet = true;
 
 public void setup() {
-  
+
   smooth();
 
   //size(1200, 850);
   size(1200, 700);
+  //fullScreen();
+  surface.setResizable(true);
+  
   noStroke();
   textSize(12);
 
   userTabsX = width/2;
-  
+
   visX = (width/3)/2;
   visY = headerHeight + padding + 60;
   visWidth = width - width/3;
@@ -155,10 +158,10 @@ public void setup() {
   newUserAddress = json.getString("new-user-address");
 
   cp5 = new ControlP5(this);
-  
+
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
   personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
-  
+
   eegAvg.setup(visWidth, visHeight);
   personalAvg.setup(visWidth, visHeight);
 
@@ -274,7 +277,7 @@ public void setup() {
   //Session assessment
   cp5.addSlider("assess1")
     .setPosition(padding, headerHeight + padding * 3)
-    .setRange(0,100)
+    .setRange(0, 100)
     ;
   cp5.getController("assess1").moveTo("global");
   cp5.getController("assess1").hide();
@@ -290,10 +293,10 @@ public void setup() {
     ;
   cp5.getController("assess1Bt").moveTo("global");
   cp5.getController("assess1Bt").hide();
-  
+
   cp5.addSlider("assess2")
     .setPosition(padding, headerHeight + padding * 3)
-    .setRange(0,100)
+    .setRange(0, 100)
     ;
   cp5.getController("assess2").moveTo("global");
   cp5.getController("assess2").hide();
@@ -309,29 +312,29 @@ public void setup() {
     ;
   cp5.getController("assess2Bt").moveTo("global");
   cp5.getController("assess2Bt").hide();
-  
+
   cp5.addToggle("assess3Toggle1")
-      .setColorLabel(color(0))
-      .setLabel("yes/no")
-      .setPosition(277, 150)
-      .setSize(70, 20)
-      .setValue(true)
-      .setMode(ControlP5.SWITCH)
-      ;
+    .setColorLabel(color(0))
+    .setLabel("yes/no")
+    .setPosition(277, 150)
+    .setSize(70, 20)
+    .setValue(true)
+    .setMode(ControlP5.SWITCH)
+    ;
   cp5.getController("assess3Toggle1").moveTo("global");
   cp5.getController("assess3Toggle1").hide();
-  
+
   cp5.addToggle("assess3Toggle2")
-      .setColorLabel(color(0))
-      .setLabel("yes/no")
-      .setPosition(181, 185)
-      .setSize(70, 20)
-      .setValue(true)
-      .setMode(ControlP5.SWITCH)
-      ;
+    .setColorLabel(color(0))
+    .setLabel("yes/no")
+    .setPosition(181, 185)
+    .setSize(70, 20)
+    .setValue(true)
+    .setMode(ControlP5.SWITCH)
+    ;
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
-  
+
   cp5.addButton("assess3Bt")
     .setLabel("Submit")
     .setPosition(padding, headerHeight + padding * 6)
@@ -343,17 +346,16 @@ public void setup() {
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
   /////////////////////////////////
-  
-  
+
+
   //Setup Mindset
-  if(!simulateMindSet){
+  if (!simulateMindSet) {
     mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
   }
 }
 
 public void draw() {
   background(255);
-  
   fill(0);
 
   if (isLoggedIn) {
@@ -365,36 +367,36 @@ public void draw() {
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
   }
-  
-  
+
+
   //Visualisation
-  switch(currentPage){
-    case "home":
-      if(!loading){
-        home();
-      }
-      break;
-    case "overall":
-      trends.display();
-      break;
-    case "singleSession":
-      singleVisPage();
-      break;
-    case "eegActivity":
-      //eegActivity();
-      eegAct.display();
-      break;
-    case "assessmentActivity":
-      //println("assessmentActivity");
-      assessmentActivity();
-      break;
-    case "assessAct":
-      break;
-    case "newSession":
-      newSession();
-      break;
+  switch(currentPage) {
+  case "home":
+    if (!loading) {
+      home();
+    }
+    break;
+  case "overall":
+    trends.display();
+    break;
+  case "singleSession":
+    singleVisPage();
+    break;
+  case "eegActivity":
+    //eegActivity();
+    eegAct.display();
+    break;
+  case "assessmentActivity":
+    //println("assessmentActivity");
+    assessmentActivity();
+    break;
+  case "assessAct":
+    break;
+  case "newSession":
+    newSession();
+    break;
   }
-  
+
   if (debug) {
     textAlign(LEFT);
 
@@ -410,35 +412,34 @@ public void draw() {
 
     fill(50);
     text(s, padding, height-90, width/3, height-90);
-    
-    
-    if(simulateMindSet){
+
+
+    if (simulateMindSet) {
       simulate();
     }
 
-    
-    if(currentPage == "newSession"){
+
+    if (currentPage == "newSession") {
       String s2 = "Box state: " + boxState +
         "\nPress 'P' to to start a session" +
         "\nPress 'S' to study" +
         "\nPress 'A' to assess"
-      ;
+        ;
       text(s2, width/3 + padding*2, height-90, width/2, height-90);
-      
+
       String s3 = "Assessment question 1: " + assess1 + "%" +
         "\nAssessment question 2: " + assess2 + "%" +
         "\nAssessment question 3a: " + assess3Toggle1 +
         "\nAssessment question 3b: " + assess3Toggle2
-      ;
+        ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
     }
   }
-  
+
   textAlign(CENTER);
-  if(loading){
+  if (loading) {
     text("Loading...", width/2, height/2);
   }
-  
 }
 
 public void controlEvent(ControlEvent theControlEvent) {
@@ -458,22 +459,22 @@ public void controlEvent(ControlEvent theControlEvent) {
     break;
   case "startSession":
     println("startSession");
-    sessionPath = userFolder + "/" + nf(year(),4)+"-"+nf(month(),2)+"-"+nf(day(),2)+"-"+nf(hour(),2)+"-"+nf(minute(),2)+"-"+nf(second(),2);
-    
+    sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
+
     //create user folder
     File sessionFolder = new File(dataPath(sessionPath));
     sessionFolder.mkdir();
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
-    
+
     String[] tempAssessment = {"0", "0", "false", "false"};
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
-    
+
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
-    
+
     filename = sessionPath + "/brain-activity.tsv";
-    
+
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
@@ -532,7 +533,7 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     println("controlEvent: accessing a string from controller '"
       +t.getName()+"': "+t.getStringValue()
-    );
+      );
 
     print("controlEvent: trying to setText, ");
 
@@ -549,7 +550,7 @@ public void controlEvent(ControlEvent theControlEvent) {
 public void homeBt(int theValue) {
   cp5.getTab("default").bringToFront();
   currentPage = "home";
-  if(isLoggedIn){
+  if (isLoggedIn) {
     cp5.getController("loginBt").hide();
   }
 }
@@ -611,11 +612,11 @@ public void assess3Bt(int theValue) {
   cp5.getController("assess3Toggle2").hide();
   output.flush();
   output.close();
-  
+
   String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
-  
+
   isRecordingMind = false;
   loadFiles();
 }
@@ -649,13 +650,13 @@ public void signup(int theValue) {
 
 public void loginCheck() {
   println("logincheck");
-  
+
   if (debug) {
     println(currentUser);
     if (currentUser == "") {
       currentUser = "someuser";
     }
-    
+
     cp5.getTab("overall").bringToFront();
     isLoggedIn = true;
 
@@ -674,7 +675,7 @@ public void loginCheck() {
         isWrongPassword = false;
         cp5.getController("logoutBt").show();
         addUserAreaControllers();
-      } else if(m[1].equals("registered")) {
+      } else if (m[1].equals("registered")) {
         cp5.getTab("login").bringToFront();
       } else {
         println("wrong password");
@@ -683,9 +684,9 @@ public void loginCheck() {
       }
     }
   }
-  
+
   loadFiles();
-  
+
   //cp5.addScrollableList("loadFilesList")
   //  .setPosition(padding, height/2)
   //  .setLabel("Load session")
@@ -706,11 +707,11 @@ public void loginCheck() {
   //  .getCaptionLabel().align(CENTER, CENTER)
   //  ;
   //cp5.getController("deleteFile").moveTo("overall");
-  
+
   /////////////////////////////
 
   currentPage = "overall";
-  
+
   loading = false;
 }
 
@@ -796,22 +797,22 @@ public void loadFilesList(int n) {
   CColor c = new CColor();
   c.setBackground(color(0));
   cp5.get(ScrollableList.class, "loadFilesList").getItem(n).put("color", c);
-  
+
   loadFile(n);
 }
 
 public void mousePressed() {
-  switch(currentPage){
-    case "singleSession":
-      eegAvg.onClick(mouseX, mouseY);
-      personalAvg.onClick(mouseX, mouseY);
-      personalAvg.setup(visWidth/2, visHeight/2);
-      loadFile(currentItem);
-      break;
-    case "overall":
-      trends.onClick();
-      eegAct.onClick();
-      break;
+  switch(currentPage) {
+  case "singleSession":
+    eegAvg.onClick(mouseX, mouseY);
+    personalAvg.onClick(mouseX, mouseY);
+    personalAvg.setup(visWidth/2, visHeight/2);
+    loadFile(currentItem);
+    break;
+  case "overall":
+    trends.onClick();
+    eegAct.onClick();
+    break;
   }
 }
 
@@ -827,10 +828,10 @@ public void keyPressed() {
       PImage newImage = createImage(100, 100, RGB);
       newImage = screenshot.get();
       newImage.save(
-            absolutePath + "/user-data/" + currentUser + "/" +
-            String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
-            "-screenshot.png"
-      );
+        absolutePath + "/user-data/" + currentUser + "/" +
+        String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+        "-screenshot.png"
+        );
       break;
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
@@ -842,10 +843,10 @@ public void keyPressed() {
       boxState = 200;
       break;
     case 'a':
-      if(currentPage == "newSession"){
+      if (currentPage == "newSession") {
         boxState = 300;
         assessQuestion = 1;
-        if(assessQuestion == 1){
+        if (assessQuestion == 1) {
           cp5.getController("assess1").show();
           cp5.getController("assess1Bt").show();
         }
@@ -859,12 +860,12 @@ public void keyPressed() {
 
 public void screenshot() {
   try {
-   Robot robot_Screenshot = new Robot();
-   screenshot = new PImage(robot_Screenshot.createScreenCapture
-     (new Rectangle(0, 0, displayWidth, displayHeight)));
+    Robot robot_Screenshot = new Robot();
+    screenshot = new PImage(robot_Screenshot.createScreenCapture
+      (new Rectangle(0, 0, displayWidth, displayHeight)));
   }
   catch (AWTException e) {
-   println(e);
+    println(e);
   }
   frame.setLocation(0, 0);
 }
