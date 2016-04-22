@@ -28,13 +28,12 @@ public void loadFiles(){
   listSize = sessionFolders.length;
   attentionAverageList = new float[listSize];
   relaxationAverageList = new float[listSize];
-  eegAct = new LineChart("values");
   
   //then loop through them
   for(int i = 0; i < sessionFolders.length; i++){
     loadFile(i);
   }
   
-  trends = new LineChart("averages");
-  eegAct = new LineChart("values");
+  trends.setup("averages");
+
 }

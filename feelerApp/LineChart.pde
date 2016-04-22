@@ -3,7 +3,11 @@ class LineChart {
   int _listSize;
   int grainSize = 40;
 
-  LineChart(String _type){
+  LineChart(){
+  }
+  
+  void setup(String _type){
+    
     type = _type;
     if(type == "averages"){
       if(sessionFolders.length < 10){
@@ -14,6 +18,7 @@ class LineChart {
     } else {
       _listSize = 2;
     }
+    
   }
   
   void display(){
@@ -21,6 +26,8 @@ class LineChart {
     float relaxEnd = 0;
     float studyEnd = 0;
     float assessEnd = 0;
+    
+    String currentScreenshot = "";
     
     fill(graphBgColor);
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
@@ -86,6 +93,7 @@ class LineChart {
             if(i>0 && data.data != null){
               for (int j = 0; j < data.data.length; j+=grainSize) {
                 if (data.data[j][12] > 0 && j>0) {
+                  
                   ////////////////////////////////////////////////////////////
                   int maxVal = 100; //TODO: what's the maximum value for the EEG?
                   ////////////////////////////////////////////////////////////
@@ -124,22 +132,47 @@ class LineChart {
                   );
                   
                   
+                  
+                  println("data.data["+j+"][0]: " + int(data.data[j][0]));
+                  
                   if(
                     mouseX > previousX
                     &&
                     mouseX <= thisX
+                    &&
+                    mouseY > visX - padding
+                    &&
+                    mouseY < visHeight + visX - padding
                   ){
+                    
                     fill(255, 100);
                     noStroke();
                     rect(previousX, visY, grainSize/2, visHeight + dotSize/2);
-  
-                    //ellipse(previousX, map(data.data[j-grainSize][11], maxVal, 0, visY, visHeight + visY), 5, 5);
-                    //ellipse(thisX, map(data.data[j][11], maxVal, 0, visY, visHeight + visY), 10, 10);
-                    fill(textDarkColor);
-                    text(int(data.data[j][0]), mouseX, mouseY - 20);
+                    
+                    //fill(textDarkColor);
+                    //text(int(data.data[j][0]), mouseX, mouseY - 20);
+                    
+
+                    File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
+                    screenshotsArray = imgTempFolder.list();
+                    for(int k = 0; k < screenshotsArray.length; k++){
+                      String screenshot = screenshotsArray[k]; 
+                      String[] screenshotTimeId = splitTokens(screenshot, "-");
+                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                        //println("screenshot["+k+"]:" + screenshotTimeId[0]);
+                        currentScreenshot = imgTempFolder + "/" +screenshot;
+                      }
+                    }
                   }
                 }
               }
+              
+
+              if(currentScreenshot != ""){
+                PImage screenshotImg = loadImage(currentScreenshot);
+                image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
+              }
+              
             }
             
             noStroke();

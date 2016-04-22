@@ -1,4 +1,8 @@
 public void loadFile(int n){
+
+   
+   eegAct.setup("values");
+  
     fileName = splitTokens(sessionFolders[n]);
   
     filenameString = sessionFolders[n];
@@ -16,6 +20,7 @@ public void loadFile(int n){
     state2start = data.getStateStart(2);
     state3start = data.getStateStart(3);
     
+
     if(data.data != null){
       for (int j = 0; j < data.data.length; j++) {
         if (data.data[j][12] == 1 || data.data[j][12] == 2) {
@@ -30,4 +35,7 @@ public void loadFile(int n){
     
     attentionAverageList[n] = attentionAverage;
     relaxationAverageList[n] = relaxationAverage;
+    
+
+    
 }

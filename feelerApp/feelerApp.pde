@@ -101,6 +101,7 @@ float attentionAverage = 0;
 float relaxationAverage = 0;
 String[] assessmentData;
 File assessmentFolder;
+String[] screenshotsArray;
 
 String userDataFolder = "user-data";
 String absolutePath;
@@ -133,8 +134,11 @@ MindSet mindSet;
 boolean simulateMindSet = true;
 
 public void setup() {
-
   smooth();
+  
+  
+  trends = new LineChart();
+  eegAct = new LineChart();
 
   //size(1200, 850);
   size(1200, 700);
