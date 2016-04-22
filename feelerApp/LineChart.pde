@@ -172,8 +172,6 @@ class LineChart {
   void onClick(){
     
     if(sessionFolders.length == 0){
-      String[] tempAssessment = {"0", "0", "false", "false"};
-      saveStrings(sessionPath + "/assessment.txt", tempAssessment);
     } else {
       String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
       assessmentData = lines;
