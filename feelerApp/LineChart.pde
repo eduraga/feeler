@@ -136,7 +136,7 @@ class LineChart {
                     //ellipse(previousX, map(data.data[j-grainSize][11], maxVal, 0, visY, visHeight + visY), 5, 5);
                     //ellipse(thisX, map(data.data[j][11], maxVal, 0, visY, visHeight + visY), 10, 10);
                     fill(textDarkColor);
-                    text(data.data[j][0], mouseX, mouseY - 20);
+                    text(int(data.data[j][0]), mouseX, mouseY - 20);
                   }
                 }
               }
@@ -170,9 +170,14 @@ class LineChart {
   }
   
   void onClick(){
-    String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
-    //println(userFolder + "/" + sessionFolders[currentItem]);
-    assessmentData = lines;
+    
+    if(sessionFolders.length == 0){
+      String[] tempAssessment = {"0", "0", "false", "false"};
+      saveStrings(sessionPath + "/assessment.txt", tempAssessment);
+    } else {
+      String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
+      assessmentData = lines;
+    }
     
     if(fileName != null){
       for(int i = 0; i < _listSize; i++){

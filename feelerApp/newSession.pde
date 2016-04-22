@@ -271,14 +271,14 @@ void simulate() {
   poorSignalEvent(int(random(200)));
   
   //simulate with noise
-  attoff = attoff + .02;
-  attentionEvent(int(noise(attoff) * 100));
-  medoff = medoff + .01;
-  meditationEvent(int(noise(medoff) * 100));
+  //attoff = attoff + .02;
+  //attentionEvent(int(noise(attoff) * 100));
+  //medoff = medoff + .01;
+  //meditationEvent(int(noise(medoff) * 100));
 
   //simulate with mouse
-  //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
-  //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
+  attentionEvent(int(map(mouseX, 0, width, 0, 100)));
+  meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
   
   //attentionEvent(int(random(100)));  
   //meditationEvent(int(random(100)));

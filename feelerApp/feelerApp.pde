@@ -143,7 +143,7 @@ public void setup() {
 
   userTabsX = width/2;
   
-  visX = width/4;
+  visX = (width/3)/2;
   visY = headerHeight + padding + 60;
   visWidth = width - width/3;
   visHeight = 300;
@@ -465,6 +465,9 @@ public void controlEvent(ControlEvent theControlEvent) {
     sessionFolder.mkdir();
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
+    
+    String[] tempAssessment = {"0", "0", "false", "false"};
+    saveStrings(sessionPath + "/assessment.txt", tempAssessment);
     
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";

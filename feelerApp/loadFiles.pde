@@ -4,6 +4,9 @@ public void loadFiles(){
   
   userFolder = absolutePath + "/user-data/" + currentUser;
   
+  File tempUserFolder = new File(dataPath(userFolder));
+  tempUserFolder.mkdir();
+  
   //find files in current user folder
   File userFolderTemp = new File(userFolder);
   String[] directoryArray = userFolderTemp.list();

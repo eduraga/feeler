@@ -15,6 +15,9 @@ With PHP backend
 - Change feelerApp/data/config.json to reflect your environment
 - Run feelerApp.pde and try to log in
 
+## running
+- set simulateMindSet to true to test without MindWave
+
 ## todo/issues
 - [ ] Fix scroll
 - [ ] Add timer, stop/pause/play button to Session
