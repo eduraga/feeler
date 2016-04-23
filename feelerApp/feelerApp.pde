@@ -4,7 +4,7 @@ import processing.net.*;
 import controlP5.*;
 import java.util.*; 
 import java.awt.Robot; 
-import java.awt.AWTException; 
+import java.awt.AWTException;
 import java.awt.Rectangle;
 
 import java.util.Timer;
@@ -141,9 +141,15 @@ public void setup() {
   eegAct = new LineChart();
 
   //size(1200, 850);
-  size(1200, 700);
+  size(displayWidth, displayHeight);
+  
   //fullScreen();
   surface.setResizable(true);
+  
+
+//double width = screenSize.getWidth();
+//double height = screenSize.getHeight();
+  //println((int)screenSize.getWidth());
   
   noStroke();
   textSize(12);
