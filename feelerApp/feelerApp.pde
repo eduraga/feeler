@@ -67,7 +67,7 @@ int visY;
 int visWidth;
 int visHeight;
 int dotSize = 20;
-float e = 1;
+float e = 0;
 float containerPosX;
 float containerPosY;
 int videoWidth = 640;
@@ -141,7 +141,8 @@ public void setup() {
   eegAct = new LineChart();
 
   //size(1200, 850);
-  size(displayWidth, displayHeight);
+  size(800, 600);
+  //size(displayWidth, displayHeight);
   
   //fullScreen();
   surface.setResizable(true);

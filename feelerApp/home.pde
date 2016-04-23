@@ -2,16 +2,19 @@ void home(){
   int smallRectW = (videoWidth - padding*2)/3;
   int smallRectH = 140;
   int containerHeight = videoHeight + smallRectH + padding;
-  
-  if(e < -1 || e > 1){
-    
-    if(containerPosY > containerHeight/5 - padding){
-      containerPosY = containerHeight/5 - padding;
-    } else if(containerPosY < -containerHeight/4 + padding){
-      containerPosY = -containerHeight/4 + padding;
-    }
-    containerPosY -= e;
-  }
+
+   if(e > 0){
+       if(containerPosY < -containerHeight/4 + padding){
+         containerPosY = -containerHeight/4 + padding;
+       }
+   } else if (e < 0) {
+       if(containerPosY > containerHeight/5 - padding){
+         containerPosY = containerHeight/5 - padding;
+       }
+   }
+   
+   containerPosY -= e;
+   e = 0;
   
   fill(210);
   rect(containerPosX, containerPosY, videoWidth, videoHeight);
