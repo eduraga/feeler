@@ -191,12 +191,14 @@ public void setup() {
     .setLabel("home")
     .setId(1)
     ;
+    
+  cp5.getWindow().setPositionOfTabs(0, -200);
 
   cp5.addTab("login");
   cp5.getTab("login")
-    .activateEvent(true)
-    .setId(2)
-    ;
+   .activateEvent(true)
+   .setId(2)
+   ;
 
 
   username = cp5.addTextfield("username")
