@@ -53,7 +53,6 @@ class LineChart {
           }
           
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            
             if(type == "averages"){
               if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
                 fill(250);
@@ -62,13 +61,17 @@ class LineChart {
             }
             
             if(mouseY >= rlxAvg - dotSize/2 && mouseY <= rlxAvg + dotSize/2){
-              fill(textDarkColor);
+              //noFill();
+              //stroke(0);
               //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // boundin box
+              fill(textDarkColor);
               text(round(relaxationAverageList[i])+"%", thisX + 10, rlxAvg - dotSize);
             }
             if(mouseY >= attAvg - dotSize/2 && mouseY <= attAvg + dotSize/2){
-              fill(textDarkColor);
+              //noFill();
+              //stroke(0);
               //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // bouning box
+              fill(textDarkColor);
               text(round(attentionAverageList[i])+"%", thisX + 10, attAvg - dotSize);
             }
             noStroke();
@@ -131,10 +134,6 @@ class LineChart {
                         map(data.data[j][11], maxVal, 0, visY, visHeight + visY)
                   );
                   
-                  
-                  
-                  println("data.data["+j+"][0]: " + int(data.data[j][0]));
-                  
                   if(
                     mouseX > previousX
                     &&
@@ -151,7 +150,6 @@ class LineChart {
                     
                     //fill(textDarkColor);
                     //text(int(data.data[j][0]), mouseX, mouseY - 20);
-                    
 
                     File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
                     screenshotsArray = imgTempFolder.list();
@@ -166,13 +164,11 @@ class LineChart {
                   }
                 }
               }
-              
 
               if(currentScreenshot != ""){
                 PImage screenshotImg = loadImage(currentScreenshot);
                 image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
               }
-              
             }
             
             noStroke();

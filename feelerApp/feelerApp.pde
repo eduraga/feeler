@@ -82,6 +82,7 @@ int assessQuestion = 0;
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
+color textLightColor = color(180);
 color attentionColor = color(150);
 color relaxationColor = color(70);
 
@@ -136,12 +137,11 @@ boolean simulateMindSet = true;
 public void setup() {
   smooth();
   
-  
   trends = new LineChart();
   eegAct = new LineChart();
 
   //size(1200, 850);
-  size(800, 600);
+  size(1000, 700);
   //size(displayWidth, displayHeight);
   
   //fullScreen();
@@ -464,6 +464,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "overall":
     println("overall page");
     currentPage = "overall";
+    personalAvg.setup(visWidth, visHeight);
     break;
   case "newSession":
     println("newSession page");

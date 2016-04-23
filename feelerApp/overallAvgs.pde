@@ -25,7 +25,18 @@ class OverallAvgs{
     }
     thisY = visY;
     
-    fill(graphBgColor);
+    if(
+      mouseX > thisX - padding && mouseX < rectWidth + padding*2 + thisX - padding
+      &&
+      mouseY > thisY - padding && mouseY < thisY - padding + rectHeight + padding*2
+    ){
+      fill(textLightColor);
+    } else {
+      fill(graphBgColor);
+    }
+    
+    
+    
     rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);
     fill(250);
     rect(thisX, thisY, rectWidth, rectHeight);
