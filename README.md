@@ -19,19 +19,19 @@ With PHP backend
 - set simulateMindSet to true to test without MindWave
 
 ## todo/issues
-- [ ] Fix scroll
+- [x] Fix scroll
 - [ ] Add timer, stop/pause/play button to Session
 - [ ] Add connection feedback information
-- [ ] Save separate file for assessment
+- [x] Save separate file for assessment
 - [x] Identifying users
   - Added basic user management, but registration needs to be done on a web page (see below)
 - [x] Registration through the app (not browser)
   - Added basic registration: to register just click signup instead of login after filling username and password fields
-- [ ] Change folder paths when saving files
+- [x] Change folder paths when saving files
 - [x] Visualization of last activity data (and the different levels)
 - [x] Visualization of the overall activity (this could be left for a second stage if it’s too much work)
 - [x] Screen capture
-- [ ] Download raw data
-- [ ] Capture data screens (these need to be synchronized with the boxes and give some feedback (recording time, connection) indicating everything works ok.
+- [x] Download raw data
+- [x] Capture data screens (these need to be synchronized with the boxes and give some feedback (recording time, connection) indicating everything works ok.
 - [x] In the app, the user should be able to delete a session.
 - [ ] Implement visuals
