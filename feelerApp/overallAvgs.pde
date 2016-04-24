@@ -30,12 +30,12 @@ class OverallAvgs{
       &&
       mouseY > thisY - padding && mouseY < thisY - padding + rectHeight + padding*2
     ){
+      hoverUpLeft.set(thisX - padding, thisY - padding);
+      hoverDownRight.set(rectWidth + padding*2 + thisX - padding, thisY - padding + rectHeight + padding*2);
       fill(textLightColor);
     } else {
       fill(graphBgColor);
     }
-    
-    
     
     rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);
     fill(250);
@@ -80,6 +80,9 @@ class OverallAvgs{
   }
   
   void onClick(int x, int y){
+    hoverUpLeft.set(0,0);
+    hoverDownRight.set(0,0);
+    
     if(x >= this.thisX && x <= this.thisX + this.rectWidth){
       if(y >= this.thisY && y <= this.thisY + rectHeight){
         text("Loading...", width/2, height/2);

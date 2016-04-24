@@ -79,6 +79,8 @@ boolean assess3Toggle1 = true;
 boolean assess3Toggle2 = true;
 int assessQuestion = 0;
 
+PVector hoverUpLeft, hoverDownRight;
+
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
@@ -139,6 +141,9 @@ public void setup() {
   
   trends = new LineChart();
   eegAct = new LineChart();
+  
+  hoverUpLeft = new PVector(0,0);
+  hoverDownRight = new PVector(0,0);
 
   //size(1200, 850);
   size(1000, 700);
@@ -370,6 +375,22 @@ public void setup() {
 public void draw() {
   background(255);
   fill(0);
+  
+  
+  if(
+    mouseX > hoverUpLeft.x &&
+    mouseX < hoverDownRight.x
+    &&
+    mouseY > hoverUpLeft.y &&
+    mouseY < hoverDownRight.y
+  ){
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
+  }
+  
+  
+  
 
   if (isLoggedIn) {
     textAlign(RIGHT);

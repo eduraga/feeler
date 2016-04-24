@@ -52,8 +52,11 @@ class LineChart {
             prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visY, visHeight + visY);
           }
           
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){            
             if(type == "averages"){
+              hoverUpLeft.set(thisX - dotSize/2, visY);
+              hoverDownRight.set(thisX + dotSize/2, visY + visHeight + dotSize/2);
+              
               if(mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
                 fill(250);
                 rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
@@ -87,6 +90,7 @@ class LineChart {
               fill(relaxationColor);
               ellipse(thisX, rlxAvg, dotSize, dotSize);
             }
+            
             
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
@@ -147,9 +151,6 @@ class LineChart {
                     fill(255, 100);
                     noStroke();
                     rect(previousX, visY, grainSize/2, visHeight + dotSize/2);
-                    
-                    //fill(textDarkColor);
-                    //text(int(data.data[j][0]), mouseX, mouseY - 20);
 
                     File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
                     screenshotsArray = imgTempFolder.list();
@@ -199,6 +200,8 @@ class LineChart {
   }
   
   void onClick(){
+    hoverUpLeft.set(0,0);
+    hoverDownRight.set(0,0);
     
     if(sessionFolders.length == 0){
     } else {
