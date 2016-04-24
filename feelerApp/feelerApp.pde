@@ -53,7 +53,7 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 //UI variables
-OverallAvgs eegAvg, personalAvg;
+OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct;
 int headerHeight = 100;
 int padding = 20;
@@ -92,6 +92,8 @@ color relaxationColor = color(70);
 int listSize;
 float[] attentionAverageList;
 float[] relaxationAverageList;
+float assessmentAttAvgs = 0;
+float assessmentRlxAvgs = 0;
 
 boolean loading = false;
 String[] fileName;
@@ -176,10 +178,11 @@ public void setup() {
   cp5 = new ControlP5(this);
 
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
-  personalAvg = new OverallAvgs("assessment", "Values based on your personal experience");
+  personalAssSesion = new OverallAvgs("assessment", "Values based on your personal experience");
+  personalAvg = new OverallAvgs("personalAverage", "On average");
 
   eegAvg.setup(visWidth, visHeight);
-  personalAvg.setup(visWidth, visHeight);
+  personalAssSesion.setup(visWidth, visHeight);
 
   //Create UI elements
   containerPosX = width/2 - videoWidth/2;
@@ -485,6 +488,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "overall":
     println("overall page");
     currentPage = "overall";
+    personalAssSesion.setup(visWidth, visHeight);
     personalAvg.setup(visWidth, visHeight);
     break;
   case "newSession":
@@ -840,7 +844,8 @@ public void mousePressed() {
   switch(currentPage) {
   case "singleSession":
     eegAvg.onClick(mouseX, mouseY);
-    personalAvg.onClick(mouseX, mouseY);
+    personalAssSesion.onClick(mouseX, mouseY);
+    personalAssSesion.setup(visWidth/2, visHeight/2);
     personalAvg.setup(visWidth/2, visHeight/2);
     loadFile(currentItem);
     break;

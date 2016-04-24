@@ -34,10 +34,9 @@ class LineChart {
     
     if(fileName != null){
       for(int i = 0; i < _listSize; i++){
-        if(fileName[0].charAt(0) != '.'){
+        if(sessionFolders[i].charAt(0) == '2'){
           textAlign(LEFT, CENTER);
-          
-          String[] fileDate = split(fileName[0], '-');
+          String[] fileDate = split(sessionFolders[i], '-');
           
           float thisX = i * visWidth/_listSize + visX;
           float previousX = (i-1) * visWidth/_listSize + visX;

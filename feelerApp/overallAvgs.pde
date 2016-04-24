@@ -59,6 +59,9 @@ class OverallAvgs{
         rlxAvg = float(assessmentData[0]);
         if(assessmentData.length > 1)
           attAvg = float(assessmentData[1]);
+      } else if(type == "personalAverage"){
+        rlxAvg = assessmentAttAvgs;
+        attAvg = assessmentRlxAvgs;
       }
 
       textAlign(CENTER, CENTER);

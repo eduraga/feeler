@@ -1,4 +1,4 @@
 public void singleVisPage(){
   eegAvg.display(currentItem);
-  personalAvg.display(currentItem);
+  personalAssSesion.display(currentItem);
 }

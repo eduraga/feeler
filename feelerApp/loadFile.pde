@@ -1,6 +1,4 @@
-public void loadFile(int n){
-
-   
+public void loadFile(int n){   
    eegAct.setup("values");
   
     fileName = splitTokens(sessionFolders[n]);
