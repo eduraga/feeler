@@ -12,12 +12,15 @@ import java.util.TimerTask;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
-import java.io.File; 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.BufferedReader; 
 import java.io.PrintWriter; 
 import java.io.InputStream; 
 import java.io.OutputStream; 
 import java.io.IOException;
+import java.nio.*;
 
 import processing.serial.*;
 import pt.citar.diablu.processing.mindset.*;
@@ -930,5 +933,27 @@ void folderSelected(File selection) {
     println("Window was closed or the user hit cancel.");
   } else {
     println("User selected " + selection.getAbsolutePath());
+      
+    File fin = new File(userFolder + "/" + sessionFolders[currentItem] + "/brain-activity.tsv");
+    File fout = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/brain-activity.tsv"));
+    
+    try {
+      FileInputStream fis  = new FileInputStream(fin);
+      FileOutputStream fos = new FileOutputStream(fout);
+        
+      byte[] buf = new byte[1024];
+      int i = 0;
+      while((i=fis.read(buf))!=-1) {
+        fos.write(buf, 0, i);
+        }
+      fis.close();
+      fos.close();
+    } catch (Exception e) {
+      println( "Error occured at ... " );
+      e.printStackTrace();
+    } finally {
+      // what to do when finished trying and catching ...
+    }
+    
   }
 }
