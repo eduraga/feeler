@@ -620,6 +620,10 @@ public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
 }
 
+public void export(int theValue) {
+  selectFolder("Select a folder to save your data:", "folderSelected");
+}
+
 public void startSession(int theValue) {
   //currentPage = "meditate";
   boxState = 100;
@@ -802,6 +806,17 @@ public void addUserAreaControllers() {
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("overall").moveTo("global");
+  
+  cp5.addButton("export")
+    .setBroadcast(false)
+    .setLabel("export data")
+    .setPosition(width - 160, 50)
+    .setSize(buttonWidth, buttonHeight)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("export").moveTo("singleSession");
 }
 
 public void timer() {
@@ -908,4 +923,12 @@ public void screenshot() {
     println(e);
   }
   frame.setLocation(0, 0);
+}
+
+void folderSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    println("User selected " + selection.getAbsolutePath());
+  }
 }
