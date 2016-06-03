@@ -56,6 +56,7 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 //UI variables
+PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct;
 int headerHeight = 100;
@@ -190,19 +191,22 @@ public void setup() {
   //Create UI elements
   containerPosX = width/2 - videoWidth/2;
   containerPosY = height/2 - videoHeight/2;
+  
+  logo = loadImage("feeler-logo.png");
 
-  PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
-  cp5.addButton("homeBt")
-    .setBroadcast(false)
-    .setPosition(20, 20)
-    .setSize(241, 63)
-    .setLabel("Feeler")
-    .setImages(imgs)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("homeBt").moveTo("global");
+  //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
+  
+  //cp5.addButton("homeBt")
+  //  .setBroadcast(false)
+  //  .setPosition(20, 20)
+  //  .setSize(241, 63)
+  //  .setLabel("Feeler")
+  //  .setImages(imgs)
+  //  .setValue(1)
+  //  .setBroadcast(true)
+  //  .getCaptionLabel().align(CENTER, CENTER)
+  //  ;
+  //cp5.getController("homeBt").moveTo("global");
 
   cp5.getTab("default")
     .activateEvent(true)
@@ -381,7 +385,7 @@ public void setup() {
 public void draw() {
   background(255);
   fill(0);
-  
+  image(logo, 20, 20);
   
   if(
     mouseX > hoverUpLeft.x &&
@@ -597,8 +601,8 @@ public void controlEvent(ControlEvent theControlEvent) {
 }
 
 public void homeBt(int theValue) {
-  cp5.getTab("default").bringToFront();
   currentPage = "home";
+  //cp5.getTab("default").bringToFront();
   if (isLoggedIn) {
     cp5.getController("loginBt").hide();
   }

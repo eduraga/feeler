@@ -26,6 +26,8 @@ public void loadFile(int n){
         }
       }
       
+      println(data.data[data.data.length-1][11]);
+      
       attentionAverage /= data.data.length;
       relaxationAverage /= data.data.length;
     }
