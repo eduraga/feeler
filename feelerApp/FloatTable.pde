@@ -42,17 +42,19 @@ class FloatTable {
         // split the row on the tabs
         String[] pieces = split(rows[i], TAB);
         scrubQuotes(pieces);
-  
-  
+    
         // copy row title
         rowNames[rowCount] = pieces[0];
         // copy data into the table starting at pieces[1]
         //data[rowCount] = parseFloat(subset(pieces, 1));
         data[rowCount] = parseFloat(pieces);
+        
+        //check if all columns have content
+        if(data[rowCount].length == 13){
+          //then increment the number of valid rows found so far
+          rowCount++;
+        }
   
-        // increment the number of valid rows found so far
-  
-        rowCount++;
       }
       // resize the 'data' array as necessary
       data = (float[][]) subset(data, 0, rowCount);
@@ -78,19 +80,32 @@ class FloatTable {
     rowCount1 = 0;
     rowCount2 = 0;
     rowCount3 = 0;
+    
+    if(data[rowCount-1].length == 13){
+      //println("data[" + i + "][11]: " + data[rowCount-1][11]);
+      println(rowCount);
+      println("length == 13");
+    } else {
+      println(rowCount);
+      println("length != 13");
+    }
+    
     for (int o = 0; o < rowCount; o++) {
       if (data[o][11] == 1) rowCount1++; 
       else if (data[o][11] == 2) rowCount2++;          
       else if (data[o][11] == 3) rowCount3++;
     }
-    if (i == 1)
+    
+    if (i == 1) {
       return rowCount1;
-    else if (i == 2)
+    } else if (i == 2) {
       return rowCount2;
-    else if (i == 3)
+    } else if (i == 3) {
       return rowCount3;
-    else
+    } else {
       return rowCount;
+    }
+      
   }
 
 

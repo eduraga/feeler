@@ -7,7 +7,7 @@ public void loadFile(int n){
     
     data = new FloatTable(userFolder + "/" + sessionFolders[n] + "/brain-activity.tsv");
     filenameCharArray = filenameString.toCharArray();
-  
+    
     rowCount = data.getRowCount(9);
     rowCount1 = data.getRowCount(1);
     rowCount2 = data.getRowCount(2);
@@ -17,7 +17,6 @@ public void loadFile(int n){
     state1start = data.getStateStart(1);
     state2start = data.getStateStart(2);
     state3start = data.getStateStart(3);
-    
 
     if(data.data != null){
       for (int j = 0; j < data.data.length; j++) {
@@ -33,7 +32,4 @@ public void loadFile(int n){
     
     attentionAverageList[n] = attentionAverage;
     relaxationAverageList[n] = relaxationAverage;
-    
-
-    
 }
