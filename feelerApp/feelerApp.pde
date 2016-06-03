@@ -945,6 +945,7 @@ void folderSelected(File selection) {
   } else {
     println("User selected " + selection.getAbsolutePath());
       
+    //save brain activity
     File fin = new File(userFolder + "/" + sessionFolders[currentItem] + "/brain-activity.tsv");
     File fout = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/brain-activity.tsv"));
     
@@ -956,7 +957,30 @@ void folderSelected(File selection) {
       int i = 0;
       while((i=fis.read(buf))!=-1) {
         fos.write(buf, 0, i);
-        }
+      }
+      fis.close();
+      fos.close();
+    } catch (Exception e) {
+      println( "Error occured at ... " );
+      e.printStackTrace();
+    } finally {
+      // what to do when finished trying and catching ...               
+    }
+
+
+    //save assessment
+    File fin2 = new File(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
+    File fout2 = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/assessment.txt"));
+
+    try {
+      FileInputStream fis  = new FileInputStream(fin2);
+      FileOutputStream fos = new FileOutputStream(fout2);
+        
+      byte[] buf = new byte[1024];
+      int i = 0;
+      while((i=fis.read(buf))!=-1) {
+        fos.write(buf, 0, i);
+      }
       fis.close();
       fos.close();
     } catch (Exception e) {
@@ -965,6 +989,7 @@ void folderSelected(File selection) {
     } finally {
       // what to do when finished trying and catching ...
     }
+    
     
   }
 }
