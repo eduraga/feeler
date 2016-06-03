@@ -17,9 +17,17 @@ With PHP backend
 
 ## running
 - set simulateMindSet to true to test without MindWave
+- uncomment `size(displayWidth, displayHeight);` to allow screen size detection
 
 ## todo/issues
 - [x] Fix scroll
+- [ ] Add timer for session
+- [ ] On mouse over 'overall' balls show session time and specify relaxation/attention
+- [ ] Add breadcrumb menu for visualizations (with navigation)
+- [ ] Add day of the week for sessions? (instead of "Session")
+- [ ] Click thumbnail to see larger screenshot
+- [ ] Include assessment and screenshot in exports?
+- [ ] Turn localhost on/off (when off, connect to the Internet)
 - [ ] Add timer, stop/pause/play button to Session
 - [ ] Add connection feedback information
 - [x] Save separate file for assessment

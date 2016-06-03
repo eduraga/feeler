@@ -151,8 +151,8 @@ public void setup() {
   hoverDownRight = new PVector(0,0);
 
   //size(1200, 850);
-  size(1000, 700);
-  //size(displayWidth, displayHeight);
+  //size(1000, 700);
+  size(displayWidth, displayHeight);
   
   //fullScreen();
   surface.setResizable(true);
@@ -452,9 +452,16 @@ public void draw() {
 
     fill(50);
     text(s, padding, height-90, width/3, height-90);
+    
+    if(userFolder != null){
+      text(userFolder, padding, height-110);
+    }
+    
+    
 
 
     if (simulateMindSet) {
+      text("generating simulated data", padding, height-130);
       simulate();
     }
 
