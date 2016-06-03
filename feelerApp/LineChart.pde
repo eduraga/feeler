@@ -1,7 +1,7 @@
 class LineChart {
   String type;
   int _listSize;
-  int grainSize = 10;
+  int grainSize = 40;
 
   LineChart(){
   }
@@ -144,9 +144,9 @@ class LineChart {
                     &&
                     mouseX <= thisX
                     &&
-                    mouseY > visX - padding
+                    mouseY > visY
                     &&
-                    mouseY < visHeight + visX - padding
+                    mouseY < visHeight + visY
                   ){
                     
                     fill(255, 100);
