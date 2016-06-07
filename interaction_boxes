@@ -1,0 +1,30 @@
+Switching on the boxes
+Vibration and a led light gets visible at the box back side. 
+Can each box vibrate independently?
+
+Bluetooth name for the boxes is “Feeler”
+
+Once the recording starts
+Box 1 (Meditation) vibrates. After the vibration (1-2 seconds), the led lights start to fade in - fade out. 5 minutes in total
+
+End of meditation time (Box 1)
+Box vibrates. Signal placed in the upper right corner of the front side starts blinking
+
+Connections
+If user tries to connect the “wrong boxes” nothing happens.
+When user connects Box 1 with Box 2, the boxes vibrate. The icons placed in the boxes front side (left and right upper corners from each box) illuminate at the same time for a short time (1 sec.) and turn off. Same happens when user connects box 2 and 3.
+
+Box 2 (Study)
+After successful connection, the led lights start to fade in. This goes on for 15 min (the time would be readjusted according to the test needs). When time is over the box vibrate.
+
+Box 3 (Play)
+After successful connection, the game light sequence starts (after 1 or 2 sec since the connection): 1st time the sequence consists in only one led lighting. When user presses the buttons, they illuminate very shortly (to give feedback that the button was pressed). When a sequence has been successfully repeated (2-3 sec after), another light sequence starts. This goes on until the user makes a mistake. In that case, the box vibrates. After vibration, the icon placed in the front side upper right corner starts blinking.
+The blinking turns off after user has accessed the personal experience survey (user needs to press a button in the desktop app to access it)
+
+Switching off the boxes
+When swithing off the led light visible from the back side turns off
+
+Charging the batteries
+Need to check if this is possible: When charging the led light blinks. When the box is fully charged the led light is on
+There is no way to indicate that the battery is low
+
