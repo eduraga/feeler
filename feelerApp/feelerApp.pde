@@ -292,7 +292,7 @@ public void setup() {
   //Session
   cp5.addButton("startSession")
     .setBroadcast(false)
-    .setLabel("Record (start session)")
+    .setLabel("Record")
     .setPosition(padding, headerHeight + padding * 7)
     .setSize(200, 80)
     .setValue(1)
@@ -378,38 +378,6 @@ public void setup() {
   
   /////////////////////////////////
 
-
-  //Setup Mindset
-  if (!simulateMindSet) {
-    //mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
-        
-    //printArray(Serial.list());
-    
-    for(int i = 0; i < Serial.list().length; i++){
-     //println(Serial.list()[i]);
-     //println(Serial.list()[i].equals("/dev/cu.MindWaveMobile-DevA"));
-     if(Serial.list()[i].equals("/dev/cu.MindWaveMobile-DevA")){
-       //serial exists
-       println("serial exists");
-       mindSetId = i;
-     }
-    }
-    
-     //try {
-     //   String mindSetPort = Serial.list()[mindSetId];
-     //   println(mindSetPort);
-     //   Serial port = new Serial(this, mindSetPort);
-     //   mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
-     //   println(port.available());
-     //   println("port ok");
-     //} catch (Exception e) {
-     //  println(e);
-     //   println("port not ok");
-     //}
-    
-    
-    
-  }
 }
 
 public void draw() {

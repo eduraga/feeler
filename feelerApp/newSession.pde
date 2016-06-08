@@ -70,22 +70,6 @@ int triggerHight = 80;
 
 void newSession(){
   
-  if (!mindSetOK) {
-     textAlign(LEFT);
-     fill(200,0,0);
-     text("Mindwave is not connected", padding, headerHeight + padding * 7);
-     
-     //printArray(Serial.list());
-     try {
-        //mindSetPort = new Serial(this, Serial.list()[2]);
-        mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
-        println("port ok");
-        mindSetOK = true;
-     } catch (Exception e) {
-        println("port not ok");
-        mindSetOK = false;
-     }
-  }
   
   if(boxState == 100 || boxState == 200 || boxState == 300){
     screenshotThresholds();
@@ -94,13 +78,33 @@ void newSession(){
   
   switch(boxState){
     case 0:
-      if(mindSetOK){
+      if(mindSetOK || simulateMindSet){
         cp5.getController("startSession").show();
       }
       
-      pageH1("Start a session");
-      text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.",
-            padding, headerHeight + padding + 40);
+      pageH1("New session");
+      //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
+
+      if (!mindSetOK && !simulateMindSet) {
+         textAlign(LEFT);
+         text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+         try {
+           //mindSetPort = new Serial(this, Serial.list()[2]);
+           mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+           println("port ok");
+           mindSetOK = true;
+         } catch (Exception e) {
+           println("port not ok");
+           mindSetOK = false;
+         }
+      } else {
+        text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+        PImage learningGoal = loadImage("learning-goal.png");
+        image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
+        text("2. Connect the boxes", padding, headerHeight + padding + 60);
+      }
+            
+            
       break;
     case 100:
       cp5.getController("startSession").hide();
