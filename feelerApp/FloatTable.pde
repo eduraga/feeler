@@ -81,6 +81,7 @@ class FloatTable {
     rowCount2 = 0;
     rowCount3 = 0;
     
+    /*
     if(data[rowCount-1].length == 13){
       //println("data[" + i + "][11]: " + data[rowCount-1][11]);
       println(rowCount);
@@ -89,6 +90,7 @@ class FloatTable {
       println(rowCount);
       println("length != 13");
     }
+    */
     
     for (int o = 0; o < rowCount; o++) {
       if (data[o][11] == 1) rowCount1++; 

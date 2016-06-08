@@ -70,6 +70,23 @@ int triggerHight = 80;
 
 void newSession(){
   
+  if (!mindSetOK) {
+     textAlign(LEFT);
+     fill(200,0,0);
+     text("Mindwave is not connected", padding, headerHeight + padding * 7);
+     
+     //printArray(Serial.list());
+     try {
+        //mindSetPort = new Serial(this, Serial.list()[2]);
+        mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+        println("port ok");
+        mindSetOK = true;
+     } catch (Exception e) {
+        println("port not ok");
+        mindSetOK = false;
+     }
+  }
+  
   if(boxState == 100 || boxState == 200 || boxState == 300){
     screenshotThresholds();
   }
@@ -77,7 +94,10 @@ void newSession(){
   
   switch(boxState){
     case 0:
-      cp5.getController("startSession").show();
+      if(mindSetOK){
+        cp5.getController("startSession").show();
+      }
+      
       pageH1("Start a session");
       text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.",
             padding, headerHeight + padding + 40);
@@ -258,9 +278,11 @@ void cancelScreenshots(){
 //MindSet functions
 
 void exit() {
-  println("Exiting");
-  mindSet.quit();
-  super.exit();
+  if(!simulateMindSet){
+    println("Exiting");
+    mindSet.quit();
+    super.exit();
+  }
 }
 
 

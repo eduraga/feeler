@@ -140,7 +140,10 @@ int boxState = 0;
 
 //MindSet stuff
 MindSet mindSet;
-boolean simulateMindSet = true;
+boolean simulateMindSet = false;
+boolean mindSetOK = false;
+Serial mindSetPort;
+int mindSetId;
 
 public void setup() {
   smooth();
@@ -286,8 +289,6 @@ public void setup() {
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
 
-
-
   //Session
   cp5.addButton("startSession")
     .setBroadcast(false)
@@ -362,23 +363,52 @@ public void setup() {
     ;
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
-
+  
   cp5.addButton("assess3Bt")
-    .setLabel("Submit")
-    .setPosition(padding, headerHeight + padding * 6)
-    .setSize(70, 20)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
+  .setBroadcast(false)
+  .setLabel("Submit")
+  .setPosition(padding, headerHeight + padding * 6)
+  .setSize(70, 20)
+  //.setValue(1)
+  .setBroadcast(true)
+  .getCaptionLabel().align(CENTER, CENTER)
+  ;
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
+  
   /////////////////////////////////
 
 
   //Setup Mindset
   if (!simulateMindSet) {
-    mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+    //mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+        
+    //printArray(Serial.list());
+    
+    for(int i = 0; i < Serial.list().length; i++){
+     //println(Serial.list()[i]);
+     //println(Serial.list()[i].equals("/dev/cu.MindWaveMobile-DevA"));
+     if(Serial.list()[i].equals("/dev/cu.MindWaveMobile-DevA")){
+       //serial exists
+       println("serial exists");
+       mindSetId = i;
+     }
+    }
+    
+     //try {
+     //   String mindSetPort = Serial.list()[mindSetId];
+     //   println(mindSetPort);
+     //   Serial port = new Serial(this, mindSetPort);
+     //   mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+     //   println(port.available());
+     //   println("port ok");
+     //} catch (Exception e) {
+     //  println(e);
+     //   println("port not ok");
+     //}
+    
+    
+    
   }
 }
 
@@ -398,8 +428,6 @@ public void draw() {
   } else {
     cursor(ARROW);
   }
-  
-  
   
 
   if (isLoggedIn) {
@@ -887,7 +915,7 @@ public void mousePressed() {
 
 void mouseWheel(MouseEvent event) {
   e = event.getCount();
-}
+} 
 
 public void keyPressed() {
   if (debug) {
@@ -939,6 +967,7 @@ public void screenshot() {
   frame.setLocation(0, 0);
 }
 
+
 void folderSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
@@ -967,7 +996,6 @@ void folderSelected(File selection) {
       // what to do when finished trying and catching ...               
     }
 
-
     //save assessment
     File fin2 = new File(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
     File fout2 = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/assessment.txt"));
@@ -989,7 +1017,6 @@ void folderSelected(File selection) {
     } finally {
       // what to do when finished trying and catching ...
     }
-    
     
   }
 }
