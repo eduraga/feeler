@@ -18,8 +18,10 @@ Box 2 (Study)
 After successful connection, the led lights start to fade in. This goes on for 15 min (the time would be readjusted according to the test needs). When time is over the box vibrate.
 
 Box 3 (Play)
-After successful connection, the game light sequence starts (after 1 or 2 sec since the connection): 1st time the sequence consists in only one led lighting. When user presses the buttons, they illuminate very shortly (to give feedback that the button was pressed). When a sequence has been successfully repeated (2-3 sec after), another light sequence starts. This goes on until the user makes a mistake. In that case, the box vibrates. After vibration, the icon placed in the front side upper right corner starts blinking.
-The blinking turns off after user has accessed the personal experience survey (user needs to press a button in the desktop app to access it)
+After successful connection, the game light sequence starts (after 1 or 2 sec since the connection). Each light is associated with an audio tone (this happens during the lighting sequence and when the player presses the buttons - they make a tone and illuminate).
+1st time the sequence consists in only one led lighting+tone. When user presses the buttons, they illuminate very shortly and make a tone (to give feedback that the button was pressed). When a sequence has been successfully repeated (2-3 sec after), another light sequence starts. This goes on until the user makes a mistake. In that case, the box vibrates. After vibration, the icon placed in the front side upper right corner starts blinking.
+The blinking turns off after user has accessed the personal experience survey (user needs to press a button in the desktop app to access it).
+The led lights for the game are all white.
 
 Switching off the boxes
 When swithing off the led light visible from the back side turns off
