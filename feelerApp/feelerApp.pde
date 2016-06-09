@@ -55,6 +55,9 @@ boolean isNewUser = false;
 final static int TIMER = 100;
 static boolean isEnabled = true;
 
+CountDown sw = new CountDown();
+boolean recording = false; 
+
 //UI variables
 PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
@@ -140,7 +143,7 @@ int boxState = 0;
 
 //MindSet stuff
 MindSet mindSet;
-boolean simulateMindSet = false;
+boolean simulateMindSet = true;
 boolean mindSetOK = false;
 Serial mindSetPort;
 int mindSetId;
@@ -508,6 +511,8 @@ public void controlEvent(ControlEvent theControlEvent) {
     break;
   case "startSession":
     println("startSession");
+    sw.start();
+    
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
@@ -919,6 +924,12 @@ public void keyPressed() {
       break;
     case 'm':
       simulateMindSet = !simulateMindSet;
+    case 'q':
+      sw.stop();
+      break;
+    case 'w':
+      sw.start();
+      break;
     }
   }
 }

@@ -70,7 +70,6 @@ int triggerHight = 80;
 
 void newSession(){
   
-  
   if(boxState == 100 || boxState == 200 || boxState == 300){
     screenshotThresholds();
   }
@@ -103,18 +102,16 @@ void newSession(){
         image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
         text("2. Connect the boxes", padding, headerHeight + padding + 60);
       }
-            
-            
       break;
     case 100:
       cp5.getController("startSession").hide();
-      pageH1("Relax");
+      pageH1("Meditate");
       isRecordingMind = true;
       timeline = 1;
       fill(textDarkColor);
-      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
-            padding, headerHeight + padding + 40);
-
+      text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
+      text(sw.minute() + ":" + sw.second(), padding, headerHeight + padding + 40);
+      //text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",padding, headerHeight + padding + 40);
       break;
     case 200:
       pageH1("Study");
@@ -140,7 +137,7 @@ void newSession(){
       break;
   }
   
-  if(isRecordingMind){
+  if(isRecordingMind && recording){
       int datetimestr1 = minute()*60+second();
       datetimestr = datetimestr1 - datetimestr0;
       
@@ -201,13 +198,15 @@ void screenshotThresholds(){
       line(0, height/2 + height/4, width, height/2 + height/4);
     }
     
-    if(attention > triggerLow || meditation > triggerLow){
-      if (hasFinished) {
-        triggerScreenshots(10);
+    if(recording){
+      if(attention > triggerLow || meditation > triggerLow){
+        if (hasFinished) {
+          triggerScreenshots(10);
+        }
+        if ((frameCount & 0xF) == 0)   print('.');
+      } else {
+        cancelScreenshots();
       }
-      if ((frameCount & 0xF) == 0)   print('.');
-    } else {
-      cancelScreenshots();
     }
     
     if(debug){
