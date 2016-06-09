@@ -930,6 +930,9 @@ public void keyPressed() {
     case 'w':
       sw.start();
       break;
+    case 'e':
+      sw.playPause();
+      break;
     }
   }
 }

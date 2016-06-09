@@ -2,30 +2,52 @@
 // This class based on code found here: http://www.goldb.org/stopwatchjava.html
 
 class CountDown {
-  int startTime = 0, stopTime = 0;
+  int startTime = 0, stopTime = 0, pauseTime = 0;
+  int pauseStart = 0;
+  int pauseEnd = 0;
   int countDownStart = 1000 * 60 * 5;
+  int elapsed = 0;
+  //int countDownStart = 1000 * 5;
+  boolean paused = false;
   
   void start() {
-      startTime = millis();
-      recording = true;
+    pauseTime = 0;
+    startTime = millis();
+    recording = true;
+    paused = true;
   }
   void stop() {
-      //stopTime = millis();
-      recording = false;
+    stopTime = millis();
+    recording = false;
+  }
+  
+  void playPause() {
+    if(paused){
+      pauseStart = millis();
+    } else {
+      pauseEnd = millis();
+    }
+    
+    if(pauseStart < pauseEnd) {
+      pauseTime = pauseEnd - pauseStart + pauseTime;
+    }
+    
+    recording = !recording;
+    paused = !paused;
   }
   
   int getElapsedTime() {
-      int elapsed;
-      if (recording) {
-        elapsed = (startTime - millis()) + countDownStart;
-        if(elapsed < 500 && elapsed >= 0){
-          this.stop();
-        }
-      } else {
-         //elapsed = (startTime - stopTime);
-         elapsed = 0;
+    
+    if (recording) {
+      elapsed = (startTime - millis()) + countDownStart + pauseTime;
+    } else {
+      //elapsed = (startTime - stopTime);
+      if(elapsed >= 0 && elapsed < 500){
+        elapsed = 0;
+        this.stop();
       }
-      return elapsed;
+    }
+    return elapsed;
   }
   
   int second() {
