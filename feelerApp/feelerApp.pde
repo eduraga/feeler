@@ -79,6 +79,7 @@ float containerPosX;
 float containerPosY;
 int videoWidth = 640;
 int videoHeight = 480;
+int recControlersWidth = 300;
 
 int assess1 = 50;
 int assess2 = 50;
@@ -304,7 +305,19 @@ public void setup() {
     ;
   cp5.getController("startSession").moveTo("global");
   cp5.getController("startSession").hide();
+  
 
+  cp5.addButton("playPauseBt")
+    .setBroadcast(false)
+    .setLabel("Pause")
+    .setPosition(width/2 - 25, containerPosY + padding * 2)
+    .setSize(50, 50)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("playPauseBt").moveTo("global");
+  cp5.getController("playPauseBt").hide();
 
   //Session assessment
   cp5.addSlider("assess1")
@@ -644,6 +657,17 @@ public void startSession(int theValue) {
   boxState = 100;
 }
 
+public void playPauseBt(int theValue){
+  sw.playPause();
+  println(recording);
+  if(recording){
+    cp5.getController("playPauseBt").setLabel("Pause");
+  } else {
+    cp5.getController("playPauseBt").setLabel("Play");
+  }
+  
+}
+
 
 public void assess1Bt(int theValue) {
   assessQuestion = 2;
@@ -796,7 +820,7 @@ public void addUserAreaControllers() {
   cp5.addTab("eegActivity");
   cp5.getTab("eegActivity")
     .activateEvent(true)
-    .setId(5)
+    .setId(6)
     ;
 
   //other controllers

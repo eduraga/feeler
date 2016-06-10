@@ -74,7 +74,6 @@ void newSession(){
     screenshotThresholds();
   }
   
-  
   switch(boxState){
     case 0:
       if(mindSetOK || simulateMindSet){
@@ -110,14 +109,23 @@ void newSession(){
       timeline = 1;
       fill(textDarkColor);
       text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
-      text(sw.minute() + ":" + sw.second(), padding, headerHeight + padding + 40);
-      //text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",padding, headerHeight + padding + 40);
+      counterDisplay();
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End meditation");
+        sw.start();
+        boxState = 200;
+      }
       break;
     case 200:
       pageH1("Study");
-      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
-            padding, headerHeight + padding + 40);
+      text("Focus on your work. Let the time fly", padding, headerHeight + padding + 20);
       timeline = 2;
+      counterDisplay();
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End study");
+        sw.stop();
+        boxState = 300;
+      }
       break;
     case 300:
       pageH1("Assess");
@@ -182,6 +190,14 @@ void assess(int questionNo, String question){
   }
 }
 
+
+void counterDisplay(){
+  pushStyle();
+  textSize(38);
+  textAlign(CENTER);
+  text(sw.minute() + ":" + sw.second(), width/2, containerPosY + padding);
+  popStyle();
+}
 
 void screenshotThresholds(){
 

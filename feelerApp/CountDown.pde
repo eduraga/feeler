@@ -5,8 +5,8 @@ class CountDown {
   int startTime = 0, stopTime = 0, pauseTime = 0;
   int pauseStart = 0;
   int pauseEnd = 0;
-  int countDownStart = 1000 * 60 * 5;
   int elapsed = 0;
+  int countDownStart = 1000 * 60 * 5;
   //int countDownStart = 1000 * 5;
   boolean paused = false;
   
@@ -14,7 +14,8 @@ class CountDown {
     pauseTime = 0;
     startTime = millis();
     recording = true;
-    paused = true;
+    cp5.getController("playPauseBt").show();
+    //paused = true;
   }
   void stop() {
     stopTime = millis();
