@@ -13,10 +13,10 @@ class LineChart {
       if(sessionFolders.length < 10){
        _listSize = listSize;
       } else {
-       _listSize = 10;
+       _listSize = sessionFolders.length;
       }
     } else {
-      _listSize = 2;
+      _listSize = sessionFolders.length;
     }
     
   }
@@ -33,6 +33,7 @@ class LineChart {
     rect(visX - padding, visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
     if(fileName != null){
+      
       for(int i = 0; i < _listSize; i++){
         if(sessionFolders[i].charAt(0) == '2'){
           textAlign(LEFT, CENTER);
@@ -80,6 +81,7 @@ class LineChart {
           }
           
           if(type == "averages"){
+            
             if(attentionAverageList[i] > 0){
               fill(attentionColor);
               ellipse(thisX, attAvg, dotSize, dotSize);
@@ -96,7 +98,7 @@ class LineChart {
             text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
           } else {
             noFill();
-            if(i>0 && data.data != null){
+            if(i>=0 && data.data != null){
               for (int j = 0; j < data.data.length; j+=grainSize) {
                 if (data.data[j][12] > 0 && j>0) {
                   
@@ -142,9 +144,9 @@ class LineChart {
                     &&
                     mouseX <= thisX
                     &&
-                    mouseY > visX - padding
+                    mouseY > visY
                     &&
-                    mouseY < visHeight + visX - padding
+                    mouseY < visHeight + visY
                   ){
                     
                     fill(255, 100);

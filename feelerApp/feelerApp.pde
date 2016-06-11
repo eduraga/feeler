@@ -55,7 +55,11 @@ boolean isNewUser = false;
 final static int TIMER = 100;
 static boolean isEnabled = true;
 
+CountDown sw = new CountDown();
+boolean recording = false; 
+
 //UI variables
+PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct;
 int headerHeight = 100;
@@ -75,6 +79,7 @@ float containerPosX;
 float containerPosY;
 int videoWidth = 640;
 int videoHeight = 480;
+int recControlersWidth = 300;
 
 int assess1 = 50;
 int assess2 = 50;
@@ -140,6 +145,9 @@ int boxState = 0;
 //MindSet stuff
 MindSet mindSet;
 boolean simulateMindSet = true;
+boolean mindSetOK = false;
+Serial mindSetPort;
+int mindSetId;
 
 public void setup() {
   smooth();
@@ -151,8 +159,8 @@ public void setup() {
   hoverDownRight = new PVector(0,0);
 
   //size(1200, 850);
-  size(1000, 700);
-  //size(displayWidth, displayHeight);
+  //size(1000, 700);
+  size(displayWidth, displayHeight);
   
   //fullScreen();
   surface.setResizable(true);
@@ -190,19 +198,22 @@ public void setup() {
   //Create UI elements
   containerPosX = width/2 - videoWidth/2;
   containerPosY = height/2 - videoHeight/2;
+  
+  logo = loadImage("feeler-logo.png");
 
-  PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
-  cp5.addButton("homeBt")
-    .setBroadcast(false)
-    .setPosition(20, 20)
-    .setSize(241, 63)
-    .setLabel("Feeler")
-    .setImages(imgs)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("homeBt").moveTo("global");
+  //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
+  
+  //cp5.addButton("homeBt")
+  //  .setBroadcast(false)
+  //  .setPosition(20, 20)
+  //  .setSize(241, 63)
+  //  .setLabel("Feeler")
+  //  .setImages(imgs)
+  //  .setValue(1)
+  //  .setBroadcast(true)
+  //  .getCaptionLabel().align(CENTER, CENTER)
+  //  ;
+  //cp5.getController("homeBt").moveTo("global");
 
   cp5.getTab("default")
     .activateEvent(true)
@@ -282,12 +293,10 @@ public void setup() {
   cp5.getController("logoutBt").moveTo("global");
   cp5.getController("logoutBt").hide();
 
-
-
   //Session
   cp5.addButton("startSession")
     .setBroadcast(false)
-    .setLabel("Record (start session)")
+    .setLabel("Record")
     .setPosition(padding, headerHeight + padding * 7)
     .setSize(200, 80)
     .setValue(1)
@@ -296,7 +305,19 @@ public void setup() {
     ;
   cp5.getController("startSession").moveTo("global");
   cp5.getController("startSession").hide();
+  
 
+  cp5.addButton("playPauseBt")
+    .setBroadcast(false)
+    .setLabel("Pause")
+    .setPosition(width/2 - 25, containerPosY + padding * 2)
+    .setSize(50, 50)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("playPauseBt").moveTo("global");
+  cp5.getController("playPauseBt").hide();
 
   //Session assessment
   cp5.addSlider("assess1")
@@ -358,30 +379,27 @@ public void setup() {
     ;
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
-
+  
   cp5.addButton("assess3Bt")
-    .setLabel("Submit")
-    .setPosition(padding, headerHeight + padding * 6)
-    .setSize(70, 20)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
+  .setBroadcast(false)
+  .setLabel("Submit")
+  .setPosition(padding, headerHeight + padding * 6)
+  .setSize(70, 20)
+  //.setValue(1)
+  .setBroadcast(true)
+  .getCaptionLabel().align(CENTER, CENTER)
+  ;
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
+  
   /////////////////////////////////
 
-
-  //Setup Mindset
-  if (!simulateMindSet) {
-    mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
-  }
 }
 
 public void draw() {
   background(255);
   fill(0);
-  
+  image(logo, 20, 20);
   
   if(
     mouseX > hoverUpLeft.x &&
@@ -394,8 +412,6 @@ public void draw() {
   } else {
     cursor(ARROW);
   }
-  
-  
   
 
   if (isLoggedIn) {
@@ -452,9 +468,16 @@ public void draw() {
 
     fill(50);
     text(s, padding, height-90, width/3, height-90);
+    
+    if(userFolder != null){
+      text(userFolder, padding, height-110);
+    }
+    
+    
 
 
     if (simulateMindSet) {
+      text("generating simulated data", padding, height-130);
       simulate();
     }
 
@@ -501,6 +524,8 @@ public void controlEvent(ControlEvent theControlEvent) {
     break;
   case "startSession":
     println("startSession");
+    sw.start();
+    
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
@@ -590,8 +615,8 @@ public void controlEvent(ControlEvent theControlEvent) {
 }
 
 public void homeBt(int theValue) {
-  cp5.getTab("default").bringToFront();
   currentPage = "home";
+  //cp5.getTab("default").bringToFront();
   if (isLoggedIn) {
     cp5.getController("loginBt").hide();
   }
@@ -630,6 +655,17 @@ public void export(int theValue) {
 public void startSession(int theValue) {
   //currentPage = "meditate";
   boxState = 100;
+}
+
+public void playPauseBt(int theValue){
+  sw.playPause();
+  println(recording);
+  if(recording){
+    cp5.getController("playPauseBt").setLabel("Pause");
+  } else {
+    cp5.getController("playPauseBt").setLabel("Play");
+  }
+  
 }
 
 
@@ -784,7 +820,7 @@ public void addUserAreaControllers() {
   cp5.addTab("eegActivity");
   cp5.getTab("eegActivity")
     .activateEvent(true)
-    .setId(5)
+    .setId(6)
     ;
 
   //other controllers
@@ -876,7 +912,7 @@ public void mousePressed() {
 
 void mouseWheel(MouseEvent event) {
   e = event.getCount();
-}
+} 
 
 public void keyPressed() {
   if (debug) {
@@ -912,6 +948,15 @@ public void keyPressed() {
       break;
     case 'm':
       simulateMindSet = !simulateMindSet;
+    case 'q':
+      sw.stop();
+      break;
+    case 'w':
+      sw.start();
+      break;
+    case 'e':
+      sw.playPause();
+      break;
     }
   }
 }
@@ -928,12 +973,14 @@ public void screenshot() {
   frame.setLocation(0, 0);
 }
 
+
 void folderSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
   } else {
     println("User selected " + selection.getAbsolutePath());
       
+    //save brain activity
     File fin = new File(userFolder + "/" + sessionFolders[currentItem] + "/brain-activity.tsv");
     File fout = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/brain-activity.tsv"));
     
@@ -945,7 +992,29 @@ void folderSelected(File selection) {
       int i = 0;
       while((i=fis.read(buf))!=-1) {
         fos.write(buf, 0, i);
-        }
+      }
+      fis.close();
+      fos.close();
+    } catch (Exception e) {
+      println( "Error occured at ... " );
+      e.printStackTrace();
+    } finally {
+      // what to do when finished trying and catching ...               
+    }
+
+    //save assessment
+    File fin2 = new File(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
+    File fout2 = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/assessment.txt"));
+
+    try {
+      FileInputStream fis  = new FileInputStream(fin2);
+      FileOutputStream fos = new FileOutputStream(fout2);
+        
+      byte[] buf = new byte[1024];
+      int i = 0;
+      while((i=fis.read(buf))!=-1) {
+        fos.write(buf, 0, i);
+      }
       fis.close();
       fos.close();
     } catch (Exception e) {

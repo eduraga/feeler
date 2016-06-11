@@ -74,29 +74,58 @@ void newSession(){
     screenshotThresholds();
   }
   
-  
   switch(boxState){
     case 0:
-      cp5.getController("startSession").show();
-      pageH1("Start a session");
-      text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.",
-            padding, headerHeight + padding + 40);
+      if(mindSetOK || simulateMindSet){
+        cp5.getController("startSession").show();
+      }
+      
+      pageH1("New session");
+      //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
+
+      if (!mindSetOK && !simulateMindSet) {
+         textAlign(LEFT);
+         text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+         try {
+           //mindSetPort = new Serial(this, Serial.list()[2]);
+           mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+           println("port ok");
+           mindSetOK = true;
+         } catch (Exception e) {
+           println("port not ok");
+           mindSetOK = false;
+         }
+      } else {
+        text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+        PImage learningGoal = loadImage("learning-goal.png");
+        image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
+        text("2. Connect the boxes", padding, headerHeight + padding + 60);
+      }
       break;
     case 100:
       cp5.getController("startSession").hide();
-      pageH1("Relax");
+      pageH1("Meditate");
       isRecordingMind = true;
       timeline = 1;
       fill(textDarkColor);
-      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
-            padding, headerHeight + padding + 40);
-
+      text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
+      counterDisplay();
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End meditation");
+        sw.start();
+        boxState = 200;
+      }
       break;
     case 200:
       pageH1("Study");
-      text("The screen will change according to the amount of time dedicated to this module.\nOnce time is over, an animation showing how to connect the modules would appear.",
-            padding, headerHeight + padding + 40);
+      text("Focus on your work. Let the time fly", padding, headerHeight + padding + 20);
       timeline = 2;
+      counterDisplay();
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End study");
+        sw.stop();
+        boxState = 300;
+      }
       break;
     case 300:
       pageH1("Assess");
@@ -116,7 +145,7 @@ void newSession(){
       break;
   }
   
-  if(isRecordingMind){
+  if(isRecordingMind && recording){
       int datetimestr1 = minute()*60+second();
       datetimestr = datetimestr1 - datetimestr0;
       
@@ -162,6 +191,14 @@ void assess(int questionNo, String question){
 }
 
 
+void counterDisplay(){
+  pushStyle();
+  textSize(38);
+  textAlign(CENTER);
+  text(sw.minute() + ":" + sw.second(), width/2, containerPosY + padding);
+  popStyle();
+}
+
 void screenshotThresholds(){
 
     if(debug){
@@ -177,13 +214,15 @@ void screenshotThresholds(){
       line(0, height/2 + height/4, width, height/2 + height/4);
     }
     
-    if(attention > triggerLow || meditation > triggerLow){
-      if (hasFinished) {
-        triggerScreenshots(10);
+    if(recording){
+      if(attention > triggerLow || meditation > triggerLow){
+        if (hasFinished) {
+          triggerScreenshots(10);
+        }
+        if ((frameCount & 0xF) == 0)   print('.');
+      } else {
+        cancelScreenshots();
       }
-      if ((frameCount & 0xF) == 0)   print('.');
-    } else {
-      cancelScreenshots();
     }
     
     if(debug){
@@ -258,9 +297,11 @@ void cancelScreenshots(){
 //MindSet functions
 
 void exit() {
-  println("Exiting");
-  mindSet.quit();
-  super.exit();
+  if(!simulateMindSet){
+    println("Exiting");
+    mindSet.quit();
+    super.exit();
+  }
 }
 
 
