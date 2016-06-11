@@ -123,6 +123,7 @@ void newSession(){
       counterDisplay();
       if(sw.minute() == 0 && sw.second() == 0){
         println("End study");
+        cp5.getController("playPauseBt").hide();
         sw.stop();
         boxState = 300;
       }

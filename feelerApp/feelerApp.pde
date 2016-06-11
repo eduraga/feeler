@@ -943,6 +943,9 @@ public void keyPressed() {
       boxState = 200;
       break;
     case 'a':
+      cp5.getController("playPauseBt").hide();
+      sw.stop();
+      
       if (currentPage == "newSession") {
         boxState = 300;
         assessQuestion = 1;
@@ -956,6 +959,7 @@ public void keyPressed() {
       simulateMindSet = !simulateMindSet;
     case 'q':
       sw.stop();
+      cp5.getController("playPauseBt").hide();
       break;
     case 'w':
       sw.start();
