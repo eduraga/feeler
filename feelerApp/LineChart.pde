@@ -52,7 +52,7 @@ class LineChart {
             prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visY, visHeight + visY);
           }
           
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){            
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
             if(type == "averages"){
               hoverUpLeft.set(thisX - dotSize/2, visY);
               hoverDownRight.set(thisX + dotSize/2, visY + visHeight + dotSize/2);
@@ -61,21 +61,6 @@ class LineChart {
                 fill(250);
                 rect(thisX - dotSize/2, visY, dotSize, visHeight + dotSize/2);
               }
-            }
-            
-            if(mouseY >= rlxAvg - dotSize/2 && mouseY <= rlxAvg + dotSize/2){
-              //noFill();
-              //stroke(0);
-              //rect(thisX - dotSize/2, rlxAvg - dotSize/2, dotSize, dotSize); // boundin box
-              fill(textDarkColor);
-              text(round(relaxationAverageList[i])+"%", thisX + 10, rlxAvg - dotSize);
-            }
-            if(mouseY >= attAvg - dotSize/2 && mouseY <= attAvg + dotSize/2){
-              //noFill();
-              //stroke(0);
-              //rect(thisX - dotSize/2, attAvg - dotSize/2, dotSize, dotSize); // bouning box
-              fill(textDarkColor);
-              text(round(attentionAverageList[i])+"%", thisX + 10, attAvg - dotSize);
             }
             noStroke();
           }
@@ -178,10 +163,33 @@ class LineChart {
         }
       }
       
+     
+      pushStyle();
+      textAlign(LEFT);
+      for(int i = 0; i < _listSize; i++){
+        if(sessionFolders[i].charAt(0) == '2'){
+          
+          float thisX = i * visWidth/_listSize + visX;
+          
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+            
+            fill(255);
+            stroke(textDarkColor);
+            rect(mouseX, mouseY - 50, 120, 50);
+            noStroke();
+            
+            fill(textDarkColor);
+            text("Meditation: " + round(relaxationAverageList[i])+"%", mouseX + padding/2, mouseY - 50 + padding);
+            text("Attention: " + round(attentionAverageList[i])+"%", mouseX + padding/2, mouseY - 50 + padding*2);
+          }
+        }
+      }
+      popStyle();
+      
       fill(textDarkColor);
       if(type == "averages"){
         textAlign(LEFT);
-        text("Averaged values of EEG data", visX, visHeight + visY + 60);
+        text("Averaged values of EEG data", visX, visHeight + visY + padding * 3);
       } else if(type == "values"){
         textAlign(CENTER, CENTER);
         text("RELAX", visX + padding, visY, relaxEnd - (visX + padding), 20);

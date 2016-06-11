@@ -934,6 +934,7 @@ public void keyPressed() {
       boxState = 100;
       break;
     case 's':
+      sw.start();
       boxState = 200;
       break;
     case 'a':
