@@ -172,7 +172,7 @@ class LineChart {
           
           float thisX = i * visWidth/_listSize + visX;
           
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2 && mouseY >= visY && mouseY <= visY + visHeight + dotSize/2){
             
             fill(255);
             stroke(textDarkColor);
