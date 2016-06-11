@@ -86,6 +86,8 @@ int assess2 = 50;
 boolean assess3Toggle1 = true;
 boolean assess3Toggle2 = true;
 int assessQuestion = 0;
+int assessMeditationFeeling = 0;
+FeelingRadio feelingRadioMeditation, feelingRadioStudy, feelingRadioPlay;
 
 PVector hoverUpLeft, hoverDownRight;
 
@@ -200,6 +202,10 @@ public void setup() {
   containerPosY = height/2 - videoHeight/2;
   
   logo = loadImage("feeler-logo.png");
+  
+  feelingRadioMeditation = new FeelingRadio(20, 300, "Mediatation");
+  feelingRadioStudy = new FeelingRadio(20, 300 + 50 + padding*2, "Study");
+  feelingRadioPlay = new FeelingRadio(20, 300 + 50*2 + padding*4, "Play");
 
   //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
   
@@ -305,7 +311,6 @@ public void setup() {
     ;
   cp5.getController("startSession").moveTo("global");
   cp5.getController("startSession").hide();
-  
 
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
@@ -318,10 +323,9 @@ public void setup() {
     ;
   cp5.getController("playPauseBt").moveTo("global");
   cp5.getController("playPauseBt").hide();
-
-  //Session assessment
+  
   cp5.addSlider("assess1")
-    .setPosition(padding, headerHeight + padding * 3)
+    .setPosition(padding, headerHeight + padding * 4)
     .setRange(0, 100)
     ;
   cp5.getController("assess1").moveTo("global");
@@ -330,7 +334,7 @@ public void setup() {
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 4)
+    .setPosition(padding, headerHeight + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -400,6 +404,10 @@ public void draw() {
   background(255);
   fill(0);
   image(logo, 20, 20);
+  
+  feelingRadioMeditation.draw();
+  feelingRadioStudy.draw();
+  feelingRadioPlay.draw();
   
   if(
     mouseX > hoverUpLeft.x &&
@@ -484,7 +492,6 @@ public void draw() {
 
     if (currentPage == "newSession") {
       String s2 = "Box state: " + boxState +
-        "\nPress 'P' to to start a session" +
         "\nPress 'S' to study" +
         "\nPress 'A' to assess"
         ;
@@ -534,7 +541,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
 
-    String[] tempAssessment = {"0", "0", "false", "false"};
+    String[] tempAssessment = {"0", "0", "false", "false", "0"};
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
@@ -695,7 +702,7 @@ public void assess3Bt(int theValue) {
   output.flush();
   output.close();
 
-  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
+  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2), str(assessMeditationFeeling)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
 
@@ -908,6 +915,10 @@ public void mousePressed() {
     eegAct.onClick();
     break;
   }
+  
+  feelingRadioMeditation.click();
+  feelingRadioStudy.click();
+  feelingRadioPlay.click();
 }
 
 void mouseWheel(MouseEvent event) {
@@ -929,9 +940,6 @@ public void keyPressed() {
       break;
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
-      break;
-    case 'p':
-      boxState = 100;
       break;
     case 's':
       sw.start();

@@ -128,9 +128,9 @@ void newSession(){
       }
       break;
     case 300:
-      pageH1("Assess");
+      pageH1("Assess your personal experience");
       if(assessQuestion == 1){
-        assess(assessQuestion, "How attentive were you during the session?");
+        assess(assessQuestion, "1/3 Select how you felt during:");
       } else if(assessQuestion == 2){
         assess(assessQuestion, "How relaxed were you during the session?");
       } else if(assessQuestion == 3){
