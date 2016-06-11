@@ -80,7 +80,8 @@ class LineChart {
             
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
-            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + 40);
+            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visY + padding*2);
+            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visY + padding*3);
           } else {
             noFill();
             if(i>=0 && data.data != null){
@@ -189,7 +190,7 @@ class LineChart {
       fill(textDarkColor);
       if(type == "averages"){
         textAlign(LEFT);
-        text("Averaged values of EEG data", visX, visHeight + visY + padding * 3);
+        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + visY + padding * 5);
       } else if(type == "values"){
         textAlign(CENTER, CENTER);
         text("RELAX", visX + padding, visY, relaxEnd - (visX + padding), 20);
