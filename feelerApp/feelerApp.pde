@@ -88,6 +88,7 @@ boolean assess3Toggle2 = true;
 int assessQuestion = 0;
 int assessMeditationFeeling = 0;
 FeelingRadio feelingRadioMeditation, feelingRadioStudy, feelingRadioPlay;
+String feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay;
 
 PVector hoverUpLeft, hoverDownRight;
 
@@ -405,10 +406,6 @@ public void draw() {
   fill(0);
   image(logo, 20, 20);
   
-  feelingRadioMeditation.draw();
-  feelingRadioStudy.draw();
-  feelingRadioPlay.draw();
-  
   if(
     mouseX > hoverUpLeft.x &&
     mouseX < hoverDownRight.x
@@ -541,7 +538,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
 
-    String[] tempAssessment = {"0", "0", "false", "false", "0"};
+    String[] tempAssessment = {"0", "0", "false", "false", "", "", ""};
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
@@ -702,7 +699,7 @@ public void assess3Bt(int theValue) {
   output.flush();
   output.close();
 
-  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2), str(assessMeditationFeeling)};
+  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2), feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
 

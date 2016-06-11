@@ -3,7 +3,7 @@ class FeelingRadio {
   int imgSz = 48;
   String _label;
   String[] feelings = {"good", "neutral", "bad"};
-  String checked;
+  String checked = "";
   
   PImage good = loadImage("assess-good.png");
   PImage goodChecked = loadImage("assess-good-checked.png");
@@ -61,11 +61,26 @@ class FeelingRadio {
       this.checked = feelings[1];
     } else if(this.over(_x + imgSz*2, imgY, imgSz, imgSz)){
       this.checked = feelings[2];
-    } else {
-      //this.checked = "";
+    }
+    
+    switch(_label) {
+      case "Mediatation":
+        feelingAssessMeditation = this.checked;
+        break;
+      case "Study":
+        feelingAssessStudy = this.checked;
+        break;
+      case "Play":
+        feelingAssessPlay = this.checked;
+        break;
+      default:
+        break;
     }
     
     println(this.checked);
+    println("feelingAssessMeditation: " + feelingAssessMeditation);
+    println("feelingAssessStudy: " + feelingAssessStudy);
+    println("feelingAssessPlay: " + feelingAssessPlay);
   }
   
   boolean over(int x, int y, int width, int height)  {
