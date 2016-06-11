@@ -140,7 +140,7 @@ void newSession(){
       } else if(assessQuestion == 2){
         assess(assessQuestion, "2/3 Select how your level of relaxation during:");
       } else if(assessQuestion == 3){
-        assess(assessQuestion, "Your performance");
+        assess(assessQuestion, "3/3 Select how your level of attention during");
       } else if(assessQuestion == 4){
         assess(assessQuestion, "Answers saved!");
       }
@@ -184,15 +184,11 @@ void newSession(){
 }
 
 void assess(int questionNo, String question){
-  if(questionNo != 4){
-    text(questionNo, padding, headerHeight + padding*2);
-  }
   
   text(question, padding*2, headerHeight + padding*2);
   
-  if(questionNo == 3){
-    text("Did you have a goal during the session?", padding*2, headerHeight + padding*3.5);
-    text("If yes, did you reach it?", padding*2, headerHeight + padding*5);
+  if(questionNo != 4){
+    text(questionNo, padding, headerHeight + padding*2);
   }
 }
 
