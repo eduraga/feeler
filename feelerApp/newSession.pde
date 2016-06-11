@@ -138,7 +138,7 @@ void newSession(){
         feelingRadioPlay.draw();
         
       } else if(assessQuestion == 2){
-        assess(assessQuestion, "How relaxed were you during the session?");
+        assess(assessQuestion, "2/3 Select how your level of relaxation during:");
       } else if(assessQuestion == 3){
         assess(assessQuestion, "Your performance");
       } else if(assessQuestion == 4){

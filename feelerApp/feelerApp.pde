@@ -81,14 +81,14 @@ int videoWidth = 640;
 int videoHeight = 480;
 int recControlersWidth = 300;
 
-int assess1 = 50;
-int assess2 = 50;
 boolean assess3Toggle1 = true;
 boolean assess3Toggle2 = true;
 int assessQuestion = 0;
-int assessMeditationFeeling = 0;
 FeelingRadio feelingRadioMeditation, feelingRadioStudy, feelingRadioPlay;
 String feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay;
+int assessMeditation = 50;
+int assessStudy = 50;
+int assessPlay = 50;
 
 PVector hoverUpLeft, hoverDownRight;
 
@@ -324,13 +324,6 @@ public void setup() {
     ;
   cp5.getController("playPauseBt").moveTo("global");
   cp5.getController("playPauseBt").hide();
-  
-  cp5.addSlider("assess1")
-    .setPosition(padding, headerHeight + padding * 4)
-    .setRange(0, 100)
-    ;
-  cp5.getController("assess1").moveTo("global");
-  cp5.getController("assess1").hide();
 
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
@@ -343,18 +336,39 @@ public void setup() {
     ;
   cp5.getController("assess1Bt").moveTo("global");
   cp5.getController("assess1Bt").hide();
-
-  cp5.addSlider("assess2")
+  
+  
+  cp5.addSlider("assessMeditation")
+    .setLabel("Meditation")
+    .setColorLabel(textDarkColor)
     .setPosition(padding, headerHeight + padding * 3)
     .setRange(0, 100)
     ;
-  cp5.getController("assess2").moveTo("global");
-  cp5.getController("assess2").hide();
-
+  cp5.getController("assessMeditation").moveTo("global");
+  cp5.getController("assessMeditation").hide();
+  
+  cp5.addSlider("assessStudy")
+    .setLabel("Study")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 4)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessStudy").moveTo("global");
+  cp5.getController("assessStudy").hide();
+  
+  cp5.addSlider("assessPlay")
+    .setLabel("Play")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 5)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessPlay").moveTo("global");
+  cp5.getController("assessPlay").hide();
+  
   cp5.addButton("assess2Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 4)
+    .setPosition(padding, headerHeight + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -362,6 +376,8 @@ public void setup() {
     ;
   cp5.getController("assess2Bt").moveTo("global");
   cp5.getController("assess2Bt").hide();
+  
+  
 
   cp5.addToggle("assess3Toggle1")
     .setColorLabel(color(0))
@@ -494,9 +510,7 @@ public void draw() {
         ;
       text(s2, width/3 + padding*2, height-90, width/2, height-90);
 
-      String s3 = "Assessment question 1: " + assess1 + "%" +
-        "\nAssessment question 2: " + assess2 + "%" +
-        "\nAssessment question 3a: " + assess3Toggle1 +
+      String s3 = "\nAssessment question 3a: " + assess3Toggle1 +
         "\nAssessment question 3b: " + assess3Toggle2
         ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
@@ -537,8 +551,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     sessionFolder.mkdir();
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
-
-    String[] tempAssessment = {"0", "0", "false", "false", "", "", ""};
+    String[] tempAssessment = {"", "", "", "50", "50", "50"};
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
@@ -672,19 +685,24 @@ public void playPauseBt(int theValue){
   
 }
 
-
 public void assess1Bt(int theValue) {
   assessQuestion = 2;
-  cp5.getController("assess1").hide();
+  
+  cp5.getController("assessMeditation").show();
+  cp5.getController("assessStudy").show();
+  cp5.getController("assessPlay").show();
+  
   cp5.getController("assess1Bt").hide();
-  cp5.getController("assess2").show();
   cp5.getController("assess2Bt").show();
 }
 
 public void assess2Bt(int theValue) {
   assessQuestion = 3;
-  cp5.getController("assess2").hide();
-  cp5.getController("assess2Bt").hide();
+  
+  cp5.getController("assessMeditation").hide();
+  cp5.getController("assessStudy").hide();
+  cp5.getController("assessPlay").hide();
+  
   cp5.getController("assess3Bt").show();
   cp5.getController("assess3Toggle1").show();
   cp5.getController("assess3Toggle2").show();
@@ -699,7 +717,7 @@ public void assess3Bt(int theValue) {
   output.flush();
   output.close();
 
-  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2), feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay};
+  String[] assessment = {feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay, str(assessMeditation), str(assessStudy), str(assessPlay)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
 
@@ -950,7 +968,6 @@ public void keyPressed() {
         boxState = 300;
         assessQuestion = 1;
         if (assessQuestion == 1) {
-          cp5.getController("assess1").show();
           cp5.getController("assess1Bt").show();
         }
       }
