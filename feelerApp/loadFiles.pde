@@ -42,5 +42,6 @@ public void loadFiles(){
   }
   
   trends.setup("averages");
+  personalExperience.setup("personal");
 
 }

@@ -61,7 +61,7 @@ boolean recording = false;
 //UI variables
 PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
-LineChart trends, eegAct;
+LineChart trends, eegAct, personalExperience;
 int headerHeight = 100;
 int padding = 20;
 int userTabsX;
@@ -160,6 +160,7 @@ public void setup() {
   
   trends = new LineChart();
   eegAct = new LineChart();
+  personalExperience = new LineChart();
   
   hoverUpLeft = new PVector(0,0);
   hoverDownRight = new PVector(0,0);
@@ -196,7 +197,7 @@ public void setup() {
 
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
   personalAssSesion = new OverallAvgs("assessment", "Values based on your personal experience");
-  personalAvg = new OverallAvgs("personalAverage", "On average");
+  personalAvg = new OverallAvgs("eeg", "On average");
 
   eegAvg.setup(visWidth, visHeight);
   personalAssSesion.setup(visWidth, visHeight);
@@ -958,8 +959,8 @@ public void mousePressed() {
   case "singleSession":
     eegAvg.onClick(mouseX, mouseY);
     personalAssSesion.onClick(mouseX, mouseY);
-    personalAssSesion.setup(visWidth/2, visHeight/2);
-    personalAvg.setup(visWidth/2, visHeight/2);
+    personalAssSesion.setup(visWidth/2, visHeight/3);
+    personalAvg.setup(visWidth/2, visHeight/3);
     loadFile(currentItem);
     break;
   case "overall":

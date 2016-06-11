@@ -76,11 +76,6 @@ class FeelingRadio {
       default:
         break;
     }
-    
-    //println(this.checked);
-    //println("feelingAssessMeditation: " + feelingAssessMeditation);
-    //println("feelingAssessStudy: " + feelingAssessStudy);
-    //println("feelingAssessPlay: " + feelingAssessPlay);
   }
   
   boolean over(int x, int y, int width, int height)  {
