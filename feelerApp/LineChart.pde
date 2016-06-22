@@ -12,27 +12,33 @@ class LineChart {
   void setup(String _type){
     
     type = _type;
-    if(type == "averages"){
-      _visY = visY;
-      if(sessionFolders.length < 10){
-       _listSize = listSize;
-      } else {
-       _listSize = sessionFolders.length;
-      }
-    } else if (type == "personal") {
-      _visY = visY + visHeight/2;
-      _listSize = 3;
-    } else {
-      _visY = visY + headerHeight + padding*2;
-      _listSize = sessionFolders.length;
-    }
     
-    stepSize = visWidth/_listSize;
+    if(sessionFolders != null){
+      if(type == "averages"){
+        _visY = visY;
+        if(sessionFolders.length < 10){
+         _listSize = listSize;
+        } else {
+         _listSize = sessionFolders.length;
+        }
+      } else if (type == "personal") {
+        _visY = visY + visHeight/2;
+        _listSize = 3;
+      } else {
+        _visY = visY + headerHeight + padding*2;
+        _listSize = sessionFolders.length;
+      }
+      stepSize = visWidth/_listSize;
+    } else {
+      _visY = visY;
+      _listSize = 1;
+      stepSize = 1;
+    }
     
   }
   
   void display(){
-
+    
     float relaxEnd = 0;
     float studyEnd = 0;
     float assessEnd = 0;
@@ -42,7 +48,7 @@ class LineChart {
     fill(graphBgColor);
     rect(visX - padding, _visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
-    if(fileName != null){      
+    if(fileName != null && sessionFolders != null){
       for(int i = 0; i < _listSize; i++){
         if(sessionFolders[i].charAt(0) == '2'){
           textAlign(LEFT, CENTER);
@@ -277,8 +283,9 @@ class LineChart {
         text("ASSESS", studyEnd, _visY, assessEnd - studyEnd, 20);
       }
     } else {
+        fill(textDarkColor);
         textAlign(CENTER);
-        text("It seems you have no data yet.\nGo ahead and start a new session to generate some.", visX, visHeight/2 + _visY, visWidth, visHeight);
+        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + _visY, visWidth, visHeight);
     }
     
     //Labels
@@ -292,31 +299,33 @@ class LineChart {
     hoverUpLeft.set(0,0);
     hoverDownRight.set(0,0);
     
-    if(sessionFolders.length == 0){
-    } else {
-      String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
-      assessmentData = lines;
-    }
-    
-    if(fileName != null){
-      for(int i = 0; i < _listSize; i++){
-        if(fileName[0].charAt(0) != '.'){
-          float thisX = i * stepSize + visX + stepSize/2;
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            if(type == "averages"){
-              if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
-                currentPage = "singleSession";
-                cp5.getTab("singleSession").bringToFront();
-                currentSession = sessionFolders[i];
-                currentItem = i;
+    if(sessionFolders != null){
+      println(mouseX + " " + (visX - padding));
+      println(mouseY + " " + (visY - padding) + " " + ((_visY - padding) + visHeight));
+      
+      if(sessionFolders.length == 0){
+      } else {
+        String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
+        assessmentData = lines;
+      }
+      
+      if(fileName != null){
+        for(int i = 0; i < _listSize; i++){
+          if(fileName[0].charAt(0) != '.'){
+            float thisX = i * stepSize + visX + stepSize/2;
+            if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+              if(type == "averages"){
+                if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
+                  currentPage = "singleSession";
+                  cp5.getTab("singleSession").bringToFront();
+                  currentSession = sessionFolders[i];
+                  currentItem = i;
+                }
               }
             }
           }
         }
       }
     }
-    
   }
-  
-
 }

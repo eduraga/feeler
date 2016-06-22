@@ -845,32 +845,7 @@ public void loginCheck() {
   }
 
   loadFiles();
-
-  //cp5.addScrollableList("loadFilesList")
-  //  .setPosition(padding, height/2)
-  //  .setLabel("Load session")
-  //  .setSize(200, 100)
-  //  .setBarHeight(20)
-  //  .setItemHeight(20)
-  //  .addItems(fileArray)
-  //  ;
-  //cp5.getController("loadFilesList").moveTo("overall");
-
-  //cp5.addButton("deleteFile")
-  //  .setBroadcast(false)
-  //  .setLabel("delete")
-  //  .setPosition(padding, height/2 + 100 + padding)
-  //  .setSize(70, 20)
-  //  .setValue(1)
-  //  .setBroadcast(true)
-  //  .getCaptionLabel().align(CENTER, CENTER)
-  //  ;
-  //cp5.getController("deleteFile").moveTo("overall");
-
-  /////////////////////////////
-
   currentPage = "overall";
-
   loading = false;
 }
 
