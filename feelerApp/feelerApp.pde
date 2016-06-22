@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.text.DecimalFormat;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -1014,12 +1015,18 @@ public void keyPressed() {
       sw.start();
       boxState = 200;
       break;
+    case 'p':
+      sw.stop();
+      cp5.getController("playPauseBt").show();
+      cp5.getController("stopBt").show();
+      boxState = 300;
+      break;
     case 'a':
       cp5.getController("playPauseBt").hide();
       sw.stop();
       
       if (currentPage == "newSession") {
-        boxState = 300;
+        boxState = 400;
         assessQuestion = 1;
         if (assessQuestion == 1) {
           cp5.getController("assess1Bt").show();

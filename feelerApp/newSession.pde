@@ -123,12 +123,25 @@ void newSession(){
       counterDisplay();
       if(sw.minute() == 0 && sw.second() == 0){
         println("End study");
-        cp5.getController("playPauseBt").hide();
-        sw.stop();
+        sw.start();
         boxState = 300;
       }
       break;
     case 300:
+      pageH1("Play");
+      text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
+      timeline = 3;
+      counterDisplay();
+      
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End play");
+        sw.stop();
+        boxState = 400;
+        assessQuestion = 1;
+        cp5.getController("assess1Bt").show();
+      }
+      break;
+    case 400:
       pageH1("Assess your personal experience");
       if(assessQuestion == 1){
         assess(assessQuestion, "1/3 Select how you felt during:");
@@ -144,7 +157,8 @@ void newSession(){
       } else if(assessQuestion == 4){
         assess(assessQuestion, "Answers saved!");
       }
-      timeline = 3;
+      timeline = 4;
+      recording = false;
       break;
     default:
       pageH1("Start a session");
@@ -197,7 +211,11 @@ void counterDisplay(){
   pushStyle();
   textSize(38);
   textAlign(CENTER);
-  text(sw.minute() + ":" + sw.second(), width/2, containerPosY + padding);
+  
+  String second = new DecimalFormat("00").format(sw.second());
+  String minute = new DecimalFormat("00").format(sw.minute());
+  
+  text(minute + ":" + second, width/2, containerPosY + padding);
   popStyle();
 }
 
