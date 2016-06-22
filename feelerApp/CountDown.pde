@@ -15,11 +15,30 @@ class CountDown {
     startTime = millis();
     recording = true;
     cp5.getController("playPauseBt").show();
-    //paused = true;
+    cp5.getController("stopBt").show();
   }
+  
+  
+  void deleteDir(File file) {
+    File[] contents = file.listFiles();
+    if (contents != null) {
+        for (File f : contents) {
+            deleteDir(f);
+        }
+    }
+    file.delete();
+  }
+
+
   void stop() {
+    //to delete uncompleted session data uncomment the following 2 lines:
+    //File path = new File(dataPath(sessionPath));
+    //this.deleteDir(path);
+    
     stopTime = millis();
     recording = false;
+    cp5.getController("playPauseBt").hide();
+    cp5.getController("stopBt").hide();
   }
   
   void playPause() {

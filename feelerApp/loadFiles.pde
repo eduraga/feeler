@@ -2,7 +2,6 @@ public void loadFiles(){
   File directory1 = new java.io.File(sketchPath(""));
   absolutePath = directory1.getAbsolutePath();
   
-  
   File tempUserDataFolder = new File(dataPath(absolutePath + "/user-data"));
   tempUserDataFolder.mkdir();
   

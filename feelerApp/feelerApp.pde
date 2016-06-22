@@ -320,7 +320,7 @@ public void setup() {
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
     .setLabel("Pause")
-    .setPosition(width/2 - 25, containerPosY + padding * 2)
+    .setPosition(width/2 - 50, containerPosY + padding * 2)
     .setSize(50, 50)
     .setValue(1)
     .setBroadcast(true)
@@ -328,6 +328,18 @@ public void setup() {
     ;
   cp5.getController("playPauseBt").moveTo("global");
   cp5.getController("playPauseBt").hide();
+  
+  cp5.addButton("stopBt")
+    .setBroadcast(false)
+    .setLabel("Stop")
+    .setPosition(width/2, containerPosY + padding * 2)
+    .setSize(50, 50)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("stopBt").moveTo("global");
+  cp5.getController("stopBt").hide();
   
   // assessment 1/3
   cp5.addButton("assess1Bt")
@@ -713,7 +725,11 @@ public void playPauseBt(int theValue){
   } else {
     cp5.getController("playPauseBt").setLabel("Play");
   }
-  
+}
+
+public void stopBt(int theValue){
+  boxState = 0;
+  sw.stop();
 }
 
 public void assess1Bt(int theValue) {
