@@ -179,31 +179,38 @@ class LineChart {
                         map(data.data[j][11], maxVal, 0, _visY, visHeight + _visY)
                   );
                   
-                  if(
-                    mouseX > previousX
-                    &&
-                    mouseX <= thisX
-                    &&
-                    mouseY > _visY
-                    &&
-                    mouseY < visHeight + _visY
-                  ){
-                    
-                    fill(255, 100);
-                    noStroke();
-                    rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
 
-                    File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
-                    screenshotsArray = imgTempFolder.list();
-                    for(int k = 0; k < screenshotsArray.length; k++){
-                      String screenshot = screenshotsArray[k]; 
-                      String[] screenshotTimeId = splitTokens(screenshot, "-");
-                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                        //println("screenshot["+k+"]:" + screenshotTimeId[0]);
+                  
+                  fill(255, 100);
+                  noStroke();
+                  rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
+
+                  File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
+                  screenshotsArray = imgTempFolder.list();
+                  for(int k = 0; k < screenshotsArray.length; k++){
+                    String screenshot = screenshotsArray[k]; 
+                    String[] screenshotTimeId = splitTokens(screenshot, "-");
+                    if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                      if(
+                        mouseX > previousX
+                        &&
+                        mouseX < thisX
+                        &&
+                        mouseY > _visY
+                        &&
+                        mouseY < visHeight + _visY
+                      ){
                         currentScreenshot = imgTempFolder + "/" +screenshot;
                       }
+                      
+                      pushStyle();
+                      fill(190);
+                      rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
+                      popStyle();
                     }
                   }
+                  
+                  
                 }
               }
 
@@ -211,6 +218,9 @@ class LineChart {
                 PImage screenshotImg = loadImage(currentScreenshot);
                 image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
               }
+              
+
+
             }
             
             noStroke();
