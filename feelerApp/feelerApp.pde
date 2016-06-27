@@ -382,11 +382,23 @@ public void setup() {
     ;
   cp5.getController("assessRelaxationPlay").moveTo("global");
   cp5.getController("assessRelaxationPlay").hide();
+
+  cp5.addButton("assess22Bt")
+    .setBroadcast(false)
+    .setLabel("Previous")
+    .setPosition(padding, headerHeight + padding * 6)
+    .setSize(70, 20)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("assess22Bt").moveTo("global");
+  cp5.getController("assess22Bt").hide();
   
   cp5.addButton("assess2Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 6)
+    .setPosition(padding + 80, headerHeight + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -445,10 +457,23 @@ public void setup() {
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
   
+  
+  cp5.addButton("assess33Bt")
+  .setBroadcast(false)
+  .setLabel("Previous")
+  .setPosition(padding, headerHeight + padding * 6)
+  .setSize(70, 20)
+  //.setValue(1)
+  .setBroadcast(true)
+  .getCaptionLabel().align(CENTER, CENTER)
+  ;
+  cp5.getController("assess33Bt").moveTo("global");
+  cp5.getController("assess33Bt").hide();
+  
   cp5.addButton("assess3Bt")
   .setBroadcast(false)
   .setLabel("Submit")
-  .setPosition(padding, headerHeight + padding * 6)
+  .setPosition(padding + 80, headerHeight + padding * 6)
   .setSize(70, 20)
   //.setValue(1)
   .setBroadcast(true)
@@ -462,6 +487,7 @@ public void setup() {
 }
 
 public void draw() {
+  println("assessQuestion: "+ assessQuestion);
   background(255);
   fill(0);
   image(logo, 20, 20);
@@ -742,6 +768,19 @@ public void assess1Bt(int theValue) {
   
   cp5.getController("assess1Bt").hide();
   cp5.getController("assess2Bt").show();
+  cp5.getController("assess22Bt").show();
+}
+
+public void assess22Bt(int theValue) {
+  cp5.getController("assessRelaxationMeditation").hide();
+  cp5.getController("assessRelaxationStudy").hide();
+  cp5.getController("assessRelaxationPlay").hide();
+  cp5.getController("assess22Bt").hide();
+  cp5.getController("assess2Bt").hide();
+
+  boxState = 400;
+  assessQuestion = 1;
+  cp5.getController("assess1Bt").show();
 }
 
 public void assess2Bt(int theValue) {
@@ -756,7 +795,26 @@ public void assess2Bt(int theValue) {
   cp5.getController("assessAttentionPlay").show();
   
   cp5.getController("assess2Bt").hide();
+  cp5.getController("assess22Bt").hide();
+  cp5.getController("assess33Bt").show();
   cp5.getController("assess3Bt").show();
+}
+
+public void assess33Bt(int theValue) {
+  assessQuestion = 2;
+  
+  cp5.getController("assessRelaxationMeditation").show();
+  cp5.getController("assessRelaxationStudy").show();
+  cp5.getController("assessRelaxationPlay").show();
+  
+  cp5.getController("assessAttentionMeditation").hide();
+  cp5.getController("assessAttentionStudy").hide();
+  cp5.getController("assessAttentionPlay").hide();
+  
+  cp5.getController("assess2Bt").show();
+  cp5.getController("assess22Bt").show();
+  cp5.getController("assess3Bt").hide();
+  cp5.getController("assess33Bt").hide();
 }
 
 public void assess3Bt(int theValue) {
@@ -769,6 +827,8 @@ public void assess3Bt(int theValue) {
   cp5.getController("assess3Bt").hide();
   cp5.getController("assess3Toggle1").hide();
   cp5.getController("assess3Toggle2").hide();
+  cp5.getController("assess33Bt").hide();
+  
   output.flush();
   output.close();
   
