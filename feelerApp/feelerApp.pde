@@ -952,7 +952,7 @@ public void mousePressed() {
     eegAvg.onClick(mouseX, mouseY);
     personalAssSesion.onClick(mouseX, mouseY);
     personalAssSesion.setup(visWidth/2, visHeight/3);
-    personalAvg.setup(visWidth/2, visHeight/3);
+    //personalAvg.setup(visWidth/2, visHeight/3);
     loadFile(currentItem);
     break;
   case "overall":

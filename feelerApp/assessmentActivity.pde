@@ -1,7 +1,7 @@
 void assessmentActivity(){
   pageH1("Relaxation and Attention levels");
-  personalAssSesion.display(currentItem);
-  personalAvg.display(currentItem);
+  //personalAssSesion.display(currentItem);
+  //personalAvg.display(currentItem);
   personalExperience.display();
   
   if(

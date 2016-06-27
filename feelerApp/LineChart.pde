@@ -12,17 +12,18 @@ class LineChart {
   void setup(String _type){
     
     type = _type;
+    _visY = visY;
     
     if(sessionFolders != null){
       if(type == "averages"){
-        _visY = visY;
+        //_visY = visY;
         if(sessionFolders.length < 10){
          _listSize = listSize;
         } else {
          _listSize = sessionFolders.length;
         }
       } else if (type == "personal") {
-        _visY = visY + visHeight/2;
+        //_visY = visY + visHeight/2;
         _listSize = 3;
       } else {
         _visY = visY + headerHeight + padding*2;
@@ -30,7 +31,7 @@ class LineChart {
       }
       stepSize = visWidth/_listSize;
     } else {
-      _visY = visY;
+      //_visY = visY;
       _listSize = 1;
       stepSize = 1;
     }
