@@ -487,7 +487,6 @@ public void setup() {
 }
 
 public void draw() {
-  println("assessQuestion: "+ assessQuestion);
   background(255);
   fill(0);
   image(logo, 20, 20);

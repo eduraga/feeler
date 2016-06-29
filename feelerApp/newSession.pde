@@ -154,8 +154,9 @@ void newSession(){
         assess(assessQuestion, "2/3 Select how your level of relaxation during:");
       } else if(assessQuestion == 3){
         assess(assessQuestion, "3/3 Select how your level of attention during");
+        hasFinished = false;
       } else if(assessQuestion == 4){
-        assess(assessQuestion, "Answers saved!");
+        assess(assessQuestion, "Answers saved!\nYour data is being loaded.");
       }
       timeline = 4;
       recording = false;
@@ -198,11 +199,22 @@ void newSession(){
 }
 
 void assess(int questionNo, String question){
-  
   text(question, padding*2, headerHeight + padding*2);
   
   if(questionNo != 4){
     text(questionNo, padding, headerHeight + padding*2);
+  } else {
+    if(hasFinished == false){
+      hasFinished = true;
+      t.schedule(new TimerTask() {
+        public void run() {
+          println("trigger");
+          hasFinished = true;
+          print(" " + nf(3, 0, 2));
+          currentPage = "eegActivity";
+        }
+      }, (long) (3*1e3));
+    }
   }
 }
 
