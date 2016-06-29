@@ -23,7 +23,6 @@ class LineChart {
          _listSize = sessionFolders.length;
         }
       } else if (type == "personal") {
-        //_visY = visY + visHeight/2;
         _listSize = 3;
       } else {
         _visY = visY + headerHeight + padding*2;
@@ -99,21 +98,6 @@ class LineChart {
             text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
             text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
           } else if(type == "personal"){
-            
-              pushStyle();
-              textAlign(CENTER);
-              fill(textDarkColor);
-              if(i == 0){
-                text("Meditate", thisX, _visY);
-              }
-              if(i == 1){
-                text("Study", thisX, _visY);
-              }
-              if(i == 2){
-                text("Play", thisX, _visY);
-              }
-              popStyle();
-            
               float prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
               float thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
               
@@ -145,9 +129,36 @@ class LineChart {
               
               fill(attentionColor);
               ellipse(thisX, thisStudy, dotSize, dotSize);
+              
+              float offset = (thisX - previousX)/2;
+
+              if(i == 0){
+                relaxEnd = thisX + offset;
+              }
+              if(i == 1){
+                studyEnd = thisX + offset;
+              }
+              if(i == 2){
+                assessEnd = thisX + offset;
+              }
             
             
           } else {
+            
+            //pushStyle();
+            //textAlign(CENTER);
+            //fill(textDarkColor);
+            //if(i == 0){
+            //text("Meditate", thisX, _visY);
+            //}
+            //if(i == 1){
+            //text("Study", thisX, _visY);
+            //}
+            //if(i == 2){
+            //text("Play", thisX, _visY);
+            //}
+            //popStyle();
+            
             noFill();
             if(i>=0 && data.data != null){
               for (int j = 0; j < data.data.length; j+=grainSize) {
@@ -188,9 +199,9 @@ class LineChart {
                   
 
                   
-                  fill(255, 100);
+                  //fill(255, 100);
                   noStroke();
-                  rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
+                  //rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
 
                   File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
                   screenshotsArray = imgTempFolder.list();
@@ -218,6 +229,7 @@ class LineChart {
                   }
                   
                   
+                  
                 }
               }
 
@@ -232,6 +244,8 @@ class LineChart {
             
             noStroke();
           }
+          
+
         }
       }
       
@@ -279,11 +293,27 @@ class LineChart {
         text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + _visY + padding * 5);
       } else if(type == "values"){
         textAlign(CENTER, CENTER);
-        text("RELAX", visX + padding, _visY, relaxEnd - (visX + padding), 20);
-        text("STUDY", relaxEnd, _visY, studyEnd - relaxEnd, 20);
-        text("ASSESS", studyEnd, _visY, assessEnd - studyEnd, 20);
+        
+        stroke(100,100);
+        line(relaxEnd, _visY, relaxEnd, _visY + visHeight);
+        line(studyEnd, _visY, studyEnd, _visY + visHeight);
+        
+        pushStyle();
+        textAlign(CENTER);
+        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        popStyle();
+      } else if(type == "personal"){
+        pushStyle();
+        textAlign(CENTER);
+        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        popStyle();
       }
     } else {
+
         fill(textDarkColor);
         textAlign(CENTER);
         text("Eager to see some data?\nStart a New session", visX, visHeight/2 + _visY, visWidth, visHeight);

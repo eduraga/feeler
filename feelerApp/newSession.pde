@@ -135,13 +135,15 @@ void newSession(){
       
       if(sw.minute() == 0 && sw.second() == 0){
         println("End play");
-        sw.stop();
+        sw.start();
         boxState = 400;
         assessQuestion = 1;
         cp5.getController("assess1Bt").show();
       }
       break;
     case 400:
+      recording = false;
+      sw.stop();
       pageH1("Assess your personal experience");
       if(assessQuestion == 1){
         assess(assessQuestion, "1/3 Select how you felt during:");
@@ -159,7 +161,6 @@ void newSession(){
         assess(assessQuestion, "Answers saved!\nYour data is being loaded.");
       }
       timeline = 4;
-      recording = false;
       break;
     default:
       pageH1("Start a session");
