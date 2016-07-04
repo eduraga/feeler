@@ -903,8 +903,8 @@ public void loginCheck() {
     }
   }
 
-  loadFiles();
   currentPage = "overall";
+  loadFiles();
   loading = false;
 }
 

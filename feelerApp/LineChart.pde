@@ -1,10 +1,21 @@
 class LineChart {
   String type;
   int _listSize;
-  int grainSize = 40;
+  int grainSize;
   int maxVal = 100;
   float stepSize;
   int _visY;
+  
+  float relaxEnd = 0;
+  float studyEnd = 0;
+  float assessEnd = 0;
+
+  FloatList thisX = new FloatList();
+  FloatList previousX = new FloatList();
+  FloatList thisAtt = new FloatList();
+  FloatList previousAtt = new FloatList();
+  FloatList thisRelax = new FloatList();
+  FloatList previousRelax = new FloatList();
 
   LineChart(){
   }
@@ -17,92 +28,208 @@ class LineChart {
     if(sessionFolders != null){
       if(type == "averages"){
         //_visY = visY;
+        grainSize = 1;
         if(sessionFolders.length < 10){
          _listSize = listSize;
         } else {
          _listSize = sessionFolders.length;
         }
       } else if (type == "personal") {
+        grainSize = 1;
         _listSize = 3;
-      } else {
+      } else if (type == "values") {
+        grainSize = 40;
         _visY = visY + headerHeight + padding*2;
-        _listSize = sessionFolders.length;
+        //_listSize = sessionFolders.length;
+    
+        //for(int i = 0; i < _listSize; i++){
+         //if(sessionFolders[i].charAt(0) == '2'){
+             if(data.data != null){
+               _listSize = data.data.length;
+               
+               for (int j = 0; j < _listSize; j+=grainSize) {
+                  //thisX.append(50);
+                  //previousX.append(50);
+                  //thisAtt.append(50);
+                  //previousAtt.append(50);
+                  //thisRelax.append(50);
+                  //previousRelax.append(50);
+                 
+                 if (data.data[j][12] > 0 && j > grainSize) {
+                   //thisX[j] = j * (visWidth - padding*2)/data.data.length + visX + padding;
+                   //previousX[j] = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
+                   
+                   thisX.set(j, j * (visWidth - padding*2)/data.data.length + visX + padding);
+                   previousX.set(j, (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding);
+                   
+                   if(data.data[j][12] == 1){
+                     fill(250);
+                     relaxEnd = thisX.get(j);
+                   }
+                   if(data.data[j][12] == 2){
+                    fill(230);
+                    studyEnd = thisX.get(j);
+                   }
+                   if(data.data[j][12] == 3){
+                     fill(210);
+                     assessEnd = thisX.get(j);
+                   }
+                   
+                   previousAtt.set(j, map(data.data[j-grainSize][10], maxVal, 0, _visY, visHeight + _visY));
+                   thisAtt.set(j, map(data.data[j][10], maxVal, 0, _visY, visHeight + _visY));
+                   previousRelax.set(j, map(data.data[j-grainSize][11], maxVal, 0, _visY, visHeight + _visY));
+                   thisRelax.set(j, map(data.data[j][11], maxVal, 0, _visY, visHeight + _visY));
+                   
+                   println(j + ": " + thisAtt.get(j));
+                   
+                   /////////////////////////////// Image stuff
+                   //////////////////////////////////////////////
+                   
+                   /*
+                   File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
+                   screenshotsArray = imgTempFolder.list();
+                   for(int k = 0; k < screenshotsArray.length; k++){
+                     String screenshot = screenshotsArray[k]; 
+                     String[] screenshotTimeId = splitTokens(screenshot, "-");
+                     if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                       if(
+                         mouseX > previousX
+                         &&
+                         mouseX < thisX
+                         &&
+                         mouseY > _visY
+                         &&
+                         mouseY < visHeight + _visY
+                       ){
+                         currentScreenshot = imgTempFolder + "/" +screenshot;
+                       }
+                        
+                       pushStyle();
+                       fill(190);
+                       rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
+                       popStyle();
+                     }
+                   }
+                    
+                   */
+                 }
+               }
+  
+               /*
+               if(currentScreenshot != ""){
+                 PImage screenshotImg = loadImage(currentScreenshot);
+                 image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
+               }
+               */
+             }
+          //}
+        
+        //}
+        
+        
+
       }
       stepSize = visWidth/_listSize;
     } else {
       //_visY = visY;
       _listSize = 1;
-      stepSize = 1;
+      stepSize = 1;      
     }
+    
+    
+
     
   }
   
-  void display(){
-    
-    float relaxEnd = 0;
-    float studyEnd = 0;
-    float assessEnd = 0;
-    
-    String currentScreenshot = "";
-    
+  void display(){    
     fill(graphBgColor);
     rect(visX - padding, _visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
     if(fileName != null && sessionFolders != null){
-      for(int i = 0; i < _listSize; i++){
-        if(sessionFolders[i].charAt(0) == '2'){
-          textAlign(LEFT, CENTER);
-          String[] fileDate = split(sessionFolders[i], '-');
-          
+      displayData();
+    } else {
+        fill(textDarkColor);
+        textAlign(CENTER);
+        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + _visY, visWidth, visHeight);
+    }
+    
+    //Labels
+    textAlign(LEFT, CENTER);
+    text("100%", visX - padding/2, _visY);
+    text("50%", visX - padding/2, _visY + visHeight/2 + dotSize/2);
+    text("0%", visX - padding/2, _visY + visHeight + dotSize/2);
+  }
+  
+  void displayData(){    
+      for(int i = 0; i < _listSize; i+=grainSize){
+
           float thisX = i * stepSize + visX + stepSize/2;
           float previousX = (i-1) * stepSize + visX + stepSize/2;
-          
-          float attAvg = map(attentionAverageList[i], 100, 0, _visY, visHeight + _visY);
-          float rlxAvg = map(relaxationAverageList[i], 100, 0, _visY, visHeight + _visY);
-          float prevAttAvg = 0;
-          float prevRlxAvg = 0;
-          
-          if(i>0){
-            prevAttAvg = map(attentionAverageList[i-1], 100, 0, _visY, visHeight + _visY);
-            prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, _visY, visHeight + _visY);
-          }
-          
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            if(type == "averages"){
-              hoverUpLeft.set(thisX - dotSize/2, _visY);
-              hoverDownRight.set(thisX + dotSize/2, _visY + visHeight + dotSize/2);
-              
-              if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
-                fill(250);
-                rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
-              }
-            }
-            noStroke();
-          }
-          
+        
           if(type == "averages"){
-            
-            if(attentionAverageList[i] > 0){
-              fill(attentionColor);
-              ellipse(thisX, attAvg, dotSize, dotSize);
-            }
-            
-            if(relaxationAverageList[i] > 0){
-              fill(relaxationColor);
-              ellipse(thisX, rlxAvg, dotSize, dotSize);
-            }
-            
-            
-            fill(textDarkColor);
-            textAlign(CENTER, CENTER);
-            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
-            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
-          } else if(type == "personal"){
-              float prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
-              float thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
+            if(sessionFolders[i].charAt(0) == '2'){
+              textAlign(LEFT, CENTER);
+              String[] fileDate = split(sessionFolders[i], '-');
               
-              float prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, _visY, visHeight + _visY);
-              float thisStudy = map(float(assessmentData[i+6]), maxVal, 0, _visY, visHeight + _visY);
+              float attAvg = 0;
+              float rlxAvg = 0;
+              
+              float prevAttAvg = 0;
+              float prevRlxAvg = 0;
+              
+              if(i>0){
+                attAvg = map(attentionAverageList[i], 100, 0, _visY, visHeight + _visY);
+                rlxAvg = map(relaxationAverageList[i], 100, 0, _visY, visHeight + _visY);
+                prevAttAvg = map(attentionAverageList[i-1], 100, 0, _visY, visHeight + _visY);
+                prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, _visY, visHeight + _visY);
+              }
+              
+              if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+                if(type == "averages"){
+                  hoverUpLeft.set(thisX - dotSize/2, _visY);
+                  hoverDownRight.set(thisX + dotSize/2, _visY + visHeight + dotSize/2);
+                  
+                  if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
+                    fill(250);
+                    rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
+                  }
+                }
+                noStroke();
+              }
+              
+  
+              
+              if(attentionAverageList[i] > 0){
+                fill(attentionColor);
+                ellipse(thisX, attAvg, dotSize, dotSize);
+              }
+              
+              if(relaxationAverageList[i] > 0){
+                fill(relaxationColor);
+                ellipse(thisX, rlxAvg, dotSize, dotSize);
+              }
+              fill(textDarkColor);
+              textAlign(CENTER, CENTER);
+              text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
+              text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
+              
+            }
+            
+            
+            
+            
+          } else if(type == "personal"){
+              float prevMeditate = 0;
+              float thisMeditate = 0;
+              float prevStudy = 0;
+              float thisStudy = 0;
+              
+              if(i > 0){
+                prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
+                thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
+                prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, _visY, visHeight + _visY);
+                thisStudy = map(float(assessmentData[i+6]), maxVal, 0, _visY, visHeight + _visY);
+              }
               
               stroke(relaxationColor);
               line(
@@ -141,115 +268,44 @@ class LineChart {
               if(i == 2){
                 assessEnd = thisX + offset;
               }
-            
-            
           } else {
-            
-            //pushStyle();
-            //textAlign(CENTER);
-            //fill(textDarkColor);
-            //if(i == 0){
-            //text("Meditate", thisX, _visY);
-            //}
-            //if(i == 1){
-            //text("Study", thisX, _visY);
-            //}
-            //if(i == 2){
-            //text("Play", thisX, _visY);
-            //}
-            //popStyle();
-            
-            noFill();
-            if(i>=0 && data.data != null){
-              for (int j = 0; j < data.data.length; j+=grainSize) {
-                if (data.data[j][12] > 0 && j>0) {
-  
-                  thisX = j * (visWidth - padding*2)/data.data.length + visX + padding;
-                  previousX = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
-                  
-                  if(data.data[j][12] == 1){
-                    fill(250);
-                    relaxEnd = thisX;
-                  }
-                  if(data.data[j][12] == 2){
-                   fill(230);
-                   studyEnd = thisX;
-                  }
-                  if(data.data[j][12] == 3){
-                    fill(210);
-                    assessEnd = thisX;
-                  }
-                  noStroke();
-                  //rect(previousX, _visY, grainSize, visHeight);
-  
-                  stroke(attentionColor);
-                  line(
-                        previousX,
-                        map(data.data[j-grainSize][10], maxVal, 0, _visY, visHeight + _visY),
-                        thisX,
-                        map(data.data[j][10], maxVal, 0, _visY, visHeight + _visY)
-                  );
-                  stroke(relaxationColor);
-                  line(
-                        previousX,
-                        map(data.data[j-grainSize][11], maxVal, 0, _visY, visHeight + _visY),
-                        thisX,
-                        map(data.data[j][11], maxVal, 0, _visY, visHeight + _visY)
-                  );
-                  
-
-                  
-                  //fill(255, 100);
-                  noStroke();
-                  //rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
-
-                  File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
-                  screenshotsArray = imgTempFolder.list();
-                  for(int k = 0; k < screenshotsArray.length; k++){
-                    String screenshot = screenshotsArray[k]; 
-                    String[] screenshotTimeId = splitTokens(screenshot, "-");
-                    if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                      if(
-                        mouseX > previousX
-                        &&
-                        mouseX < thisX
-                        &&
-                        mouseY > _visY
-                        &&
-                        mouseY < visHeight + _visY
-                      ){
-                        currentScreenshot = imgTempFolder + "/" +screenshot;
-                      }
-                      
-                      pushStyle();
-                      fill(190);
-                      rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
-                      popStyle();
-                    }
-                  }
-                  
-                  
-                  
-                }
-              }
-
-              if(currentScreenshot != ""){
-                PImage screenshotImg = loadImage(currentScreenshot);
-                image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
-              }
-              
-
-
+            if(i >= grainSize){
+              displayGeneral(i);
             }
             
-            noStroke();
           }
-          
-
-        }
       }
       
-     
+      fill(textDarkColor);
+      if(type == "averages"){
+        textAlign(LEFT);
+        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + _visY + padding * 5);
+      } else if(type == "values"){
+        textAlign(CENTER, CENTER);
+        
+        stroke(100,100);
+        line(relaxEnd, _visY, relaxEnd, _visY + visHeight);
+        line(studyEnd, _visY, studyEnd, _visY + visHeight);
+        
+        pushStyle();
+        textAlign(CENTER);
+        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        popStyle();
+      } else if(type == "personal"){
+        pushStyle();
+        textAlign(CENTER);
+        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        popStyle();
+      }
+  }
+  
+  
+  /*
+
       pushStyle();
       textAlign(LEFT);
       for(int i = 0; i < _listSize; i++){
@@ -286,44 +342,99 @@ class LineChart {
         }
       }
       popStyle();
-      
-      fill(textDarkColor);
-      if(type == "averages"){
-        textAlign(LEFT);
-        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + _visY + padding * 5);
-      } else if(type == "values"){
-        textAlign(CENTER, CENTER);
-        
-        stroke(100,100);
-        line(relaxEnd, _visY, relaxEnd, _visY + visHeight);
-        line(studyEnd, _visY, studyEnd, _visY + visHeight);
-        
-        pushStyle();
-        textAlign(CENTER);
-        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
-        popStyle();
-      } else if(type == "personal"){
-        pushStyle();
-        textAlign(CENTER);
-        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
-        popStyle();
-      }
-    } else {
-
-        fill(textDarkColor);
-        textAlign(CENTER);
-        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + _visY, visWidth, visHeight);
-    }
+  */
+  
+  void displayGeneral(int i){
     
-    //Labels
-    textAlign(LEFT, CENTER);
-    text("100%", visX - padding/2, _visY);
-    text("50%", visX - padding/2, _visY + visHeight/2 + dotSize/2);
-    text("0%", visX - padding/2, _visY + visHeight + dotSize/2);
+    String currentScreenshot = "";
+
+            //pushStyle();
+            //textAlign(CENTER);
+            //fill(textDarkColor);
+            //if(i == 0){
+            //text("Meditate", thisX, _visY);
+            //}
+            //if(i == 1){
+            //text("Study", thisX, _visY);
+            //}
+            //if(i == 2){
+            //text("Play", thisX, _visY);
+            //}
+            //popStyle();
+            
+            //println(_listSize-grainSize);
+            //println(i + ": " + thisAtt.get(i));
+            //if(i == 3200){
+            //  println(i + ": " + thisAtt.get(i));
+            //}
+            
+            noFill();
+                  //rect(previousX, _visY, grainSize, visHeight);
+                  
+                  stroke(attentionColor);
+                  line(
+                       previousX.get(i),
+                       previousAtt.get(i),
+                       thisX.get(i),
+                       thisAtt.get(i)
+                  );
+                  stroke(relaxationColor);
+                  line(
+                       previousX.get(i),
+                       previousRelax.get(i),
+                       thisX.get(i),
+                       thisRelax.get(i)
+                  );
+                  
+                  
+                  
+                  
+                  //fill(255, 100);
+                  noStroke();
+                  //rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
+                  
+                  
+                  /////////////////////////////// Image stuff
+                  //////////////////////////////////////////////
+                  
+                  /*
+
+                  File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
+                  screenshotsArray = imgTempFolder.list();
+                  for(int k = 0; k < screenshotsArray.length; k++){
+                    String screenshot = screenshotsArray[k]; 
+                    String[] screenshotTimeId = splitTokens(screenshot, "-");
+                    if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                      if(
+                        mouseX > previousX
+                        &&
+                        mouseX < thisX
+                        &&
+                        mouseY > _visY
+                        &&
+                        mouseY < visHeight + _visY
+                      ){
+                        currentScreenshot = imgTempFolder + "/" +screenshot;
+                      }
+                      
+                      pushStyle();
+                      fill(190);
+                      rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
+                      popStyle();
+                    }
+                  }
+                  
+                  */
+                 
+
+              /*
+              if(currentScreenshot != ""){
+                PImage screenshotImg = loadImage(currentScreenshot);
+                image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
+              }
+              */
+            
+            noStroke();
   }
   
   void onClick(){
