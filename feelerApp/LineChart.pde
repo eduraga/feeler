@@ -22,7 +22,6 @@ class LineChart {
   }
   
   void setup(String _type){
-    
     type = _type;
     _visY = visY;
     
@@ -39,7 +38,7 @@ class LineChart {
         grainSize = 1;
         _listSize = 3;
       } else if (type == "values") {
-        grainSize = 20;
+        grainSize = 40;
         //_visY = visY + headerHeight + padding*2;
         //_listSize = sessionFolders.length;
     
@@ -131,122 +130,9 @@ class LineChart {
     text("0%", visX - padding/2, _visY + visHeight + dotSize/2);
   }
   
-  void displayData(){    
-      for(int i = 0; i < _listSize; i+=grainSize){
+  void displayData(){
+    
 
-          float thisX = i * stepSize + visX + stepSize/2;
-          float previousX = (i-1) * stepSize + visX + stepSize/2;
-        
-          if(type == "averages"){
-            if(sessionFolders[i].charAt(0) == '2'){
-              textAlign(LEFT, CENTER);
-              String[] fileDate = split(sessionFolders[i], '-');
-              
-              float attAvg = 0;
-              float rlxAvg = 0;
-              
-              float prevAttAvg = 0;
-              float prevRlxAvg = 0;
-              
-              if(i>0){
-                attAvg = map(attentionAverageList[i], 100, 0, _visY, visHeight + _visY);
-                rlxAvg = map(relaxationAverageList[i], 100, 0, _visY, visHeight + _visY);
-                prevAttAvg = map(attentionAverageList[i-1], 100, 0, _visY, visHeight + _visY);
-                prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, _visY, visHeight + _visY);
-              }
-              
-              if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-                if(type == "averages"){
-                  hoverUpLeft.set(thisX - dotSize/2, _visY);
-                  hoverDownRight.set(thisX + dotSize/2, _visY + visHeight + dotSize/2);
-                  
-                  if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
-                    fill(250);
-                    rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
-                  }
-                }
-                noStroke();
-              }
-              
-  
-              
-              if(attentionAverageList[i] > 0){
-                fill(attentionColor);
-                ellipse(thisX, attAvg, dotSize, dotSize);
-              }
-              
-              if(relaxationAverageList[i] > 0){
-                fill(relaxationColor);
-                ellipse(thisX, rlxAvg, dotSize, dotSize);
-              }
-              fill(textDarkColor);
-              textAlign(CENTER, CENTER);
-              text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
-              text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
-              
-            }
-            
-            
-            
-            
-          } else if(type == "personal"){
-              float prevMeditate = 0;
-              float thisMeditate = 0;
-              float prevStudy = 0;
-              float thisStudy = 0;
-              
-              if(i > 0){
-                prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
-                thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
-                prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, _visY, visHeight + _visY);
-                thisStudy = map(float(assessmentData[i+6]), maxVal, 0, _visY, visHeight + _visY);
-              }
-              
-              stroke(relaxationColor);
-              line(
-                    previousX,
-                    prevMeditate,
-                    thisX,
-                    thisMeditate
-              );
-              
-              if(i > 0){
-                stroke(attentionColor);
-                line(
-                    previousX,
-                    prevStudy,
-                    thisX,
-                    thisStudy
-                );
-              }
-              
-              noStroke();
-              
-              fill(relaxationColor);
-              ellipse(thisX, thisMeditate, dotSize, dotSize);
-              
-              fill(attentionColor);
-              ellipse(thisX, thisStudy, dotSize, dotSize);
-              
-              float offset = (thisX - previousX)/2;
-
-              if(i == 0){
-                relaxEnd = thisX + offset;
-              }
-              if(i == 1){
-                studyEnd = thisX + offset;
-              }
-              if(i == 2){
-                assessEnd = thisX + offset;
-              }
-          } else {
-            if(i >= grainSize){
-              displayGeneral(i);
-            }
-            
-          }
-      }
-      
       fill(textDarkColor);
       if(type == "averages"){
         textAlign(LEFT);
@@ -272,73 +158,157 @@ class LineChart {
         text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
         popStyle();
       }
+
+      if(type == "averages"){
+        for(int i = 0; i < _listSize; i+=grainSize){
+          float thisX = i * stepSize + visX + stepSize/2;
+          float previousX = (i-1) * stepSize + visX + stepSize/2;
+
+          if(sessionFolders[i].charAt(0) == '2'){
+            textAlign(LEFT, CENTER);
+            String[] fileDate = split(sessionFolders[i], '-');
+            
+            float attAvg = 0;
+            float rlxAvg = 0;
+            
+            float prevAttAvg = 0;
+            float prevRlxAvg = 0;
+            
+            attAvg = map(attentionAverageList[i], 100, 0, _visY, visHeight + _visY);
+            rlxAvg = map(relaxationAverageList[i], 100, 0, _visY, visHeight + _visY);
+            
+            if(i>0){
+              prevAttAvg = map(attentionAverageList[i-1], 100, 0, _visY, visHeight + _visY);
+              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, _visY, visHeight + _visY);
+            }
+            
+            if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+              if(type == "averages"){
+                hoverUpLeft.set(thisX - dotSize/2, _visY);
+                hoverDownRight.set(thisX + dotSize/2, _visY + visHeight + dotSize/2);
+                
+                if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
+                  fill(250);
+                  rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
+                }
+              }
+              noStroke();
+            }
+            
+            if(attentionAverageList[i] > 0){
+              fill(attentionColor);
+              ellipse(thisX, attAvg, dotSize, dotSize);
+            }
+            
+            if(relaxationAverageList[i] > 0){
+              fill(relaxationColor);
+              ellipse(thisX, rlxAvg, dotSize, dotSize);
+            }
+            fill(textDarkColor);
+            textAlign(CENTER, CENTER);
+            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
+            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
+            
+          }
+            
+        }
+        
+      } else if(type == "personal"){
+        for(int i = 0; i < _listSize; i+=grainSize){
+          float thisX = i * stepSize + visX + stepSize/2;
+          float previousX = (i-1) * stepSize + visX + stepSize/2;
+          float prevMeditate = 0;
+          float thisMeditate = 0;
+          float prevStudy = 0;
+          float thisStudy = 0;
+          
+          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
+          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, _visY, visHeight + _visY);
+          
+          if(i > 0){
+            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
+            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, _visY, visHeight + _visY);
+
+            stroke(relaxationColor);
+            line(
+                  previousX,
+                  prevMeditate,
+                  thisX,
+                  thisMeditate
+            );
+            stroke(attentionColor);
+            line(
+                previousX,
+                prevStudy,
+                thisX,
+                thisStudy
+            );
+          }
+          noStroke();
+          
+          fill(relaxationColor);
+          ellipse(thisX, thisMeditate, dotSize, dotSize);
+          
+          fill(attentionColor);
+          ellipse(thisX, thisStudy, dotSize, dotSize);
+          
+          float offset = (thisX - previousX)/2;
+
+          if(i == 0){
+            relaxEnd = thisX + offset;
+          }
+          if(i == 1){
+            studyEnd = thisX + offset;
+          }
+          if(i == 2){
+            assessEnd = thisX + offset;
+          }
+        }
+      } else {
+        for(int i = 0; i < _listSize; i+=grainSize){
+          if(i >= grainSize){
+            displayGeneral(i);
+          }
+        }
+        
+        for(int i = 0; i < _listSize; i+=grainSize){
+          if(i >= grainSize){
+            displayThumbs(i);
+          }
+        }
+        
+      }
+  
   }
   
   
-  /*
-
-      pushStyle();
-      textAlign(LEFT);
-      for(int i = 0; i < _listSize; i++){
-        if(sessionFolders[i].charAt(0) == '2'){
-          
-          float thisX = i * stepSize + visX + stepSize/2;
-          
-          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2 && mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
-            if(type == "personal"){
-  
-              fill(255);
-              stroke(textDarkColor);
-              rect(mouseX, mouseY - 70, 120, 70);
-              noStroke();
-              
-              fill(textDarkColor);
-              
-              text("Meditation: " + round(float(assessmentData[i+3]))+"%", mouseX + padding/2, mouseY - 70 + padding);
-              text("Attention: " + round(float(assessmentData[i+6]))+"%", mouseX + padding/2, mouseY - 70 + padding*2);
-              text("Feeling: " + assessmentData[i], mouseX + padding/2, mouseY - 70 + padding*3);
-            } else {
-                
-              fill(255);
-              stroke(textDarkColor);
-              rect(mouseX, mouseY - 50, 120, 50);
-              noStroke();
-              
-              fill(textDarkColor);
-              text("Meditation: " + round(relaxationAverageList[i])+"%", mouseX + padding/2, mouseY - 50 + padding);
-              text("Attention: " + round(attentionAverageList[i])+"%", mouseX + padding/2, mouseY - 50 + padding*2);
-            }
-            
-          }
-        }
+  void displayThumbs(int i){
+    if(screenshots.get(i) != "" && screenshots.get(i) != null){
+      if(
+        mouseX > previousX.get(i)
+        &&
+        mouseX < thisX.get(i)
+        &&
+        mouseY > _visY
+        &&
+        mouseY < visHeight + _visY
+      ){
+        PImage screenshotImg = loadImage(screenshots.get(i));
+        imageMode(CENTER); 
+        image(screenshotImg, thisX.get(i), mouseY, screenshotImg.width/3, screenshotImg.height/3);
+        imageMode(CORNER);
       }
-      popStyle();
-  */
+    }
+  }
   
   void displayGeneral(int i){
+
+    if(screenshots.get(i) != "" && screenshots.get(i) != null){
+      fill(255, 100);
+      rect(previousX.get(i), _visY + padding, thisX.get(i) - previousX.get(i) - 1, visHeight);
+    }
     
     String currentScreenshot = "";
-
-    //pushStyle();
-    //textAlign(CENTER);
-    //fill(textDarkColor);
-    //if(i == 0){
-    //text("Meditate", thisX, _visY);
-    //}
-    //if(i == 1){
-    //text("Study", thisX, _visY);
-    //}
-    //if(i == 2){
-    //text("Play", thisX, _visY);
-    //}
-    //popStyle();
-    
-    //println(_listSize-grainSize);
-    //println(i + ": " + thisAtt.get(i));
-    //if(i == 3200){
-    //  println(i + ": " + thisAtt.get(i));
-    //}
-    
     noFill();
     
     stroke(attentionColor);
@@ -356,26 +326,6 @@ class LineChart {
          thisRelax.get(i)
     );
     noStroke();
-    
-    /////////////////////////////// Image stuff
-    //////////////////////////////////////////////
-    if(screenshots.get(i) != "" && screenshots.get(i) != null){
-      fill(textDarkColor);
-      rect(previousX.get(i), _visY + padding, thisX.get(i) - previousX.get(i), 10);
-      if(
-        mouseX > previousX.get(i)
-        &&
-        mouseX < thisX.get(i)
-        &&
-        mouseY > _visY
-        &&
-        mouseY < visHeight + _visY
-      ){
-        PImage screenshotImg = loadImage(screenshots.get(i));
-        //image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
-        image(screenshotImg, thisX.get(i), _visY + padding, screenshotImg.width/5, screenshotImg.height/5);
-      }
-    }
   }
   
   void onClick(){
