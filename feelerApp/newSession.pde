@@ -3,43 +3,50 @@ Communication stuff
  
  setup: feelerS.play();
  
- 1. when pressing 'start'
- feelerS.setBoxState(100);
- 2. when pressing 'record' // "meditate"
- feelerS.setBoxState(200);
- start timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(299);
- 3. when pressing 'record' // "study"
- feelerS.setBoxState(300);
- reset timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(399);
+ // create a thread to check if boxes are connected
+ // feelerS.isConnected();
  feelerS.getButton1();
- 4. // "assess"
- if(feelerS.getButton1()){
- //question 1
- feelerS.getButton2();
- feelerS.setBoxState(301);
- }
- 
- if(feelerS.getButton2()){
- //question 2
- feelerS.getButton3();
- feelerS.setBoxState(302);
- }
- 
- if(feelerS.getButton3()){
- //question 3
- feelerS.setBoxState(303);
- // submit answers
- feelerS.setBoxState(1000);
- //and success
- }
- 
- ????????????????
+ 4. play: set countUp, unlimited
  
  */
+
+/*
+0: connecting
+on a new thread:
+feelerS.setSettings(10000, 2000, 3000);
+feelerS.init("/dev/tty.Feeler-RNI-SPP");
+feelerS.setBoxState(0);
+isConnected = true;
+
+1: meditating (5 minutes)
+feelerS.setBoxState(2);
+end of meditation
+
+2: show picture of connecting boxes
+wait for:
+if feelerS.getBoxStateInput() == 3 then:
+
+3: boxes are connected, go to study
+feelerS.setBox2LedSpeed(studyTime/20);
+studyTime/20
+after each cycle
+feelerS.setBox2LedState(currentLed++);
+end of study:
+feelerS.setBoxState(4);
+currentLed = 0;
+feelerS.setBox2LedState(0);
+
+4: show image of connecting boxes
+if feelerS.getBoxStateInput() == 5 then:
+
+5: start play mode
+if feelerS.getBoxStateInput() == 6 then:
+end of play
+feelerS.setBoxState(6);
+
+*/
+int[] boxStates = {0, 1, 2, 3};
+
 
 boolean isRecordingMind = false;
 
@@ -399,3 +406,8 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   //lowGammaWidget.add(low_gamma);
   //midGammaWidget.add(mid_gamma);
 } 
+
+public void rawEvent(int[] raw){
+  //data = raw;
+  println(raw);
+}

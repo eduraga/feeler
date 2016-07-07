@@ -16,6 +16,7 @@ class LineChart {
   FloatList previousAtt = new FloatList();
   FloatList thisRelax = new FloatList();
   FloatList previousRelax = new FloatList();
+  StringList screenshots = new StringList();
 
   LineChart(){
   }
@@ -38,8 +39,8 @@ class LineChart {
         grainSize = 1;
         _listSize = 3;
       } else if (type == "values") {
-        grainSize = 40;
-        _visY = visY + headerHeight + padding*2;
+        grainSize = 20;
+        //_visY = visY + headerHeight + padding*2;
         //_listSize = sessionFolders.length;
     
         //for(int i = 0; i < _listSize; i++){
@@ -48,16 +49,8 @@ class LineChart {
                _listSize = data.data.length;
                
                for (int j = 0; j < _listSize; j+=grainSize) {
-                  //thisX.append(50);
-                  //previousX.append(50);
-                  //thisAtt.append(50);
-                  //previousAtt.append(50);
-                  //thisRelax.append(50);
-                  //previousRelax.append(50);
                  
                  if (data.data[j][12] > 0 && j > grainSize) {
-                   //thisX[j] = j * (visWidth - padding*2)/data.data.length + visX + padding;
-                   //previousX[j] = (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding;
                    
                    thisX.set(j, j * (visWidth - padding*2)/data.data.length + visX + padding);
                    previousX.set(j, (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding);
@@ -80,47 +73,25 @@ class LineChart {
                    previousRelax.set(j, map(data.data[j-grainSize][11], maxVal, 0, _visY, visHeight + _visY));
                    thisRelax.set(j, map(data.data[j][11], maxVal, 0, _visY, visHeight + _visY));
                    
-                   println(j + ": " + thisAtt.get(j));
-                   
                    /////////////////////////////// Image stuff
                    //////////////////////////////////////////////
                    
-                   /*
+                   screenshots.set(j, "");
+                   
                    File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
                    screenshotsArray = imgTempFolder.list();
                    for(int k = 0; k < screenshotsArray.length; k++){
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
+                     
                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                       if(
-                         mouseX > previousX
-                         &&
-                         mouseX < thisX
-                         &&
-                         mouseY > _visY
-                         &&
-                         mouseY < visHeight + _visY
-                       ){
-                         currentScreenshot = imgTempFolder + "/" +screenshot;
-                       }
-                        
-                       pushStyle();
-                       fill(190);
-                       rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
-                       popStyle();
+                       println("j:" + j + ", k: " + k + ", data: " + int(data.data[j][0]) + ", time: " + screenshotTimeId[0]);
+                       screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
                      }
                    }
-                    
-                   */
+                   
                  }
                }
-  
-               /*
-               if(currentScreenshot != ""){
-                 PImage screenshotImg = loadImage(currentScreenshot);
-                 image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
-               }
-               */
              }
           //}
         
@@ -348,93 +319,63 @@ class LineChart {
     
     String currentScreenshot = "";
 
-            //pushStyle();
-            //textAlign(CENTER);
-            //fill(textDarkColor);
-            //if(i == 0){
-            //text("Meditate", thisX, _visY);
-            //}
-            //if(i == 1){
-            //text("Study", thisX, _visY);
-            //}
-            //if(i == 2){
-            //text("Play", thisX, _visY);
-            //}
-            //popStyle();
-            
-            //println(_listSize-grainSize);
-            //println(i + ": " + thisAtt.get(i));
-            //if(i == 3200){
-            //  println(i + ": " + thisAtt.get(i));
-            //}
-            
-            noFill();
-                  //rect(previousX, _visY, grainSize, visHeight);
-                  
-                  stroke(attentionColor);
-                  line(
-                       previousX.get(i),
-                       previousAtt.get(i),
-                       thisX.get(i),
-                       thisAtt.get(i)
-                  );
-                  stroke(relaxationColor);
-                  line(
-                       previousX.get(i),
-                       previousRelax.get(i),
-                       thisX.get(i),
-                       thisRelax.get(i)
-                  );
-                  
-                  
-                  
-                  
-                  //fill(255, 100);
-                  noStroke();
-                  //rect(previousX, _visY, grainSize/2, visHeight + dotSize/2);
-                  
-                  
-                  /////////////////////////////// Image stuff
-                  //////////////////////////////////////////////
-                  
-                  /*
-
-                  File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
-                  screenshotsArray = imgTempFolder.list();
-                  for(int k = 0; k < screenshotsArray.length; k++){
-                    String screenshot = screenshotsArray[k]; 
-                    String[] screenshotTimeId = splitTokens(screenshot, "-");
-                    if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                      if(
-                        mouseX > previousX
-                        &&
-                        mouseX < thisX
-                        &&
-                        mouseY > _visY
-                        &&
-                        mouseY < visHeight + _visY
-                      ){
-                        currentScreenshot = imgTempFolder + "/" +screenshot;
-                      }
-                      
-                      pushStyle();
-                      fill(190);
-                      rect(previousX, visHeight + _visY + padding/2, thisX - previousX, padding);
-                      popStyle();
-                    }
-                  }
-                  
-                  */
-                 
-
-              /*
-              if(currentScreenshot != ""){
-                PImage screenshotImg = loadImage(currentScreenshot);
-                image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
-              }
-              */
-            
-            noStroke();
+    //pushStyle();
+    //textAlign(CENTER);
+    //fill(textDarkColor);
+    //if(i == 0){
+    //text("Meditate", thisX, _visY);
+    //}
+    //if(i == 1){
+    //text("Study", thisX, _visY);
+    //}
+    //if(i == 2){
+    //text("Play", thisX, _visY);
+    //}
+    //popStyle();
+    
+    //println(_listSize-grainSize);
+    //println(i + ": " + thisAtt.get(i));
+    //if(i == 3200){
+    //  println(i + ": " + thisAtt.get(i));
+    //}
+    
+    noFill();
+    
+    stroke(attentionColor);
+    line(
+         previousX.get(i),
+         previousAtt.get(i),
+         thisX.get(i),
+         thisAtt.get(i)
+    );
+    stroke(relaxationColor);
+    line(
+         previousX.get(i),
+         previousRelax.get(i),
+         thisX.get(i),
+         thisRelax.get(i)
+    );
+    noStroke();
+    
+    /////////////////////////////// Image stuff
+    //////////////////////////////////////////////
+    if(screenshots.get(i) != "" && screenshots.get(i) != null){
+      fill(textDarkColor);
+      rect(previousX.get(i), _visY + padding, thisX.get(i) - previousX.get(i), 10);
+      if(
+        mouseX > previousX.get(i)
+        &&
+        mouseX < thisX.get(i)
+        &&
+        mouseY > _visY
+        &&
+        mouseY < visHeight + _visY
+      ){
+        PImage screenshotImg = loadImage(screenshots.get(i));
+        //image(screenshotImg, mouseX - (screenshotImg.width/4)/2, mouseY, screenshotImg.width/4, screenshotImg.height/4);
+        image(screenshotImg, thisX.get(i), _visY + padding, screenshotImg.width/5, screenshotImg.height/5);
+      }
+    }
   }
   
   void onClick(){
