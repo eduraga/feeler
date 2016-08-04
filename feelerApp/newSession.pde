@@ -3,43 +3,50 @@ Communication stuff
  
  setup: feelerS.play();
  
- 1. when pressing 'start'
- feelerS.setBoxState(100);
- 2. when pressing 'record' // "meditate"
- feelerS.setBoxState(200);
- start timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(299);
- 3. when pressing 'record' // "study"
- feelerS.setBoxState(300);
- reset timer
- setBox2LedState(timer mapped to int(0\u201450) ); //loop
- when timer reaches target send feelerS.setBoxState(399);
+ // create a thread to check if boxes are connected
+ // feelerS.isConnected();
  feelerS.getButton1();
- 4. // "assess"
- if(feelerS.getButton1()){
- //question 1
- feelerS.getButton2();
- feelerS.setBoxState(301);
- }
- 
- if(feelerS.getButton2()){
- //question 2
- feelerS.getButton3();
- feelerS.setBoxState(302);
- }
- 
- if(feelerS.getButton3()){
- //question 3
- feelerS.setBoxState(303);
- // submit answers
- feelerS.setBoxState(1000);
- //and success
- }
- 
- ????????????????
+ 4. play: set countUp, unlimited
  
  */
+
+/*
+0: connecting
+on a new thread:
+feelerS.setSettings(10000, 2000, 3000);
+feelerS.init("/dev/tty.Feeler-RNI-SPP");
+feelerS.setBoxState(0);
+isConnected = true;
+
+1: meditating (5 minutes)
+feelerS.setBoxState(2);
+end of meditation
+
+2: show picture of connecting boxes
+wait for:
+if feelerS.getBoxStateInput() == 3 then:
+
+3: boxes are connected, go to study
+feelerS.setBox2LedSpeed(studyTime/20);
+studyTime/20
+after each cycle
+feelerS.setBox2LedState(currentLed++);
+end of study:
+feelerS.setBoxState(4);
+currentLed = 0;
+feelerS.setBox2LedState(0);
+
+4: show image of connecting boxes
+if feelerS.getBoxStateInput() == 5 then:
+
+5: start play mode
+if feelerS.getBoxStateInput() == 6 then:
+end of play
+feelerS.setBoxState(6);
+
+*/
+int[] boxStates = {0, 1, 2, 3};
+
 
 boolean isRecordingMind = false;
 
@@ -123,22 +130,44 @@ void newSession(){
       counterDisplay();
       if(sw.minute() == 0 && sw.second() == 0){
         println("End study");
-        sw.stop();
+        sw.start();
         boxState = 300;
       }
       break;
     case 300:
-      pageH1("Assess");
-      if(assessQuestion == 1){
-        assess(assessQuestion, "How attentive were you during the session?");
-      } else if(assessQuestion == 2){
-        assess(assessQuestion, "How relaxed were you during the session?");
-      } else if(assessQuestion == 3){
-        assess(assessQuestion, "Your performance");
-      } else if(assessQuestion == 4){
-        assess(assessQuestion, "Answers saved!");
-      }
+      pageH1("Play");
+      text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
       timeline = 3;
+      counterDisplay();
+      
+      if(sw.minute() == 0 && sw.second() == 0){
+        println("End play");
+        sw.start();
+        boxState = 400;
+        assessQuestion = 1;
+        cp5.getController("assess1Bt").show();
+      }
+      break;
+    case 400:
+      recording = false;
+      sw.stop();
+      pageH1("Assess your personal experience");
+      if(assessQuestion == 1){
+        assess(assessQuestion, "1/3 Select how you felt during:");
+        
+        feelingRadioMeditation.draw();
+        feelingRadioStudy.draw();
+        feelingRadioPlay.draw();
+        
+      } else if(assessQuestion == 2){
+        assess(assessQuestion, "2/3 Select how your level of relaxation during:");
+      } else if(assessQuestion == 3){
+        assess(assessQuestion, "3/3 Select how your level of attention during");
+        hasFinished = false;
+      } else if(assessQuestion == 4){
+        assess(assessQuestion, "Answers saved!\nYour data is being loaded.");
+      }
+      timeline = 4;
       break;
     default:
       pageH1("Start a session");
@@ -178,15 +207,22 @@ void newSession(){
 }
 
 void assess(int questionNo, String question){
-  if(questionNo != 4){
-    text(questionNo, padding, headerHeight + padding*2);
-  }
-  
   text(question, padding*2, headerHeight + padding*2);
   
-  if(questionNo == 3){
-    text("Did you have a goal during the session?", padding*2, headerHeight + padding*3.5);
-    text("If yes, did you reach it?", padding*2, headerHeight + padding*5);
+  if(questionNo != 4){
+    text(questionNo, padding, headerHeight + padding*2);
+  } else {
+    if(hasFinished == false){
+      hasFinished = true;
+      t.schedule(new TimerTask() {
+        public void run() {
+          println("trigger");
+          hasFinished = true;
+          print(" " + nf(3, 0, 2));
+          currentPage = "eegActivity";
+        }
+      }, (long) (3*1e3));
+    }
   }
 }
 
@@ -195,7 +231,11 @@ void counterDisplay(){
   pushStyle();
   textSize(38);
   textAlign(CENTER);
-  text(sw.minute() + ":" + sw.second(), width/2, containerPosY + padding);
+  
+  String second = new DecimalFormat("00").format(sw.second());
+  String minute = new DecimalFormat("00").format(sw.minute());
+  
+  text(minute + ":" + second, width/2, containerPosY + padding);
   popStyle();
 }
 
@@ -366,3 +406,8 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   //lowGammaWidget.add(low_gamma);
   //midGammaWidget.add(mid_gamma);
 } 
+
+public void rawEvent(int[] raw){
+  //data = raw;
+  println(raw);
+}

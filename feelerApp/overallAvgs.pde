@@ -50,16 +50,31 @@ class OverallAvgs{
       if(type == "eeg"){
         fill(textDarkColor);
         textAlign(LEFT, CENTER);
-        text("Session " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0], thisX, thisY - padding*2);
+        text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
         
         rlxAvg = relaxationAverageList[i];
         attAvg = attentionAverageList[i];
         
       } else if(type == "assessment"){
-        rlxAvg = float(assessmentData[0]);
-        if(assessmentData.length > 1)
-          attAvg = float(assessmentData[1]);
+        
+  //cp5.getController("assessRelaxationMeditation").hide();
+  //cp5.getController("assessRelaxationStudy").hide();
+  //cp5.getController("assessRelaxationPlay").hide();
+  
+  //cp5.getController("assessAttentionMeditation").show();
+  //cp5.getController("assessAttentionStudy").show();
+  //cp5.getController("assessAttentionPlay").show();
+  
+        
+        //rlxAvg = float(assessmentData[0]);
+        if(assessmentData.length == 9){
+         //attAvg = float(assessmentData[1]);
+          rlxAvg = round((float(assessmentData[3]) + float(assessmentData[4]) + float(assessmentData[5]))/3);
+          attAvg = round((float(assessmentData[6]) + float(assessmentData[7]) + float(assessmentData[8]))/3);
+        }
+          
       } else if(type == "personalAverage"){
+        println("personalAverage");
         rlxAvg = assessmentAttAvgs;
         attAvg = assessmentRlxAvgs;
       }

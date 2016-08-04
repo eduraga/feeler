@@ -1,13 +1,9 @@
 void assessmentActivity(){
   pageH1("Relaxation and Attention levels");
-  personalAssSesion.display(currentItem);
-  personalAvg.display(currentItem);
+  //personalAssSesion.display(currentItem);
+  //personalAvg.display(currentItem);
+  personalExperience.display();
   
-  
-  textAlign(LEFT);
-  textSize(28);
-  text("Learning goals", padding, 400);
-  textSize(12);
   if(
     boolean(loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt")[2])
     &&

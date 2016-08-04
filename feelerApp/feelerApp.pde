@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.text.DecimalFormat;
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -61,7 +62,7 @@ boolean recording = false;
 //UI variables
 PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
-LineChart trends, eegAct;
+LineChart trends, eegAct, personalExperience;
 int headerHeight = 100;
 int padding = 20;
 int userTabsX;
@@ -81,11 +82,17 @@ int videoWidth = 640;
 int videoHeight = 480;
 int recControlersWidth = 300;
 
-int assess1 = 50;
-int assess2 = 50;
 boolean assess3Toggle1 = true;
 boolean assess3Toggle2 = true;
 int assessQuestion = 0;
+FeelingRadio feelingRadioMeditation, feelingRadioStudy, feelingRadioPlay;
+String feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay;
+int assessRelaxationMeditation = 50;
+int assessRelaxationStudy = 50;
+int assessRelaxationPlay = 50;
+int assessAttentionMeditation = 50;
+int assessAttentionStudy = 50;
+int assessAttentionPlay = 50;
 
 PVector hoverUpLeft, hoverDownRight;
 
@@ -154,6 +161,7 @@ public void setup() {
   
   trends = new LineChart();
   eegAct = new LineChart();
+  personalExperience = new LineChart();
   
   hoverUpLeft = new PVector(0,0);
   hoverDownRight = new PVector(0,0);
@@ -190,7 +198,7 @@ public void setup() {
 
   eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
   personalAssSesion = new OverallAvgs("assessment", "Values based on your personal experience");
-  personalAvg = new OverallAvgs("personalAverage", "On average");
+  personalAvg = new OverallAvgs("eeg", "On average");
 
   eegAvg.setup(visWidth, visHeight);
   personalAssSesion.setup(visWidth, visHeight);
@@ -200,6 +208,10 @@ public void setup() {
   containerPosY = height/2 - videoHeight/2;
   
   logo = loadImage("feeler-logo.png");
+  
+  feelingRadioMeditation = new FeelingRadio(20, 300, "Mediatation");
+  feelingRadioStudy = new FeelingRadio(20, 300 + 50 + padding*2, "Study");
+  feelingRadioPlay = new FeelingRadio(20, 300 + 50*2 + padding*4, "Play");
 
   //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
   
@@ -305,12 +317,11 @@ public void setup() {
     ;
   cp5.getController("startSession").moveTo("global");
   cp5.getController("startSession").hide();
-  
 
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
     .setLabel("Pause")
-    .setPosition(width/2 - 25, containerPosY + padding * 2)
+    .setPosition(width/2 - 50, containerPosY + padding * 2)
     .setSize(50, 50)
     .setValue(1)
     .setBroadcast(true)
@@ -318,19 +329,24 @@ public void setup() {
     ;
   cp5.getController("playPauseBt").moveTo("global");
   cp5.getController("playPauseBt").hide();
-
-  //Session assessment
-  cp5.addSlider("assess1")
-    .setPosition(padding, headerHeight + padding * 3)
-    .setRange(0, 100)
+  
+  cp5.addButton("stopBt")
+    .setBroadcast(false)
+    .setLabel("Stop")
+    .setPosition(width/2, containerPosY + padding * 2)
+    .setSize(50, 50)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
     ;
-  cp5.getController("assess1").moveTo("global");
-  cp5.getController("assess1").hide();
-
+  cp5.getController("stopBt").moveTo("global");
+  cp5.getController("stopBt").hide();
+  
+  // assessment 1/3
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 4)
+    .setPosition(padding, headerHeight + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -338,18 +354,51 @@ public void setup() {
     ;
   cp5.getController("assess1Bt").moveTo("global");
   cp5.getController("assess1Bt").hide();
-
-  cp5.addSlider("assess2")
+  
+  // assessment 2/3
+  cp5.addSlider("assessRelaxationMeditation")
+    .setLabel("Meditation")
+    .setColorLabel(textDarkColor)
     .setPosition(padding, headerHeight + padding * 3)
     .setRange(0, 100)
     ;
-  cp5.getController("assess2").moveTo("global");
-  cp5.getController("assess2").hide();
+  cp5.getController("assessRelaxationMeditation").moveTo("global");
+  cp5.getController("assessRelaxationMeditation").hide();
+  
+  cp5.addSlider("assessRelaxationStudy")
+    .setLabel("Study")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 4)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessRelaxationStudy").moveTo("global");
+  cp5.getController("assessRelaxationStudy").hide();
+  
+  cp5.addSlider("assessRelaxationPlay")
+    .setLabel("Play")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 5)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessRelaxationPlay").moveTo("global");
+  cp5.getController("assessRelaxationPlay").hide();
 
+  cp5.addButton("assess22Bt")
+    .setBroadcast(false)
+    .setLabel("Previous")
+    .setPosition(padding, headerHeight + padding * 6)
+    .setSize(70, 20)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("assess22Bt").moveTo("global");
+  cp5.getController("assess22Bt").hide();
+  
   cp5.addButton("assess2Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 4)
+    .setPosition(padding + 80, headerHeight + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -357,6 +406,34 @@ public void setup() {
     ;
   cp5.getController("assess2Bt").moveTo("global");
   cp5.getController("assess2Bt").hide();
+  
+  // assessment 3/3
+  cp5.addSlider("assessAttentionMeditation")
+    .setLabel("Meditation")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 3)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessAttentionMeditation").moveTo("global");
+  cp5.getController("assessAttentionMeditation").hide();
+  
+  cp5.addSlider("assessAttentionStudy")
+    .setLabel("Study")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 4)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessAttentionStudy").moveTo("global");
+  cp5.getController("assessAttentionStudy").hide();
+  
+  cp5.addSlider("assessAttentionPlay")
+    .setLabel("Play")
+    .setColorLabel(textDarkColor)
+    .setPosition(padding, headerHeight + padding * 5)
+    .setRange(0, 100)
+    ;
+  cp5.getController("assessAttentionPlay").moveTo("global");
+  cp5.getController("assessAttentionPlay").hide();
 
   cp5.addToggle("assess3Toggle1")
     .setColorLabel(color(0))
@@ -380,10 +457,23 @@ public void setup() {
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
   
+  
+  cp5.addButton("assess33Bt")
+  .setBroadcast(false)
+  .setLabel("Previous")
+  .setPosition(padding, headerHeight + padding * 6)
+  .setSize(70, 20)
+  //.setValue(1)
+  .setBroadcast(true)
+  .getCaptionLabel().align(CENTER, CENTER)
+  ;
+  cp5.getController("assess33Bt").moveTo("global");
+  cp5.getController("assess33Bt").hide();
+  
   cp5.addButton("assess3Bt")
   .setBroadcast(false)
   .setLabel("Submit")
-  .setPosition(padding, headerHeight + padding * 6)
+  .setPosition(padding + 80, headerHeight + padding * 6)
   .setSize(70, 20)
   //.setValue(1)
   .setBroadcast(true)
@@ -484,15 +574,12 @@ public void draw() {
 
     if (currentPage == "newSession") {
       String s2 = "Box state: " + boxState +
-        "\nPress 'P' to to start a session" +
         "\nPress 'S' to study" +
         "\nPress 'A' to assess"
         ;
       text(s2, width/3 + padding*2, height-90, width/2, height-90);
 
-      String s3 = "Assessment question 1: " + assess1 + "%" +
-        "\nAssessment question 2: " + assess2 + "%" +
-        "\nAssessment question 3a: " + assess3Toggle1 +
+      String s3 = "\nAssessment question 3a: " + assess3Toggle1 +
         "\nAssessment question 3b: " + assess3Toggle2
         ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
@@ -533,8 +620,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     sessionFolder.mkdir();
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
-
-    String[] tempAssessment = {"0", "0", "false", "false"};
+    String[] tempAssessment = {"", "", "", "50", "50", "50"};
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
@@ -665,37 +751,87 @@ public void playPauseBt(int theValue){
   } else {
     cp5.getController("playPauseBt").setLabel("Play");
   }
-  
 }
 
+public void stopBt(int theValue){
+  boxState = 0;
+  sw.stop();
+}
 
 public void assess1Bt(int theValue) {
   assessQuestion = 2;
-  cp5.getController("assess1").hide();
+  
+  cp5.getController("assessRelaxationMeditation").show();
+  cp5.getController("assessRelaxationStudy").show();
+  cp5.getController("assessRelaxationPlay").show();
+  
   cp5.getController("assess1Bt").hide();
-  cp5.getController("assess2").show();
   cp5.getController("assess2Bt").show();
+  cp5.getController("assess22Bt").show();
+}
+
+public void assess22Bt(int theValue) {
+  cp5.getController("assessRelaxationMeditation").hide();
+  cp5.getController("assessRelaxationStudy").hide();
+  cp5.getController("assessRelaxationPlay").hide();
+  cp5.getController("assess22Bt").hide();
+  cp5.getController("assess2Bt").hide();
+
+  boxState = 400;
+  assessQuestion = 1;
+  cp5.getController("assess1Bt").show();
 }
 
 public void assess2Bt(int theValue) {
   assessQuestion = 3;
-  cp5.getController("assess2").hide();
+  
+  cp5.getController("assessRelaxationMeditation").hide();
+  cp5.getController("assessRelaxationStudy").hide();
+  cp5.getController("assessRelaxationPlay").hide();
+  
+  cp5.getController("assessAttentionMeditation").show();
+  cp5.getController("assessAttentionStudy").show();
+  cp5.getController("assessAttentionPlay").show();
+  
   cp5.getController("assess2Bt").hide();
+  cp5.getController("assess22Bt").hide();
+  cp5.getController("assess33Bt").show();
   cp5.getController("assess3Bt").show();
-  cp5.getController("assess3Toggle1").show();
-  cp5.getController("assess3Toggle2").show();
+}
+
+public void assess33Bt(int theValue) {
+  assessQuestion = 2;
+  
+  cp5.getController("assessRelaxationMeditation").show();
+  cp5.getController("assessRelaxationStudy").show();
+  cp5.getController("assessRelaxationPlay").show();
+  
+  cp5.getController("assessAttentionMeditation").hide();
+  cp5.getController("assessAttentionStudy").hide();
+  cp5.getController("assessAttentionPlay").hide();
+  
+  cp5.getController("assess2Bt").show();
+  cp5.getController("assess22Bt").show();
+  cp5.getController("assess3Bt").hide();
+  cp5.getController("assess33Bt").hide();
 }
 
 public void assess3Bt(int theValue) {
   assessQuestion = 4;
-  //cp5.getController("assess3").hide();
+
+  cp5.getController("assessAttentionMeditation").hide();
+  cp5.getController("assessAttentionStudy").hide();
+  cp5.getController("assessAttentionPlay").hide();
+  
   cp5.getController("assess3Bt").hide();
   cp5.getController("assess3Toggle1").hide();
   cp5.getController("assess3Toggle2").hide();
+  cp5.getController("assess33Bt").hide();
+  
   output.flush();
   output.close();
-
-  String[] assessment = {str(assess1), str(assess2), str(assess3Toggle1), str(assess3Toggle2)};
+  
+  String[] assessment = {feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay, str(assessRelaxationMeditation), str(assessRelaxationStudy), str(assessRelaxationPlay), str(assessAttentionMeditation), str(assessAttentionStudy), str(assessAttentionPlay)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
 
@@ -767,33 +903,8 @@ public void loginCheck() {
     }
   }
 
-  loadFiles();
-
-  //cp5.addScrollableList("loadFilesList")
-  //  .setPosition(padding, height/2)
-  //  .setLabel("Load session")
-  //  .setSize(200, 100)
-  //  .setBarHeight(20)
-  //  .setItemHeight(20)
-  //  .addItems(fileArray)
-  //  ;
-  //cp5.getController("loadFilesList").moveTo("overall");
-
-  //cp5.addButton("deleteFile")
-  //  .setBroadcast(false)
-  //  .setLabel("delete")
-  //  .setPosition(padding, height/2 + 100 + padding)
-  //  .setSize(70, 20)
-  //  .setValue(1)
-  //  .setBroadcast(true)
-  //  .getCaptionLabel().align(CENTER, CENTER)
-  //  ;
-  //cp5.getController("deleteFile").moveTo("overall");
-
-  /////////////////////////////
-
   currentPage = "overall";
-
+  loadFiles();
   loading = false;
 }
 
@@ -899,8 +1010,8 @@ public void mousePressed() {
   case "singleSession":
     eegAvg.onClick(mouseX, mouseY);
     personalAssSesion.onClick(mouseX, mouseY);
-    personalAssSesion.setup(visWidth/2, visHeight/2);
-    personalAvg.setup(visWidth/2, visHeight/2);
+    personalAssSesion.setup(visWidth/2, visHeight/3);
+    //personalAvg.setup(visWidth/2, visHeight/3);
     loadFile(currentItem);
     break;
   case "overall":
@@ -908,6 +1019,10 @@ public void mousePressed() {
     eegAct.onClick();
     break;
   }
+  
+  feelingRadioMeditation.click();
+  feelingRadioStudy.click();
+  feelingRadioPlay.click();
 }
 
 void mouseWheel(MouseEvent event) {
@@ -930,18 +1045,24 @@ public void keyPressed() {
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
       break;
-    case 'p':
-      boxState = 100;
-      break;
     case 's':
+      sw.start();
       boxState = 200;
       break;
+    case 'p':
+      sw.stop();
+      cp5.getController("playPauseBt").show();
+      cp5.getController("stopBt").show();
+      boxState = 300;
+      break;
     case 'a':
+      cp5.getController("playPauseBt").hide();
+      sw.stop();
+      
       if (currentPage == "newSession") {
-        boxState = 300;
+        boxState = 400;
         assessQuestion = 1;
         if (assessQuestion == 1) {
-          cp5.getController("assess1").show();
           cp5.getController("assess1Bt").show();
         }
       }
@@ -950,6 +1071,7 @@ public void keyPressed() {
       simulateMindSet = !simulateMindSet;
     case 'q':
       sw.stop();
+      cp5.getController("playPauseBt").hide();
       break;
     case 'w':
       sw.start();

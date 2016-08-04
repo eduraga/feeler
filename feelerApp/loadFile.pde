@@ -1,6 +1,8 @@
 public void loadFile(int n){   
-   eegAct.setup("values");
-  
+    if(currentPage == "eegActivity"){
+      eegAct.setup("values");
+    }
+    
     fileName = splitTokens(sessionFolders[n]);
   
     filenameString = sessionFolders[n];
