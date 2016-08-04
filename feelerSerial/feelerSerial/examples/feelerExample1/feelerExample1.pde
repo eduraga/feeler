@@ -1,9 +1,23 @@
+/*
+feelerS.setSettings(10000, 2000, 3000); //remove this line to use default settings.
+first value sets the ledfade time in box 1
+
+0 : is start
+1 :   ledfade box 1
+2 :   ledfade ready
+3 :   ledgrid, give number of leds with feelerS.setBox2LedState(value); 21 or 0 is turn off leds
+      to set speed use feelerS.setBox2LedSpeed(value);
+      
+4 :   led fade ready, connect box 2
+
+*/
 //include library
 import feelerSerial.*;
 import neurosky.*;
-int resizeWithArrows = 10;
+int resizeWithArrows = 0;
+int resizeWithArrowsLights = 0;
 
-//Create an instance
+//Create an   instance
 feelerSerial feelerS;
 
 boolean bool = false;
@@ -22,111 +36,108 @@ void setup() {
 
   //Set the settings you want to send.
   //The settings are speeds(seconds) for the 3 different boxes.
-  feelerS.setSettings(7000, 2000, 3000); //remove this line to use default settings.
+  //first number speed for ledfade in box 1
+  feelerS.setSettings(10000, 2000, 3000); //remove this line to use default settings.
   
   //list serial connections
   feelerS.listSerial();
   
   //Initiate connection, bluetooth adress. Send/receive settings
-  //feelerS.init("/dev/cu.usbmodem12341");
   feelerS.init("/dev/tty.Feeler-RNI-SPP");
-  //feelerS.init("/dev/tty.usbserial-A702U4PD");
   //this is for the timer
   time = millis();
+  
+  feelerS.play();
+  
+  feelerS.setBox3GameValue(100);
+  feelerS.setBox2LedSpeed(1000);
 }
 
-
 void draw() {
-  //Stop boxes
-  feelerS.stop();
-  //Play boxes
-  feelerS.play();
-  //set box 2 led state
-  feelerS.setBox2LedState(resizeWithArrows); 
-
   //set debug values, these are the values that are received from the arduino
   //this is run only when debug mode is activated
   //(boxesConnected, play(1)/stop(0), boxState,int box2buttonPress(1-3), box2Led(1-50))
   //feelerS.debugSet(1, resizeWithArrows, 1, 1, 1);
 
-  //set the box state;
   feelerS.setBoxState(resizeWithArrows);
+  feelerS.setBox2LedState(resizeWithArrowsLights);
   //Send serial
   //feelerS.sendValues();
 
-  //Get serial
-  if (feelerS.get()) {
-    feelerS.getButton1();
-    if(feelerS.getButton1()){
-      
-    }
-    
-    println(" ");
-    //button-presses as bools
-    print("Button 1: ");
-    println(feelerS.getButton1()); 
-    print("Button 2: ");
-    println(feelerS.getButton2()); 
-    print("Button 3: ");
-    println(feelerS.getButton3()); 
-
-    //How many boxes are connected?
-    print("Boxes connected: ");
-    println(feelerS.getBoxesConnected()); 
-
-    //Get box state
-    // print("Box state: ");
-    // println(feelerS.getBoxState());
-    print("getPlayStopSync: ");
-    println(feelerS.getPlayStopSync());
-    println(feelerS.playStop);
-
-    print("boxState: ");
-    println(feelerS.getBoxStateSync());
-    println(feelerS.boxStateInput);
-
-    print("box2LedState: ");
-    println(feelerS.getBox2LedState());
-    println(feelerS.box2LedState);
-    println(resizeWithArrows);
-   
-  }//*/
-
+  
   //a simple timer
   double time2 = millis();
   if (time2 - time > 100) {
     time = millis() + (time2-time - 100);
+    feelerS.sendValues();
+    getSerialData();
     //timer
     //do something
   }
-  
-
-  //  print("boxState: ");
-  //println(feelerS.boxState);
 }
 
 void keyPressed() {
   feelerS.sendValues();
   if (key == CODED) {
     if (keyCode == LEFT) {
-      resizeWithArrows--;
+      resizeWithArrowsLights--;
       feelerS.sendValues();
       println(resizeWithArrows);
 
     } else if (keyCode == RIGHT) {
-      resizeWithArrows++;
+      resizeWithArrowsLights++;
       println(resizeWithArrows);
       feelerS.sendValues();
+      getSerialData();
 
     } else if (keyCode == UP) {
       resizeWithArrows++;
       println(resizeWithArrows);
       feelerS.sendValues();
+      getSerialData();
 
     } else if (keyCode == DOWN) {
-      resizeWithArrows--;
+       resizeWithArrows--;
       println(resizeWithArrows);
       feelerS.sendValues();
+      getSerialData();
     }
+  }
+}
+
+void getSerialData(){
+  //Get serial
+  if (feelerS.get()){
+    println(" ");
+    //1 when the first box is connected and state is 3
+    print("Boxes connected: ");
+    println(feelerS.getBoxesConnected());
+    print("connection: ");
+    println(feelerS.checkConnection());
+    print("Playing or stopped(0 when stopped): ");
+    println(feelerS.getPlayStop());
+    
+        
+    print("boxState: --- output:  ");
+    print(feelerS.boxState);
+    print(" input: ");
+    println(feelerS.getBoxStateInput());
+
+    print("box2LedState --- output: ");
+    print(feelerS.box2LedState);
+    print(" input: ");
+    println(feelerS.getBox2LedState());
+    
+    print("box2LedSpeed --- output: ");
+    print(feelerS.box2LedSpeed);
+    print(" input: ");
+    println(feelerS.getBox2LedSpeed());
+    
+    print("box3GameValue --- output: ");
+    print(feelerS.box3GameValue);
+    print(" input: ");
+    println(feelerS.getBox3GameValue());
+    println(resizeWithArrowsLights);
+    
   }
 }
