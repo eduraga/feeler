@@ -182,7 +182,7 @@ public class feelerSerial {
 	 *------------------------------------------------------------------------------------------------------------*/
 	
 	// Get the serial information and return it if received successfully, else return NULL
-	static char[] getSerial(){
+	public static char[] getSerial(){
 		if(!debugMode){
 		//char[] receivedSerial = new char[maxLengthOfSerial];
 		boolean receiving = false;
