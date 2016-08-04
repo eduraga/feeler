@@ -1,6 +1,6 @@
 //include library
 import feelerSerial.*;
-
+import neurosky.*;
 int resizeWithArrows = 10;
 
 //Create an instance
@@ -22,14 +22,15 @@ void setup() {
 
   //Set the settings you want to send.
   //The settings are speeds(seconds) for the 3 different boxes.
-  feelerS.setSettings(20, 10, 50); //remove this line to use default settings.
+  feelerS.setSettings(7000, 2000, 3000); //remove this line to use default settings.
   
   //list serial connections
   feelerS.listSerial();
   
   //Initiate connection, bluetooth adress. Send/receive settings
   //feelerS.init("/dev/cu.usbmodem12341");
-  feelerS.init("/dev/tty.RNBT-65ED-RNI-SPP");
+  feelerS.init("/dev/tty.Feeler-RNI-SPP");
+  //feelerS.init("/dev/tty.usbserial-A702U4PD");
   //this is for the timer
   time = millis();
 }
@@ -46,15 +47,20 @@ void draw() {
   //set debug values, these are the values that are received from the arduino
   //this is run only when debug mode is activated
   //(boxesConnected, play(1)/stop(0), boxState,int box2buttonPress(1-3), box2Led(1-50))
-  feelerS.debugSet(122, 22, 30, 2, 12);
-  
+  //feelerS.debugSet(1, resizeWithArrows, 1, 1, 1);
+
   //set the box state;
-  feelerS.setBoxState(4);
+  feelerS.setBoxState(resizeWithArrows);
   //Send serial
-  feelerS.sendValues();
+  //feelerS.sendValues();
 
   //Get serial
   if (feelerS.get()) {
+    feelerS.getButton1();
+    if(feelerS.getButton1()){
+      
+    }
+    
     println(" ");
     //button-presses as bools
     print("Button 1: ");
@@ -100,15 +106,27 @@ void draw() {
 }
 
 void keyPressed() {
+  feelerS.sendValues();
   if (key == CODED) {
     if (keyCode == LEFT) {
       resizeWithArrows--;
+      feelerS.sendValues();
+      println(resizeWithArrows);
+
     } else if (keyCode == RIGHT) {
       resizeWithArrows++;
+      println(resizeWithArrows);
+      feelerS.sendValues();
+
     } else if (keyCode == UP) {
       resizeWithArrows++;
+      println(resizeWithArrows);
+      feelerS.sendValues();
+
     } else if (keyCode == DOWN) {
       resizeWithArrows--;
+      println(resizeWithArrows);
+      feelerS.sendValues();
     }
   }
 }

@@ -8,7 +8,6 @@ package feelerSerial;
 import processing.core.*;
 import processing.serial.*;
 import java.util.Arrays;
-
 public class feelerSerial {
 	
 	
@@ -38,13 +37,28 @@ public class feelerSerial {
 	public static int playStopInput = 0;
 	public static int boxStateInput = 0;
 	public static int box2LedStateInput = 0;
+
+	public static int box2LedSpeedInput = 0;
+	public static int box3GameValueInput = 0;
+	
+	//Button presses replaced by game
 	public static int box3Button = 0;
+	
+	//Button presses replaced by game
 	//This works like "last button press"
 	static int box3ButtonTemp = 0;
 	// Button bools to activate when button is pressed and deactivate when information is gotten
 	static boolean box3Button1 = false;
 	static boolean box3Button2 = false;
 	static boolean box3Button3 = false;
+	
+	public static int box2LedSpeed = 0;
+	public static int box3GameValue = 0;
+	
+	//timer
+	private static boolean connection = false;
+	private static long timer = System.currentTimeMillis();
+	
 	
 	// Output to arduino 
 	public static int playStop = 20;
@@ -77,17 +91,21 @@ public class feelerSerial {
 	public void init(String adress){
 	//Do this if not in debug mode
 	if(!debugMode){
-		//	Connect to arduino
+	     //Connect to arduino
 		 int portBoolean = 0;
+		 long connectTimer = System.currentTimeMillis();
+		 connection = false;
 		 //Search for serial
 		 System.out.print("Connecting");
 		  while (portBoolean == 0) {
+			if(System.currentTimeMillis() - connectTimer > 20000) break;
 		    String[] temp = Serial.list();
 		    for (int i = 0; i < temp.length; i++){
 		      if (temp[i].equals(adress)) {
 		        try { 
-		        mySerial = new Serial(myParent, adress, 56700);	//connect to serial
+		        mySerial = new Serial(myParent, adress, 9600);	//connect to serial
 		        portBoolean = 1;
+		        connection = true;
 		        break;
 		      }
 		      catch (Exception a){
@@ -95,63 +113,66 @@ public class feelerSerial {
 		      }
 		    }
 		    }
-		    try {						//sleep for 700 microseconds
-	        	  Thread.sleep(700L);
+		    try {						//sleep for 200 microseconds
+	        	  Thread.sleep(50L);
 	        	}
 	        catch (Exception e) {}
 		    System.out.print(".");
 		    //Get the serial list again
 		    temp = Serial.list();
 		  }
-		  //Set settings so it buffers until endMarker is found
-		  mySerial.bufferUntil(endMarker); 
-		  
 		  System.out.println("");
-		  System.out.println("Feeler found!");
-		  
-		  //Send settings if there are any set, receive "E" when ready
-		  System.out.print("Sending settings ");
-		  boolean getSettingsB = false;
-			  	while(true){ 
-			  		mySerial.write(startMarker + "S" + limitMarker + Integer.toString(box1Speed) + limitMarker + Integer.toString(box2Speed) + limitMarker + Integer.toString(box3Speed) + endMarker);
-					System.out.print(".");
-					while(mySerial.available() > 0){
-						char input = (char)mySerial.read();
-						//Break when 'E' character is gotten back from the arduino
-						if(input == 'E'){
-							getSettingsB = true;
-							System.out.println("");
-							System.out.println("Settings sent successfully");
-							break;
-						} 
-						//Break if sketch already running
-						if(input == 'b'){
-							getSettingsB = true;
-							System.out.println("");
-							System.out.println("No settings sent, sketch already running.");
-							break;
+		  if(connection) {
+			  //Set settings so it buffers until endMarker is found
+			  mySerial.bufferUntil(endMarker); 
+			  
+			  System.out.println("Feeler found!");
+			  //Send settings if there are any set, receive "E" when ready
+			  System.out.print("Sending settings ");
+			  boolean getSettingsB = false;
+				  	while(true){ 
+				  		mySerial.write(startMarker + "S" + limitMarker + Integer.toString(box1Speed) + limitMarker + Integer.toString(box2Speed) + limitMarker + Integer.toString(box3Speed) + endMarker);
+						System.out.print(".");
+						while(mySerial.available() > 0){
+							char input = (char)mySerial.read();
+							//Break when 'E' character is gotten back from the arduino
+							if(input == 'E'){
+								getSettingsB = true;
+								System.out.println("");
+								System.out.println("Settings sent successfully");
+								break;
+							} 
+							//Break if sketch already running
+							if(input == 'b'){
+								getSettingsB = true;
+								System.out.println("");
+								System.out.println("No settings sent, sketch already running.");
+								break;
+							}
 						}
+						//Break the while loop if something has happened	
+						if(getSettingsB == true) break;	
+						delay(50);
 					}
-					//Break the while loop if something has happened
-					if(getSettingsB == true) break;
-					delay(50);
-				}
 
-		 //If no set settings, receive settings from arduino
-		System.out.print("Receiving settings");
-		while(true){
-			if(getSettings() == true) {
-					mySerial.write("E");
-					//delay(2);
-					//mySerial.write("E");
-					break;
-				}
-			System.out.print(".");
-			delay(100);
-				 
-			}		  
-		 System.out.println("Feeler connected!");
-		  
+			 //If no set settings, receive settings from arduino
+			System.out.print("Receiving settings");
+			while(true){
+				if(getSettings() == true) {
+						mySerial.write("E");
+						//delay(2);
+						//mySerial.write("E");
+						break;
+					}
+				System.out.print(".");
+				delay(100);
+					 
+				}		  
+			 System.out.println("Feeler connected!");
+			  
+		  }
+		  else System.out.println("connection failed!");
+		 
 		}
 		else System.out.println("Serial debug mode started");
 	}
@@ -226,6 +247,8 @@ public class feelerSerial {
 					number++; 
 					intSettings[number] = 0;
 				} else if (serialSettings[index] == endMarker) {
+					connection = true;
+					timer = System.currentTimeMillis();
 					//store settings when endMarker is reached
 					box1Speed = intSettings[0];
 					box2Speed = intSettings[1];
@@ -259,12 +282,16 @@ public class feelerSerial {
 		return false;
 	}
 	
-	
+	public  boolean checkConnection(){
+		return connection;
+	}
 	
 	// Get message from arduino 
 	public  boolean get(){
+		if(System.currentTimeMillis() - timer > 5000) connection = false;
 		// Get the serial and return if not received
 		char[] serialSettings = getSerial();
+		//System.out.println(serialSettings);
 		if (serialSettings == null) return false;
 		//Int buffer
 		int[] intSettings = new int[maxLengthOfSerial];
@@ -286,16 +313,25 @@ public class feelerSerial {
 					number++;
 					intSettings[number] = 0;
 				} else if (serialSettings[index] == endMarker) {
+					//set connection true
+					connection = true;
+					timer = System.currentTimeMillis();
+					
 					//Store settings when endmarker is reached
 					boxesConnected = intSettings[0];
 					//System.out.println("boxesConnected: " + Integer.toString(boxesConnected));	//debug
-					playStopInput = intSettings[1];
+					
+					//using number 4 from boxesConnected insted //playStopInput = intSettings[1];
+					
 					//System.out.println("boxesConnected: " + Integer.toString(boxesConnected));	//debug
-					boxStateInput = intSettings[2];
+					boxStateInput = intSettings[1];
 					//System.out.println("playStopInput: " + Integer.toString(playStopInput));		//debug
-					box3Button = intSettings[3]; 
+					box2LedStateInput = intSettings[2];
+					//replaced by game
+					//box3Button = intSettings[3]; 
 					//System.out.println("box3Button: " + Integer.toString(box3Button));			//debug
-					box2LedStateInput = intSettings[4];
+					box2LedSpeedInput = intSettings[3];
+					box3GameValueInput = intSettings[4];
 					//Put the boxbool on according to the information
         		    if(box3Button != box3ButtonTemp){
         		    	if(box3Button == 1) box3Button1 = true;
@@ -309,6 +345,11 @@ public class feelerSerial {
 				if(serialSettings[index+1] == 'b'){
 					index +=2;
 					parsing = true;
+				}
+				else if(serialSettings[index+1] == 'B'){
+					System.out.println("Device already running, restart the device if you have changed the settings");
+					mySerial.write("E");
+					return true;
 				}
 				else {
 					break;
@@ -324,6 +365,7 @@ public class feelerSerial {
 	 *------------------------------------------------------------------------------------------------------------*/
 	
 	//Get button press
+	//Not used
 	public boolean getButton1(){
 		if(box3Button1 == true){ 
 			box3Button1 = false;
@@ -348,14 +390,35 @@ public class feelerSerial {
 		return false;
 	}
 
+	//used
 	//Get the value that shows how many boxes are connected
 	public int getBoxesConnected(){
 		return boxesConnected;
 	}
 	
+	public int getPlayStop(){
+		if(boxesConnected == 4)
+			return 0;
+		else return 1;
+	}
+	
+	public int getBoxStateInput(){
+		return boxStateInput;
+	}
+	
 	public int getBox2LedState(){
 		return box2LedStateInput;
 	}
+	
+	public int getBox2LedSpeed(){
+		return box2LedSpeedInput;
+	}
+	
+	public int getBox3GameValue(){
+		return box3GameValueInput;
+	}
+	
+	
 	
 	//Get the playStop, returns "stopped" or "playing". Or a longer string if program and device is not synced. 
 	public String getPlayStopSync(){
@@ -396,12 +459,25 @@ public class feelerSerial {
 		boxState = boxS;
 	}
 	
+	//Set boxState, sent to arduino
+	public void setBox2LedSpeed(int boxS){
+		box2LedSpeed = boxS;
+	}
+	
+	//Set boxState, sent to arduino
+	public void setBox3GameValue(int boxS){
+		box3GameValue = boxS;
+	}
+	
+	
 	//Send the set values to arduino
 	public void sendValues(){
 		String write1 = startMarker + "s" 
 						+ limitMarker + Integer.toString(playStop) 
 						+ limitMarker + Integer.toString(boxState) 
 						+ limitMarker + Integer.toString(box2LedState) 
+						+ limitMarker + Integer.toString(box2LedSpeed) 
+						+ limitMarker + Integer.toString(box3GameValue) 
 						+ endMarker;
 		if(!debugMode){
 			mySerial.write(write1);
