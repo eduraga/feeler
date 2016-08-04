@@ -26,6 +26,10 @@ import java.nio.*;
 import processing.serial.*;
 import pt.citar.diablu.processing.mindset.*;
 
+import feelerSerial.*;
+
+feelerSerial feelerS;
+boolean boxInit = false;
 
 ControlP5 cp5;
 
@@ -212,7 +216,25 @@ public void setup() {
   feelingRadioMeditation = new FeelingRadio(20, 300, "Mediatation");
   feelingRadioStudy = new FeelingRadio(20, 300 + 50 + padding*2, "Study");
   feelingRadioPlay = new FeelingRadio(20, 300 + 50*2 + padding*4, "Play");
+  
+  //Make a new feelerSerial
+  feelerS = new feelerSerial(this); 
+  
+  feelerS.init("/dev/tty.Feeler-RNI-SPP");
+  thread("updateBoxData");
 
+  // Feeler Serial stuff
+  //debug mode
+  //feelerS.debug();
+
+  //Set the settings you want to send.
+  //The settings are speeds(seconds) for the 3 different boxes.
+  //first number speed for ledfade in box 1
+  feelerS.setSettings(10000, 2000, 3000); //remove this line to use default settings.
+  
+  
+  
+  
   //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
   
   //cp5.addButton("homeBt")
@@ -491,6 +513,12 @@ public void draw() {
   fill(0);
   image(logo, 20, 20);
   
+  if ( millis() % 100 == 0) {
+    feelerS.sendValues();
+    feelerS.get();
+    //println("box is connected");
+  }
+  
   if(
     mouseX > hoverUpLeft.x &&
     mouseX < hoverDownRight.x
@@ -607,9 +635,12 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "newSession":
     println("newSession page");
     currentPage = "newSession";
+    cp5.getController("connectBox").show();
     boxState = 0;
     break;
   case "startSession":
+    feelerS.play();
+    feelerS.setBox2LedSpeed(2000);
     println("startSession");
     sw.start();
     
@@ -707,6 +738,14 @@ public void homeBt(int theValue) {
     cp5.getController("loginBt").hide();
   }
 }
+
+public void connectBox(int theValue) {
+  if(!feelerS.checkConnection()){
+     feelerS.init("/dev/tty.Feeler-RNI-SPP");
+     if(feelerS.checkConnection()) boxInit = true;
+  }
+}
+
 
 public void logoutBt(int theValue) {
   //cp5.getTab("default").bringToFront();
@@ -946,6 +985,18 @@ public void addUserAreaControllers() {
     ;
   cp5.getController("newSession").moveTo("global");
 
+  cp5.addButton("connectBox")
+    .setBroadcast(false)
+    .setLabel("Connect Box")
+    .setPosition(width - 170 - buttonWidth, 10)
+    .setSize(buttonWidth, buttonHeight)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("connectBox").moveTo("global");
+  cp5.getController("connectBox").hide();
+
   cp5.addButton("overall")
     .setBroadcast(false)
     .setLabel("overall")
@@ -1146,5 +1197,24 @@ void folderSelected(File selection) {
       // what to do when finished trying and catching ...
     }
     
+  }
+}
+
+
+void updateBoxData(){
+  while(true){
+    if ( millis() % 500 == 0) {
+      
+      try{
+        feelerS.sendValues();
+      } catch (Exception e) {}
+      
+      try{
+        feelerS.getSerial();
+      } catch (Exception e) {}
+      
+      println("box is connected " + feelerS.checkConnection());
+      println(feelerS.getBoxesConnected());
+    }
   }
 }

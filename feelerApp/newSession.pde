@@ -117,17 +117,44 @@ void newSession(){
       fill(textDarkColor);
       text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
       counterDisplay();
+      
+      feelerS.setBoxState(1);
+      feelerS.setBox2LedState(0);
+      
+
+      //if ( millis() % 100 == 0) {
+      //  feelerS.sendValues();
+      //  feelerS.get();
+      //  println("box is connected " + feelerS.checkConnection());
+      //}
+      
       if(sw.minute() == 0 && sw.second() == 0){
         println("End meditation");
+        feelerS.setBoxState(3);
+        sw.stop();
         sw.start();
+        boxState = 150;
+      }
+      break;
+    case 150:
+      if(feelerS.getBoxesConnected() == 1){
         boxState = 200;
       }
+      
+      pageH1("Connect the second box " + boxState);
+      
       break;
     case 200:
       pageH1("Study");
       text("Focus on your work. Let the time fly", padding, headerHeight + padding + 20);
       timeline = 2;
       counterDisplay();
+      
+      feelerS.setBoxState(3);
+      
+      // increase this from 0 to 20
+      feelerS.setBox2LedState(4);
+      
       if(sw.minute() == 0 && sw.second() == 0){
         println("End study");
         sw.start();
@@ -139,6 +166,9 @@ void newSession(){
       text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
       timeline = 3;
       counterDisplay();
+      
+      feelerS.setBoxState(4);
+      feelerS.setBox2LedState(0);
       
       if(sw.minute() == 0 && sw.second() == 0){
         println("End play");
@@ -254,16 +284,16 @@ void screenshotThresholds(){
       line(0, height/2 + height/4, width, height/2 + height/4);
     }
     
-    if(recording){
-      if(attention > triggerLow || meditation > triggerLow){
-        if (hasFinished) {
-          triggerScreenshots(10);
-        }
-        if ((frameCount & 0xF) == 0)   print('.');
-      } else {
-        cancelScreenshots();
-      }
-    }
+    //if(recording){
+    //  if(attention > triggerLow || meditation > triggerLow){
+    //    if (hasFinished) {
+    //      triggerScreenshots(10);
+    //    }
+    //    if ((frameCount & 0xF) == 0)   print('.');
+    //  } else {
+    //    cancelScreenshots();
+    //  }
+    //}
     
     if(debug){
       
@@ -279,7 +309,6 @@ void screenshotThresholds(){
       }
       
       ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
-      
   
       if(meditation > triggerLow){
         if(meditation < 75){
@@ -311,11 +340,25 @@ void triggerScreenshots(final float sec) {
     public void run() {
       print(" " + nf(sec, 0, 2));
       hasFinished = true;
+
+      //feelerS.sendValues();
+      //feelerS.get();
+      //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
+      //println(feelerS.checkConnection());
     }
   }, (long) (sec*1e3));
   
+
+  //feelerS.sendValues();
+  //feelerS.get();
+  //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
+  
   println("\n\nScreenshot scheduled for "
     + nf(10, 0, 2) + " secs.\n");
+    
+    //feelerS.sendValues();
+    //feelerS.get();
+    //println(feelerS.checkConnection());
     
     screenshot();
     PImage newImage = createImage(100, 100, RGB);

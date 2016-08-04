@@ -6,8 +6,8 @@ class CountDown {
   int pauseStart = 0;
   int pauseEnd = 0;
   int elapsed = 0;
-  int countDownStart = 1000 * 60 * 5;
-  //int countDownStart = 1000 * 5;
+  //int countDownStart = 1000 * 60 * 5;
+  int countDownStart = 1000 * 20;
   boolean paused = false;
   
   void start() {
