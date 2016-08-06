@@ -802,6 +802,21 @@ public void overall(int theValue) {
   cp5.getTab("overall").bringToFront();
 }
 
+
+public void session(int theValue) {
+  println("this session: " + currentSession);
+  cp5.getController("session").show();
+  
+  if(currentSession != ""){
+    currentPage = "singleSession";
+    cp5.getTab("singleSession").bringToFront();
+    currentSession = sessionFolders[currentItem];
+  }
+  //currentItem = i;
+  //trends.onClick();
+  //eegAct.onClick();
+}
+
 public void export(int theValue) {
   selectFolder("Select a folder to save your data:", "folderSelected");
 }
@@ -1039,13 +1054,25 @@ public void addUserAreaControllers() {
   cp5.addButton("overall")
     .setBroadcast(false)
     .setLabel("overall")
-    .setPosition(userTabsX, padding)
+    .setPosition(width/2 - buttonWidth/2 - 1, padding)
     .setSize(buttonWidth, buttonHeight)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("overall").moveTo("global");
+  
+  cp5.addButton("session")
+    .setBroadcast(false)
+    .setLabel("current session")
+    .setPosition(width/2 + buttonWidth/2 + 1, padding)
+    .setSize(buttonWidth, buttonHeight)
+    .setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
+  cp5.getController("session").moveTo("global");
+  cp5.getController("session").hide();
   
   cp5.addButton("export")
     .setBroadcast(false)
@@ -1097,17 +1124,18 @@ public void loadFilesList(int n) {
 
 public void mousePressed() {
   switch(currentPage) {
-  case "singleSession":
-    eegAvg.onClick(mouseX, mouseY);
-    personalAssSesion.onClick(mouseX, mouseY);
-    personalAssSesion.setup(visWidth/2, visHeight/3);
-    //personalAvg.setup(visWidth/2, visHeight/3);
-    loadFile(currentItem);
-    break;
-  case "overall":
-    trends.onClick();
-    eegAct.onClick();
-    break;
+    case "singleSession":
+      eegAvg.onClick(mouseX, mouseY);
+      personalAssSesion.onClick(mouseX, mouseY);
+      //personalAssSesion.setup(visWidth/2, visHeight/3);
+      //personalAvg.setup(visWidth/2, visHeight/3);
+      cp5.getController("session").show();
+      loadFile(currentItem);
+      break;
+    case "overall":
+      trends.onClick();
+      eegAct.onClick();
+      break;
   }
   
   feelingRadioMeditation.click();

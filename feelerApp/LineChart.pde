@@ -96,8 +96,6 @@ class LineChart {
         
         //}
         
-        
-
       }
       stepSize = visWidth/_listSize;
     } else {
@@ -105,10 +103,6 @@ class LineChart {
       _listSize = 1;
       stepSize = 1;      
     }
-    
-    
-
-    
   }
   
   void display(){    
@@ -158,6 +152,24 @@ class LineChart {
         text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
         text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
         popStyle();
+      }
+      
+      
+      fill(textDarkColor);
+      if(fileName[0].charAt(0) != '.'){
+        String[] fileDate = split(fileName[0], '-');
+        
+        float rlxAvg = 0;
+        float attAvg = 0;
+        
+        if(type == "eeg"){
+          fill(textDarkColor);
+          textAlign(LEFT, CENTER);
+          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, _visY - padding);
+          
+          rlxAvg = relaxationAverageList[currentItem];
+          attAvg = attentionAverageList[currentItem];
+        }
       }
 
       if(type == "averages"){
@@ -358,6 +370,7 @@ class LineChart {
   }
   
   void onClick(){
+    println(currentSession);
     hoverUpLeft.set(0,0);
     hoverDownRight.set(0,0);
     
@@ -385,6 +398,7 @@ class LineChart {
                 }
               }
             }
+            
           }
         }
       }
