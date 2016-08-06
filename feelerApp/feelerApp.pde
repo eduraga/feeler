@@ -650,6 +650,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "overall":
     println("overall page");
     currentPage = "overall";
+    cp5.getController("session").hide();
     personalAssSesion.setup(visWidth, visHeight);
     personalAvg.setup(visWidth, visHeight);
     break;
@@ -805,7 +806,7 @@ public void overall(int theValue) {
 
 public void session(int theValue) {
   println("this session: " + currentSession);
-  cp5.getController("session").show();
+  cp5.getController("session").hide();
   
   if(currentSession != ""){
     currentPage = "singleSession";

@@ -307,6 +307,13 @@ class LineChart {
             assessEnd = thisX + offset;
           }
         }
+        
+
+        String[] fileDate = split(fileName[0], '-');
+        fill(textDarkColor);
+        textAlign(LEFT);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / Personal impressions", visX, _visY - padding*2);
+        
       } else {
         for(int i = 0; i < _listSize; i+=grainSize){
           if(i >= grainSize){
@@ -319,6 +326,12 @@ class LineChart {
             displayThumbs(i);
           }
         }
+    
+        String[] fileDate = split(fileName[0], '-');
+        fill(textDarkColor);
+        textAlign(LEFT);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / EEG data", visX, _visY - padding*2);
+        
       }
   }
   
