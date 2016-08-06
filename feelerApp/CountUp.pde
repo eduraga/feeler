@@ -1,29 +1,20 @@
 // https://forum.processing.org/one/topic/timer-in-processing.html
 // This class based on code found here: http://www.goldb.org/stopwatchjava.html
 
-class CountDown {
+class CountUp {
   int startTime = 0, stopTime = 0, pauseTime = 0;
   int pauseStart = 0;
   int pauseEnd = 0;
   int elapsed = 0;
-  public int countDownStart;
-  //public int countDownStart = 1000 * 30;
   boolean paused = false;
   
   void start() {
-    if(boxState == 100){
-      countDownStart = int(1000 * 60 * countDownStartMeditate);
-    } else if (boxState == 200){
-      countDownStart = int(1000 * 60 * countDownStartStudy);
-    }
-    
     pauseTime = 0;
     startTime = millis();
     recording = true;
     cp5.getController("playPauseBt").show();
     cp5.getController("stopBt").show();
   }
-  
   
   void deleteDir(File file) {
     File[] contents = file.listFiles();
@@ -35,12 +26,7 @@ class CountDown {
     file.delete();
   }
 
-
   void stop() {
-    //to delete uncompleted session data uncomment the following 2 lines:
-    //File path = new File(dataPath(sessionPath));
-    //this.deleteDir(path);
-    
     stopTime = millis();
     recording = false;
     cp5.getController("playPauseBt").hide();
@@ -54,8 +40,8 @@ class CountDown {
       pauseEnd = millis();
     }
     
-    if(pauseStart < pauseEnd) {
-      pauseTime = pauseEnd - pauseStart + pauseTime;
+    if(pauseStart > pauseEnd) {
+      pauseTime = pauseEnd - pauseStart - pauseTime;
     }
     
     recording = !recording;
@@ -63,15 +49,15 @@ class CountDown {
   }
   
   int getElapsedTime() {
-    
     if (recording) {
-      elapsed = (startTime - millis()) + countDownStart + pauseTime;
+      println(millis() - startTime);
+      elapsed = (millis() - startTime) - pauseTime;
     } else {
       //elapsed = (startTime - stopTime);
-      if(elapsed >= 0 && elapsed < 500){
-        elapsed = 0;
-        this.stop();
-      }
+      //if(elapsed >= 0 && elapsed < 500){
+      //  elapsed = 0;
+      //  this.stop();
+      //}
     }
     return elapsed;
   }

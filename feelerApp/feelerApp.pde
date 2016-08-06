@@ -1,4 +1,9 @@
 boolean debug = true;
+boolean simulateMindSet = true;
+boolean simulateBoxes = true;
+
+float countDownStartMeditate = 0.1;
+float countDownStartStudy = 0.2;
 
 import processing.net.*; 
 import controlP5.*;
@@ -61,6 +66,7 @@ final static int TIMER = 100;
 static boolean isEnabled = true;
 
 CountDown sw = new CountDown();
+CountUp cu = new CountUp();
 boolean recording = false; 
 
 //UI variables
@@ -86,17 +92,19 @@ int videoWidth = 640;
 int videoHeight = 480;
 int recControlersWidth = 300;
 
+PImage homeImg;
+
 boolean assess3Toggle1 = true;
 boolean assess3Toggle2 = true;
 int assessQuestion = 0;
 FeelingRadio feelingRadioMeditation, feelingRadioStudy, feelingRadioPlay;
 String feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay;
-int assessRelaxationMeditation = 50;
-int assessRelaxationStudy = 50;
-int assessRelaxationPlay = 50;
-int assessAttentionMeditation = 50;
-int assessAttentionStudy = 50;
-int assessAttentionPlay = 50;
+int assessRelaxationMeditation = 0;
+int assessRelaxationStudy = 0;
+int assessRelaxationPlay = 0;
+int assessAttentionMeditation = 0;
+int assessAttentionStudy = 0;
+int assessAttentionPlay = 0;
 
 PVector hoverUpLeft, hoverDownRight;
 
@@ -155,13 +163,14 @@ int boxState = 0;
 
 //MindSet stuff
 MindSet mindSet;
-boolean simulateMindSet = true;
 boolean mindSetOK = false;
 Serial mindSetPort;
 int mindSetId;
 
 public void setup() {
   smooth();
+  
+  homeImg = loadImage("home.png");
   
   trends = new LineChart();
   eegAct = new LineChart();
@@ -220,7 +229,6 @@ public void setup() {
   //Make a new feelerSerial
   feelerS = new feelerSerial(this); 
   
-  feelerS.init("/dev/tty.Feeler-RNI-SPP");
   thread("updateBoxData");
 
   // Feeler Serial stuff
@@ -514,9 +522,12 @@ public void draw() {
   image(logo, 20, 20);
   
   if ( millis() % 100 == 0) {
-    feelerS.sendValues();
-    feelerS.get();
-    //println("box is connected");
+    //feelerS.sendValues();
+    try {
+      feelerS.get();
+    } catch (NullPointerException e) {
+    }
+    
   }
   
   if(
@@ -633,6 +644,12 @@ public void controlEvent(ControlEvent theControlEvent) {
     personalAvg.setup(visWidth, visHeight);
     break;
   case "newSession":
+    if(!simulateBoxes){
+      try{
+        feelerS.init("/dev/tty.Feeler-RNI-SPP");
+      } catch (NullPointerException e){
+      }
+    }
     println("newSession page");
     currentPage = "newSession";
     cp5.getController("connectBox").show();
@@ -643,7 +660,6 @@ public void controlEvent(ControlEvent theControlEvent) {
     feelerS.setBox2LedSpeed(2000);
     println("startSession");
     sw.start();
-    
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
@@ -740,9 +756,12 @@ public void homeBt(int theValue) {
 }
 
 public void connectBox(int theValue) {
+  
   if(!feelerS.checkConnection()){
-     feelerS.init("/dev/tty.Feeler-RNI-SPP");
-     if(feelerS.checkConnection()) boxInit = true;
+    try{
+      feelerS.init("/dev/tty.Feeler-RNI-SPP");
+    } catch (NullPointerException e){
+    }
   }
 }
 
@@ -1210,11 +1229,8 @@ void updateBoxData(){
       } catch (Exception e) {}
       
       try{
-        feelerS.getSerial();
+        feelerS.get();
       } catch (Exception e) {}
-      
-      println("box is connected " + feelerS.checkConnection());
-      println(feelerS.getBoxesConnected());
     }
   }
 }

@@ -295,7 +295,7 @@ class LineChart {
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
         imageMode(CENTER); 
-        image(screenshotImg, thisX.get(i), mouseY, screenshotImg.width/3, screenshotImg.height/3);
+        image(screenshotImg, thisX.get(i), mouseY + screenshotImg.height/4, screenshotImg.width/4, screenshotImg.height/4);
         imageMode(CORNER);
       }
     }

@@ -16,8 +16,10 @@ With PHP backend
 - Run feelerApp.pde and try to log in
 
 ## running
-- set simulateMindSet to true to test without MindWave
+- set ```simulateMindSet``` to true to test without MindWave
+- set ```simulateBoxes``` to true to test without the boxes
 - uncomment `size(displayWidth, displayHeight);` to allow screen size detection
+- change ```countDownStartMeditate``` and ```countDownStartStudy``` (in minutes)
 
 ## todo/issues
 - [x] Fix scroll

@@ -47,8 +47,8 @@ feelerS.setBoxState(6);
 */
 int[] boxStates = {0, 1, 2, 3};
 
-
 boolean isRecordingMind = false;
+boolean timerOn = false;
 
 String filename;
 PrintWriter output;
@@ -77,7 +77,7 @@ int triggerHight = 80;
 
 void newSession(){
   
-  if(boxState == 100 || boxState == 200 || boxState == 300){
+  if(boxState == 200){
     screenshotThresholds();
   }
   
@@ -91,7 +91,6 @@ void newSession(){
       //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
 
       if (!mindSetOK && !simulateMindSet) {
-         textAlign(LEFT);
          text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
          try {
            //mindSetPort = new Serial(this, Serial.list()[2]);
@@ -102,17 +101,24 @@ void newSession(){
            println("port not ok");
            mindSetOK = false;
          }
+      } else if(!feelerS.checkConnection() && !simulateBoxes) {
+        text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+        PImage learningGoal = loadImage("learning-goal.png");
+        image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
+        text("2. Connect the boxes", padding, headerHeight + padding + 60);
       } else {
         text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
         PImage learningGoal = loadImage("learning-goal.png");
         image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
         text("2. Connect the boxes", padding, headerHeight + padding + 60);
+        image(learningGoal, padding + 130, headerHeight + padding*2 + 20, 30, 30);
       }
       break;
     case 100:
       cp5.getController("startSession").hide();
       pageH1("Meditate");
       isRecordingMind = true;
+      timerOn = true;
       timeline = 1;
       fill(textDarkColor);
       text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
@@ -121,28 +127,13 @@ void newSession(){
       feelerS.setBoxState(1);
       feelerS.setBox2LedState(0);
       
-
-      //if ( millis() % 100 == 0) {
-      //  feelerS.sendValues();
-      //  feelerS.get();
-      //  println("box is connected " + feelerS.checkConnection());
-      //}
-      
       if(sw.minute() == 0 && sw.second() == 0){
         println("End meditation");
         feelerS.setBoxState(3);
         sw.stop();
-        sw.start();
-        boxState = 150;
-      }
-      break;
-    case 150:
-      if(feelerS.getBoxesConnected() == 1){
         boxState = 200;
+        timerOn = false;
       }
-      
-      pageH1("Connect the second box " + boxState);
-      
       break;
     case 200:
       pageH1("Study");
@@ -152,14 +143,24 @@ void newSession(){
       
       feelerS.setBoxState(3);
       
-      // increase this from 0 to 20
-      feelerS.setBox2LedState(4);
-      
-      if(sw.minute() == 0 && sw.second() == 0){
-        println("End study");
-        sw.start();
-        boxState = 300;
+      if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
+        println(sw.getElapsedTime());
+        int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 50, 1, 20));
+        // increase this from 0 to 20
+        feelerS.setBox2LedState(ledState);
+        
+        if(!timerOn){
+          sw.start();
+          timerOn = true;
+        //} else if(sw.minute() == 0 && sw.second() == 0){
+        } else if(sw.getElapsedTime() <= 50){
+          println("End study");
+          sw.stop();
+          timerOn = false;
+          boxState = 300;
+        }
       }
+        
       break;
     case 300:
       pageH1("Play");
@@ -170,13 +171,20 @@ void newSession(){
       feelerS.setBoxState(4);
       feelerS.setBox2LedState(0);
       
-      if(sw.minute() == 0 && sw.second() == 0){
-        println("End play");
-        sw.start();
-        boxState = 400;
-        assessQuestion = 1;
-        cp5.getController("assess1Bt").show();
+      if(!timerOn){
+        cu.start();
+        timerOn = true;
       }
+      
+      //button: end game
+      
+      //if(sw.minute() == 0 && sw.second() == 0){
+      //  println("End play");
+      //  sw.start();
+      //  boxState = 400;
+      //  assessQuestion = 1;
+      //  cp5.getController("assess1Bt").show();
+      //}
       break;
     case 400:
       recording = false;
@@ -262,8 +270,16 @@ void counterDisplay(){
   textSize(38);
   textAlign(CENTER);
   
-  String second = new DecimalFormat("00").format(sw.second());
-  String minute = new DecimalFormat("00").format(sw.minute());
+  String second;
+  String minute;
+  
+  if( boxState != 300){
+    second = new DecimalFormat("00").format(sw.second());
+    minute = new DecimalFormat("00").format(sw.minute());
+  } else {
+    second = new DecimalFormat("00").format(cu.second());
+    minute = new DecimalFormat("00").format(cu.minute());
+  }
   
   text(minute + ":" + second, width/2, containerPosY + padding);
   popStyle();
