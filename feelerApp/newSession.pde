@@ -81,9 +81,49 @@ void newSession(){
     screenshotThresholds();
   }
   
+  if(debug || simulateMindSet || simulateBoxes){
+    if(boxState >= 100){
+      stroke(200);
+      line(0, height/4, width, height/4);
+      stroke(230);
+      line(0, height/4 + height/8, width, height/4 + height/8);
+      stroke(200);
+      line(0, height/2, width, height/2);
+      stroke(230);
+      line(0, height/2 + height/4 - height/8, width, height/2 + height/4 - height/8);
+      stroke(200);
+      line(0, height/2 + height/4, width, height/2 + height/4);
+      
+      pushStyle();
+      if(attention > triggerLow){
+        if(attention < 75){
+          fill(100,200,200);
+        } else {
+          fill(200,100,100);
+        }
+      } else {
+        fill(100,100,200);
+        cancelScreenshots();
+      }
+      
+      ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
+  
+      if(meditation > triggerLow){
+        if(meditation < 75){
+          fill(100,200,200);
+        } else {
+          fill(200,100,100);
+        }
+      } else {
+        fill(100,100,200);
+      }
+      ellipse(width/2 + 40, map(meditation, 0, 100, height/2 + height/4, height/4), 20, 20);
+      popStyle();
+    }
+  }
+  
   switch(boxState){
     case 0:
-      
       pageH1("New session");
       //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
 
@@ -110,9 +150,7 @@ void newSession(){
         text("2. Connect the boxes", padding, headerHeight + padding + 60);
         image(learningGoal, padding + 130, headerHeight + padding*2 + 20, 30, 30);
         
-        if(mindSetOK || simulateMindSet){
-          cp5.getController("startSession").show();
-        }
+        cp5.getController("startSession").show();
       }
       break;
     case 100:
@@ -175,6 +213,7 @@ void newSession(){
       if(!timerOn){
         cu.start();
         timerOn = true;
+        cp5.getController("endGame").show();
       }
       
       //button: end game
@@ -287,56 +326,15 @@ void counterDisplay(){
 }
 
 void screenshotThresholds(){
-
-    if(debug){
-      stroke(200);
-      line(0, height/4, width, height/4);
-      stroke(230);
-      line(0, height/4 + height/8, width, height/4 + height/8);
-      stroke(200);
-      line(0, height/2, width, height/2);
-      stroke(230);
-      line(0, height/2 + height/4 - height/8, width, height/2 + height/4 - height/8);
-      stroke(200);
-      line(0, height/2 + height/4, width, height/2 + height/4);
-    }
-    
-    //if(recording){
-    //  if(attention > triggerLow || meditation > triggerLow){
-    //    if (hasFinished) {
-    //      triggerScreenshots(10);
-    //    }
-    //    if ((frameCount & 0xF) == 0)   print('.');
-    //  } else {
-    //    cancelScreenshots();
-    //  }
-    //}
-    
-    if(debug){
-      
-      if(attention > triggerLow){
-        if(attention < 75){
-          fill(100,200,200);
-        } else {
-          fill(200,100,100);
+    if(recording){
+      if(attention > triggerLow || meditation > triggerLow){
+        if (hasFinished) {
+          triggerScreenshots(10);
         }
+        if ((frameCount & 0xF) == 0)   print('.');
       } else {
-        fill(100,100,200);
         cancelScreenshots();
       }
-      
-      ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
-  
-      if(meditation > triggerLow){
-        if(meditation < 75){
-          fill(100,200,200);
-        } else {
-          fill(200,100,100);
-        }
-      } else {
-        fill(100,100,200);
-      }
-      ellipse(width/2 + 40, map(meditation, 0, 100, height/2 + height/4, height/4), 20, 20);
     }
 }
 
@@ -391,9 +389,6 @@ void cancelScreenshots(){
   hasFinished = true;
 }
 
-
-
-
 //MindSet functions
 
 void exit() {
@@ -412,14 +407,14 @@ void simulate() {
   poorSignalEvent(int(random(200)));
   
   //simulate with noise
-  //attoff = attoff + .02;
-  //attentionEvent(int(noise(attoff) * 100));
-  //medoff = medoff + .01;
-  //meditationEvent(int(noise(medoff) * 100));
+  attoff = attoff + .02;
+  attentionEvent(int(noise(attoff) * 100));
+  medoff = medoff + .01;
+  meditationEvent(int(noise(medoff) * 100));
 
   //simulate with mouse
-  attentionEvent(int(map(mouseX, 0, width, 0, 100)));
-  meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
+  //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
+  //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
   
   //attentionEvent(int(random(100)));  
   //meditationEvent(int(random(100)));

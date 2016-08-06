@@ -2,8 +2,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = 0.1;
-float countDownStartStudy = 0.2;
+float countDownStartMeditate = .1;
+float countDownStartStudy = .2;
 
 import processing.net.*; 
 import controlP5.*;
@@ -112,8 +112,8 @@ PVector hoverUpLeft, hoverDownRight;
 color graphBgColor = color(240);
 color textDarkColor = color(100);
 color textLightColor = color(180);
-color attentionColor = color(150);
-color relaxationColor = color(70);
+color attentionColor = color(234, 79, 51);
+color relaxationColor = color(167, 196, 58);
 
 // files handling
 int listSize;
@@ -372,6 +372,19 @@ public void setup() {
   cp5.getController("stopBt").moveTo("global");
   cp5.getController("stopBt").hide();
   
+  
+  cp5.addButton("endGame")
+  .setBroadcast(false)
+  .setLabel("End game")
+  .setPosition(padding, headerHeight + padding * 4)
+  .setSize(70, 20)
+  //.setValue(1)
+  .setBroadcast(true)
+  .getCaptionLabel().align(CENTER, CENTER)
+  ;
+  cp5.getController("endGame").moveTo("global");
+  cp5.getController("endGame").hide();
+  
   // assessment 1/3
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
@@ -602,9 +615,6 @@ public void draw() {
       text(userFolder, padding, height-110);
     }
     
-    
-
-
     if (simulateMindSet) {
       text("generating simulated data", padding, height-130);
       simulate();
@@ -815,6 +825,16 @@ public void stopBt(int theValue){
   boxState = 0;
   sw.stop();
 }
+
+public void endGame(int theValue){
+  println("end game");
+  assessQuestion = 1;
+  boxState = 400;
+  sw.stop();
+  cp5.getController("endGame").hide();
+  cp5.getController("assess1Bt").show();
+}
+
 
 public void assess1Bt(int theValue) {
   assessQuestion = 2;
