@@ -125,6 +125,7 @@ class LineChart {
     
     //Labels
     textAlign(LEFT, CENTER);
+    fill(textDarkColor);
     text("100%", visX - padding/2, _visY);
     text("50%", visX - padding/2, _visY + visHeight/2 + dotSize/2);
     text("0%", visX - padding/2, _visY + visHeight + dotSize/2);
@@ -190,20 +191,20 @@ class LineChart {
                 if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
                   fill(250);
                   rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
+                  
+                  pushStyle();
+                  fill(255);
+                  stroke(textLightColor);
+                  rect(mouseX, mouseY, 120, 60);
+                  
+                  fill(attentionColor);
+                  text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
+                  fill(relaxationColor);
+                  text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
+                  popStyle();
                 }
               }
               noStroke();
-              
-              pushStyle();
-              fill(255);
-              stroke(textLightColor);
-              rect(mouseX, mouseY, 120, 60);
-              
-              fill(attentionColor);
-              text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
-              fill(relaxationColor);
-              text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
-              popStyle();
             }
             
             if(attentionAverageList[i] > 0){
@@ -260,19 +261,20 @@ class LineChart {
           noStroke();
           
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-
-            fill(250);
-            rect(thisX - dotSize/2, _visY + dotSize, dotSize, visHeight);
-            
-            pushStyle();
-            fill(255);
-            stroke(textLightColor);
-            rect(mouseX, mouseY, 120, 60);
-            fill(attentionColor);
-            text("Attention: " + assessmentData[i+3], mouseX + padding, mouseY + padding);
-            fill(relaxationColor);
-            text("Relaxation: " + assessmentData[i+6], mouseX + padding, mouseY + padding * 2);
-            popStyle();
+            if(mouseY >= _visY + dotSize && mouseY <= _visY + dotSize + visHeight){
+              fill(250);
+              rect(thisX - dotSize/2, _visY + dotSize, dotSize, visHeight);
+              
+              pushStyle();
+              fill(255);
+              stroke(textLightColor);
+              rect(mouseX, mouseY, 120, 60);
+              fill(attentionColor);
+              text("Attention: " + assessmentData[i+3], mouseX + padding, mouseY + padding);
+              fill(relaxationColor);
+              text("Relaxation: " + assessmentData[i+6], mouseX + padding, mouseY + padding * 2);
+              popStyle();
+            }
           }
           
           fill(relaxationColor);
