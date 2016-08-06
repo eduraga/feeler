@@ -83,9 +83,6 @@ void newSession(){
   
   switch(boxState){
     case 0:
-      if(mindSetOK || simulateMindSet){
-        cp5.getController("startSession").show();
-      }
       
       pageH1("New session");
       //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
@@ -112,6 +109,10 @@ void newSession(){
         image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
         text("2. Connect the boxes", padding, headerHeight + padding + 60);
         image(learningGoal, padding + 130, headerHeight + padding*2 + 20, 30, 30);
+        
+        if(mindSetOK || simulateMindSet){
+          cp5.getController("startSession").show();
+        }
       }
       break;
     case 100:
