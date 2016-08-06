@@ -131,8 +131,6 @@ class LineChart {
   }
   
   void displayData(){
-    
-
       fill(textDarkColor);
       if(type == "averages"){
         textAlign(LEFT);
@@ -145,6 +143,7 @@ class LineChart {
         line(studyEnd, _visY, studyEnd, _visY + visHeight);
         
         pushStyle();
+        fill(textDarkColor);
         textAlign(CENTER);
         text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
         text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
@@ -153,6 +152,7 @@ class LineChart {
       } else if(type == "personal"){
         pushStyle();
         textAlign(CENTER);
+        fill(textDarkColor);
         text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
         text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
         text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
@@ -193,6 +193,17 @@ class LineChart {
                 }
               }
               noStroke();
+              
+              pushStyle();
+              fill(255);
+              stroke(textLightColor);
+              rect(mouseX, mouseY, 120, 60);
+              
+              fill(attentionColor);
+              text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
+              fill(relaxationColor);
+              text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
+              popStyle();
             }
             
             if(attentionAverageList[i] > 0){
@@ -204,6 +215,8 @@ class LineChart {
               fill(relaxationColor);
               ellipse(thisX, rlxAvg, dotSize, dotSize);
             }
+            
+
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
             text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
@@ -246,6 +259,22 @@ class LineChart {
           }
           noStroke();
           
+          if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+
+            fill(250);
+            rect(thisX - dotSize/2, _visY + dotSize, dotSize, visHeight);
+            
+            pushStyle();
+            fill(255);
+            stroke(textLightColor);
+            rect(mouseX, mouseY, 120, 60);
+            fill(attentionColor);
+            text("Attention: " + assessmentData[i+3], mouseX + padding, mouseY + padding);
+            fill(relaxationColor);
+            text("Relaxation: " + assessmentData[i+6], mouseX + padding, mouseY + padding * 2);
+            popStyle();
+          }
+          
           fill(relaxationColor);
           ellipse(thisX, thisMeditate, dotSize, dotSize);
           
@@ -255,7 +284,7 @@ class LineChart {
           float offset = (thisX - previousX)/2;
 
           if(i == 0){
-            relaxEnd = thisX + offset;
+            relaxEnd = thisX + offset;            
           }
           if(i == 1){
             studyEnd = thisX + offset;
@@ -276,9 +305,7 @@ class LineChart {
             displayThumbs(i);
           }
         }
-        
       }
-  
   }
   
   
