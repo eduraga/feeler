@@ -84,13 +84,10 @@ class LineChart {
                    for(int k = 0; k < screenshotsArray.length; k++){
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
-                     
                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                       println("j:" + j + ", k: " + k + ", data: " + int(data.data[j][0]) + ", time: " + screenshotTimeId[0]);
                        screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
                      }
                    }
-                   
                  }
                }
              }
@@ -354,6 +351,7 @@ class LineChart {
         currentImg = i;
         image(screenshotImg, thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
         imageMode(CORNER);
+      } else {
       }
     }
   }
@@ -385,8 +383,7 @@ class LineChart {
     noStroke();
   }
   
-  void onClick(){    
-    println(currentSession);
+  void onClick(){
     hoverUpLeft.set(0,0);
     hoverDownRight.set(0,0);
     
@@ -412,18 +409,14 @@ class LineChart {
               }
             }
             
-            if(type == "values" && i == currentImg){
-              openModal(screenshots.get(currentImg));
+            if(type == "values" && i == currentImg && mouseY >= _visY){
               modal = true;
+              openModal(screenshots.get(currentImg));
             }
             
           }
         }
       }
-      
-      //if(){
-      //  window = new ImgWindow(this, 400, 300, "Controls");
-      //}
     }
   }
 }

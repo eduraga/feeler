@@ -647,6 +647,15 @@ public void draw() {
   }
   
   if(modal){
+    if(
+        mouseX >= modalWidth/4 - padding - 10 &&
+        mouseX <= modalWidth/4 - padding - 10 + 30 &&
+        mouseY >= modalHeight/4 - padding - 10 &&
+        mouseY <= modalHeight/4 - padding - 10 + 30
+    ){
+      cursor(HAND);
+    }
+    
     fill(230);
     rect(modalWidth/4 - padding, modalHeight/4 - padding, modalWidth + padding*2, modalHeight + padding*2);
     image(screenshotModal, modalWidth/4, modalHeight/4, modalWidth, modalHeight);
