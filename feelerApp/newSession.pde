@@ -125,7 +125,6 @@ void newSession(){
   switch(boxState){
     case 0:
       pageH1("New session");
-      //text("Once you press play, your mental activity will be recorded.\nThe recording will continue uninterrupted while you relax, study and assess\nyour activity.", padding, headerHeight + padding + 40);
 
       if (!mindSetOK && !simulateMindSet) {
          text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
@@ -320,9 +319,11 @@ void counterDisplay(){
     second = new DecimalFormat("00").format(cu.second());
     minute = new DecimalFormat("00").format(cu.minute());
   }
-  
-  text(minute + ":" + second, width/2, containerPosY + padding);
-  popStyle();
+
+  if(boxState > 0){
+    text(minute + ":" + second, width/2, containerPosY + padding);
+    popStyle();
+  }
 }
 
 void screenshotThresholds(){

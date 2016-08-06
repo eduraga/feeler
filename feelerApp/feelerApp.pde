@@ -663,6 +663,24 @@ public void draw() {
   }
 }
 
+void cleanUpSurvey(){
+    cp5.getController("session").hide();
+    cp5.getController("endGame").hide();
+    cp5.getController("assess1Bt").hide();
+    cp5.getController("assessRelaxationMeditation").hide();
+    cp5.getController("assessRelaxationStudy").hide();
+    cp5.getController("assessRelaxationPlay").hide();
+    cp5.getController("assess22Bt").hide();
+    cp5.getController("assess2Bt").hide();
+    cp5.getController("assessAttentionMeditation").hide();
+    cp5.getController("assessAttentionStudy").hide();
+    cp5.getController("assessAttentionPlay").hide();
+    cp5.getController("assess3Toggle1").hide();
+    cp5.getController("assess3Toggle2").hide();
+    cp5.getController("assess33Bt").hide();
+    cp5.addButton("assess3Bt").hide();
+}
+
 public void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     println("got an event from tab : "+theControlEvent.getTab().getName()+" with id "+theControlEvent.getTab().getId());
@@ -672,11 +690,17 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "overall":
     println("overall page");
     currentPage = "overall";
-    cp5.getController("session").hide();
+    
+    //clean up
+    cleanUpSurvey();
+    
     personalAssSesion.setup(visWidth, visHeight);
     personalAvg.setup(visWidth, visHeight);
     break;
   case "newSession":
+    boxState = 0;
+    sw.stop();
+  
     if(!simulateBoxes){
       try{
         feelerS.init("/dev/tty.Feeler-RNI-SPP");
