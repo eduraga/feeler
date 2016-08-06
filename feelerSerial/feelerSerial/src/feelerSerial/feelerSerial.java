@@ -129,8 +129,13 @@ public class feelerSerial {
 			  System.out.println("Feeler found!");
 			  //Send settings if there are any set, receive "E" when ready
 			  System.out.print("Sending settings ");
+			  connectTimer = System.currentTimeMillis();
 			  boolean getSettingsB = false;
 				  	while(true){ 
+				  		if(System.currentTimeMillis() - connectTimer > 10000) {
+				  			System.out.print("Timed out, Serial not received");
+				  			break;
+				  		}
 				  		mySerial.write(startMarker + "S" + limitMarker + Integer.toString(box1Speed) + limitMarker + Integer.toString(box2Speed) + limitMarker + Integer.toString(box3Speed) + endMarker);
 						System.out.print(".");
 						while(mySerial.available() > 0){
@@ -157,7 +162,12 @@ public class feelerSerial {
 
 			 //If no set settings, receive settings from arduino
 			System.out.print("Receiving settings");
+			connectTimer = System.currentTimeMillis();
 			while(true){
+				if(System.currentTimeMillis() - connectTimer > 5000) {
+		  			System.out.print("Timed out, Serial not received");
+		  			break;
+		  		}
 				if(getSettings() == true) {
 						mySerial.write("E");
 						//delay(2);
@@ -182,7 +192,7 @@ public class feelerSerial {
 	 *------------------------------------------------------------------------------------------------------------*/
 	
 	// Get the serial information and return it if received successfully, else return NULL
-	public static char[] getSerial(){
+	static char[] getSerial(){
 		if(!debugMode){
 		//char[] receivedSerial = new char[maxLengthOfSerial];
 		boolean receiving = false;
