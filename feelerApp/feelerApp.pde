@@ -108,6 +108,12 @@ int assessAttentionPlay = 0;
 
 PVector hoverUpLeft, hoverDownRight;
 
+PImage screenshotModal;
+PImage close;
+boolean modal = false;
+float modalWidth;
+float modalHeight;
+
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
@@ -171,6 +177,7 @@ public void setup() {
   smooth();
   
   homeImg = loadImage("home.png");
+  close = loadImage("close.png");
   
   trends = new LineChart();
   eegAct = new LineChart();
@@ -178,18 +185,18 @@ public void setup() {
   
   hoverUpLeft = new PVector(0,0);
   hoverDownRight = new PVector(0,0);
-
+  
   //size(1200, 850);
   //size(1000, 700);
   size(displayWidth, displayHeight);
   
   //fullScreen();
   surface.setResizable(true);
-  
-
 //double width = screenSize.getWidth();
 //double height = screenSize.getHeight();
   //println((int)screenSize.getWidth());
+  
+  
   
   noStroke();
   textSize(12);
@@ -270,7 +277,6 @@ public void setup() {
    .activateEvent(true)
    .setId(2)
    ;
-
 
   username = cp5.addTextfield("username")
     .setPosition(width/2 - 100, height/2 - 40)
@@ -638,6 +644,13 @@ public void draw() {
   textAlign(CENTER);
   if (loading) {
     text("Loading...", width/2, height/2);
+  }
+  
+  if(modal){
+    fill(230);
+    rect(modalWidth/4 - padding, modalHeight/4 - padding, modalWidth + padding*2, modalHeight + padding*2);
+    image(screenshotModal, modalWidth/4, modalHeight/4, modalWidth, modalHeight);
+    image(close,modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
   }
 }
 
@@ -1124,6 +1137,7 @@ public void loadFilesList(int n) {
 }
 
 public void mousePressed() {
+  
   switch(currentPage) {
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
@@ -1137,11 +1151,26 @@ public void mousePressed() {
       trends.onClick();
       eegAct.onClick();
       break;
+    case "eegActivity":
+      trends.onClick();
+      eegAct.onClick();
+      break;
   }
   
   feelingRadioMeditation.click();
   feelingRadioStudy.click();
   feelingRadioPlay.click();
+  
+  if(modal){
+    if(
+        mouseX >= modalWidth/4 - padding - 10 &&
+        mouseX <= modalWidth/4 - padding - 10 + 30 &&
+        mouseY >= modalHeight/4 - padding - 10 &&
+        mouseY <= modalHeight/4 - padding - 10 + 30
+    ){
+      modal = false;
+    }
+  }
 }
 
 void mouseWheel(MouseEvent event) {
@@ -1268,6 +1297,12 @@ void folderSelected(File selection) {
   }
 }
 
+void openModal(String img){
+  screenshotModal = loadImage(img);
+  modalWidth = screenshotModal.width/1.5;
+  modalHeight = screenshotModal.height/1.5;
+}
+
 
 void updateBoxData(){
   while(true){
@@ -1282,4 +1317,14 @@ void updateBoxData(){
       } catch (Exception e) {}
     }
   }
+}
+
+void exit() {
+  println("exiting");
+  if(!simulateMindSet){
+    mindSet.quit();
+  }
+
+  println("closeWindow");
+  super.exit();  
 }

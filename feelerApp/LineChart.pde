@@ -17,6 +17,8 @@ class LineChart {
   FloatList thisRelax = new FloatList();
   FloatList previousRelax = new FloatList();
   StringList screenshots = new StringList();
+  
+  int currentImg;
 
   LineChart(){
   }
@@ -348,7 +350,8 @@ class LineChart {
         mouseY < visHeight + _visY
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
-        imageMode(CENTER); 
+        imageMode(CENTER);
+        currentImg = i;
         image(screenshotImg, thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
         imageMode(CORNER);
       }
@@ -382,15 +385,12 @@ class LineChart {
     noStroke();
   }
   
-  void onClick(){
+  void onClick(){    
     println(currentSession);
     hoverUpLeft.set(0,0);
     hoverDownRight.set(0,0);
     
     if(sessionFolders != null){
-      println(mouseX + " " + (visX - padding));
-      println(mouseY + " " + (visY - padding) + " " + ((_visY - padding) + visHeight));
-      
       if(sessionFolders.length == 0){
       } else {
         String lines[] = loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt");
@@ -412,9 +412,18 @@ class LineChart {
               }
             }
             
+            if(type == "values" && i == currentImg){
+              openModal(screenshots.get(currentImg));
+              modal = true;
+            }
+            
           }
         }
       }
+      
+      //if(){
+      //  window = new ImgWindow(this, 400, 300, "Controls");
+      //}
     }
   }
 }

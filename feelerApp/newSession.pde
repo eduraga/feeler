@@ -391,15 +391,6 @@ void cancelScreenshots(){
 
 //MindSet functions
 
-void exit() {
-  if(!simulateMindSet){
-    println("Exiting");
-    mindSet.quit();
-    super.exit();
-  }
-}
-
-
 float attoff = 0.01;
 float medoff = 0.0;
 
