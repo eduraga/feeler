@@ -50,7 +50,7 @@ class OverallAvgs{
       if(type == "eeg"){
         fill(textDarkColor);
         textAlign(LEFT, CENTER);
-        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
         
         rlxAvg = relaxationAverageList[i];
         attAvg = attentionAverageList[i];

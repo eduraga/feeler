@@ -38,6 +38,8 @@ boolean boxInit = false;
 
 ControlP5 cp5;
 
+PFont font;
+
 JSONObject json;
 
 String currentPage = "home";
@@ -174,6 +176,7 @@ Serial mindSetPort;
 int mindSetId;
 
 public void setup() {
+  font = createFont("SansSerif-48", 11);
   smooth();
   
   homeImg = loadImage("home.png");
@@ -332,8 +335,9 @@ public void setup() {
   cp5.addButton("logoutBt")
     .setBroadcast(false)
     .setLabel("Logout")
-    .setPosition(width - 80, 10)
-    .setSize(70, 20)
+    //.setPosition(width - 80, 10)
+    .setPosition(width - padding - buttonWidth, padding)
+    .setSize(buttonWidth, 20)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -564,7 +568,7 @@ public void draw() {
 
   if (isLoggedIn) {
     textAlign(RIGHT);
-    text("Hello, " + currentUser, width - 10, 50);
+    text("Hello, " + currentUser, width - padding, padding *3);
   }
 
   if (isWrongPassword) {
@@ -709,7 +713,6 @@ public void controlEvent(ControlEvent theControlEvent) {
     }
     println("newSession page");
     currentPage = "newSession";
-    cp5.getController("connectBox").show();
     boxState = 0;
     break;
   case "startSession":
@@ -755,6 +758,12 @@ public void controlEvent(ControlEvent theControlEvent) {
     currentPage = "home";
     cp5.getController("newSession").hide();
     cp5.getController("overall").hide();
+    cp5.getController("startSession").hide();
+    
+    cp5.getController("playPauseBt").hide();
+    cp5.getController("stopBt").hide();
+    
+    cleanUpSurvey();
   }
 
   if (theControlEvent.isAssignableFrom(Textfield.class)) {
@@ -812,17 +821,6 @@ public void homeBt(int theValue) {
   }
 }
 
-public void connectBox(int theValue) {
-  
-  if(!feelerS.checkConnection()){
-    try{
-      feelerS.init("/dev/tty.Feeler-RNI-SPP");
-    } catch (NullPointerException e){
-    }
-  }
-}
-
-
 public void logoutBt(int theValue) {
   //cp5.getTab("default").bringToFront();
   cp5.getController("loginBt").show();
@@ -846,6 +844,7 @@ public void newSession(int theValue) {
 }
 
 public void overall(int theValue) {
+  cp5.getController("overall").hide();
   cp5.getTab("overall").bringToFront();
 }
 
@@ -1077,8 +1076,9 @@ public void addUserAreaControllers() {
   //other controllers
   cp5.addButton("newSession")
     .setBroadcast(false)
-    .setLabel("start a session")
-    .setPosition(width - 160, 10)
+    .setLabel("New session")
+    //.setPosition(width - 160, 10)
+    .setPosition(width - padding*2 - buttonWidth*2, padding)
     .setSize(buttonWidth, buttonHeight)
     .setValue(1)
     .setBroadcast(true)
@@ -1086,34 +1086,34 @@ public void addUserAreaControllers() {
     ;
   cp5.getController("newSession").moveTo("global");
 
-  cp5.addButton("connectBox")
-    .setBroadcast(false)
-    .setLabel("Connect Box")
-    .setPosition(width - 170 - buttonWidth, 10)
-    .setSize(buttonWidth, buttonHeight)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("connectBox").moveTo("global");
-  cp5.getController("connectBox").hide();
-
   cp5.addButton("overall")
-    .setBroadcast(false)
-    .setLabel("overall")
-    .setPosition(width/2 - buttonWidth/2 - 1, padding)
+    .setLabel("Your activity")
+    //.setColorBackground(color(255))
+    //.setColorForeground(color(255))
+    //.setColorLabel(textDarkColor)
+    //.setPosition(width/2 - buttonWidth/2 - 1, padding)
+    //.setPosition(visX - padding, visY - padding*2)
+    .setPosition(width - padding*3 - buttonWidth*3, padding)
     .setSize(buttonWidth, buttonHeight)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("overall").moveTo("global");
+  cp5.getController("overall").hide();
   
   cp5.addButton("session")
     .setBroadcast(false)
     .setLabel("current session")
-    .setPosition(width/2 + buttonWidth/2 + 1, padding)
-    .setSize(buttonWidth, buttonHeight)
+    //.setColorBackground(color(255))
+    //.setColorActive(color(255))
+    //.setColorForeground(color(255))
+    //.setColorLabel(color(textDarkColor))
+    //.setPosition(width/2 + buttonWidth/2 + 1, padding)
+    .setPosition(width - padding*4 - buttonWidth*3 - 130, padding)
+    //.setPosition(visX + 85, visY - padding*2 - 15)
+    //.setFont(font)
+    .setSize(130, buttonHeight)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -1124,7 +1124,7 @@ public void addUserAreaControllers() {
   cp5.addButton("export")
     .setBroadcast(false)
     .setLabel("export data")
-    .setPosition(width - 160, 50)
+    .setPosition(width - padding - buttonWidth, padding*4)
     .setSize(buttonWidth, buttonHeight)
     .setValue(1)
     .setBroadcast(true)

@@ -172,6 +172,9 @@ class LineChart {
       }
 
       if(type == "averages"){
+        
+        text("Your activity", visX, _visY - padding*2);
+        
         for(int i = 0; i < _listSize; i+=grainSize){
           float thisX = i * stepSize + visX + stepSize/2;
           float previousX = (i-1) * stepSize + visX + stepSize/2;
@@ -311,7 +314,7 @@ class LineChart {
         String[] fileDate = split(fileName[0], '-');
         fill(textDarkColor);
         textAlign(LEFT);
-        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / Personal impressions", visX, _visY - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal impressions", visX, _visY - padding*2);
         
       } else {
         for(int i = 0; i < _listSize; i+=grainSize){
@@ -329,7 +332,7 @@ class LineChart {
         String[] fileDate = split(fileName[0], '-');
         fill(textDarkColor);
         textAlign(LEFT);
-        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / EEG data", visX, _visY - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", visX, _visY - padding*2);
         
       }
   }
@@ -404,6 +407,8 @@ class LineChart {
                   currentPage = "singleSession";
                   cp5.getTab("singleSession").bringToFront();
                   currentSession = sessionFolders[i];
+                  cp5.getController("overall").show();
+                  cp5.getController("session").setLabel(sessionFolders[i]);
                   currentItem = i;
                 }
               }
