@@ -52,23 +52,19 @@ class OverallAvgs{
         textAlign(LEFT, CENTER);
         text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
         
-        rlxAvg = relaxationAverageList[i];
-        attAvg = attentionAverageList[i];
+        if(relaxationAverageList[i] > 0) {
+          rlxAvg = relaxationAverageList[i];
+        } else {
+          rlxAvg = 0;
+        }
         
+        if(attentionAverageList[i] > 0) {
+          attAvg = attentionAverageList[i];
+        } else {
+          attAvg = 0;
+        }
       } else if(type == "assessment"){
-        
-  //cp5.getController("assessRelaxationMeditation").hide();
-  //cp5.getController("assessRelaxationStudy").hide();
-  //cp5.getController("assessRelaxationPlay").hide();
-  
-  //cp5.getController("assessAttentionMeditation").show();
-  //cp5.getController("assessAttentionStudy").show();
-  //cp5.getController("assessAttentionPlay").show();
-  
-        
-        //rlxAvg = float(assessmentData[0]);
         if(assessmentData.length == 9){
-         //attAvg = float(assessmentData[1]);
           rlxAvg = round((float(assessmentData[3]) + float(assessmentData[4]) + float(assessmentData[5]))/3);
           attAvg = round((float(assessmentData[6]) + float(assessmentData[7]) + float(assessmentData[8]))/3);
         }
@@ -81,12 +77,12 @@ class OverallAvgs{
 
       textAlign(CENTER, CENTER);
     
-      fill(150);
+      fill(relaxationColor);
       rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
       fill(textDarkColor);
       text("Relaxation "+round(rlxAvg)+"%", thisX, thisY, rectWidth, rectHeight/2);
       
-      fill(70);
+      fill(attentionColor);
       rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
       fill(textDarkColor);
       text("Attention "+round(attAvg)+"%", thisX, thisY + rectHeight/2, rectWidth, rectHeight/2);
