@@ -28,6 +28,8 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.nio.*;
 
+import javax.swing.JOptionPane;
+
 import processing.serial.*;
 import pt.citar.diablu.processing.mindset.*;
 
@@ -902,16 +904,24 @@ public void endGame(int theValue){
 }
 
 
-public void assess1Bt(int theValue) {
-  assessQuestion = 2;
-  
-  cp5.getController("assessRelaxationMeditation").show();
-  cp5.getController("assessRelaxationStudy").show();
-  cp5.getController("assessRelaxationPlay").show();
-  
-  cp5.getController("assess1Bt").hide();
-  cp5.getController("assess2Bt").show();
-  cp5.getController("assess22Bt").show();
+public void assess1Bt(int theValue) {  
+  if(feelingAssessMeditation == "" && feelingAssessStudy == "" && feelingAssessPlay == ""){
+    final String[] options = {
+      "Ok"
+    };
+    
+    JOptionPane.showOptionDialog(null, "Please answer the survey before continuing", "Warning", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+  } else {
+    saveAssessmentTxt();
+    assessQuestion = 2;
+    cp5.getController("assessRelaxationMeditation").show();
+    cp5.getController("assessRelaxationStudy").show();
+    cp5.getController("assessRelaxationPlay").show();
+    
+    cp5.getController("assess1Bt").hide();
+    cp5.getController("assess2Bt").show();
+    cp5.getController("assess22Bt").show();
+  }
 }
 
 public void assess22Bt(int theValue) {
@@ -927,20 +937,27 @@ public void assess22Bt(int theValue) {
 }
 
 public void assess2Bt(int theValue) {
-  assessQuestion = 3;
-  
-  cp5.getController("assessRelaxationMeditation").hide();
-  cp5.getController("assessRelaxationStudy").hide();
-  cp5.getController("assessRelaxationPlay").hide();
-  
-  cp5.getController("assessAttentionMeditation").show();
-  cp5.getController("assessAttentionStudy").show();
-  cp5.getController("assessAttentionPlay").show();
-  
-  cp5.getController("assess2Bt").hide();
-  cp5.getController("assess22Bt").hide();
-  cp5.getController("assess33Bt").show();
-  cp5.getController("assess3Bt").show();
+  if(int(assessRelaxationMeditation) == 0 && int(assessRelaxationStudy) == 0 && int(assessRelaxationPlay) == 0){
+    final String[] options = {
+      "Ok"
+    };
+    JOptionPane.showOptionDialog(null, "Please answer the survey before continuing", "Warning", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+  } else {
+      assessQuestion = 3;
+      
+      cp5.getController("assessRelaxationMeditation").hide();
+      cp5.getController("assessRelaxationStudy").hide();
+      cp5.getController("assessRelaxationPlay").hide();
+      
+      cp5.getController("assessAttentionMeditation").show();
+      cp5.getController("assessAttentionStudy").show();
+      cp5.getController("assessAttentionPlay").show();
+      
+      cp5.getController("assess2Bt").hide();
+      cp5.getController("assess22Bt").hide();
+      cp5.getController("assess33Bt").show();
+      cp5.getController("assess3Bt").show();
+  }
 }
 
 public void assess33Bt(int theValue) {
@@ -961,26 +978,36 @@ public void assess33Bt(int theValue) {
 }
 
 public void assess3Bt(int theValue) {
-  assessQuestion = 4;
+  if(int(assessAttentionMeditation) == 0 && int(assessAttentionStudy) == 0 && int(assessAttentionPlay) == 0){
+    final String[] options = {
+      "Ok"
+    };
+    JOptionPane.showOptionDialog(null, "Please answer the survey before continuing", "Warning", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+  } else {
+    saveAssessmentTxt();
+    assessQuestion = 4;
+    cp5.getController("assessAttentionMeditation").hide();
+    cp5.getController("assessAttentionStudy").hide();
+    cp5.getController("assessAttentionPlay").hide();
+    
+    cp5.getController("assess3Bt").hide();
+    cp5.getController("assess3Toggle1").hide();
+    cp5.getController("assess3Toggle2").hide();
+    cp5.getController("assess33Bt").hide();
+    
+    output.flush();
+    output.close();
+    
+    isRecordingMind = false;
+    currentPage = "overall";
+    loadFiles();
+  }
+}
 
-  cp5.getController("assessAttentionMeditation").hide();
-  cp5.getController("assessAttentionStudy").hide();
-  cp5.getController("assessAttentionPlay").hide();
-  
-  cp5.getController("assess3Bt").hide();
-  cp5.getController("assess3Toggle1").hide();
-  cp5.getController("assess3Toggle2").hide();
-  cp5.getController("assess33Bt").hide();
-  
-  output.flush();
-  output.close();
-  
+void saveAssessmentTxt(){
   String[] assessment = {feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay, str(assessRelaxationMeditation), str(assessRelaxationStudy), str(assessRelaxationPlay), str(assessAttentionMeditation), str(assessAttentionStudy), str(assessAttentionPlay)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
-
-  isRecordingMind = false;
-  loadFiles();
 }
 
 

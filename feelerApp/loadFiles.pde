@@ -37,9 +37,9 @@ public void loadFiles(){
     
     //then loop through them
     for(int i = 0; i < sessionFolders.length; i++){
+      println(sessionFolders);
       assessmentAttAvgs += float(loadStrings(userFolder + "/" + sessionFolders[i] + "/assessment.txt")[0])/sessionFolders.length;
       assessmentRlxAvgs += float(loadStrings(userFolder + "/" + sessionFolders[i] + "/assessment.txt")[1])/sessionFolders.length;
-      
       loadFile(i);
     }
   } else {

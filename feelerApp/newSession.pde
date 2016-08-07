@@ -182,7 +182,6 @@ void newSession(){
       feelerS.setBoxState(3);
       
       if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
-        println(sw.getElapsedTime());
         int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 50, 1, 20));
         // increase this from 0 to 20
         feelerS.setBox2LedState(ledState);
