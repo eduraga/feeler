@@ -93,6 +93,8 @@ float containerPosY;
 int videoWidth = 640;
 int videoHeight = 480;
 int recControlersWidth = 300;
+float upperBoundary;
+float lowerBoundary;
 
 PImage homeImg;
 
@@ -210,6 +212,8 @@ public void setup() {
   visY = headerHeight + padding + 60;
   visWidth = width - width/3;
   visHeight = 300;
+  lowerBoundary = visHeight + visY + padding*4;
+  upperBoundary = visY + padding*3;
 
   json = loadJSONObject("config.json");
   host = json.getString("host");
@@ -844,6 +848,7 @@ public void newSession(int theValue) {
 }
 
 public void overall(int theValue) {
+  modal = false;
   cp5.getController("overall").hide();
   cp5.getTab("overall").bringToFront();
 }
@@ -1331,6 +1336,7 @@ void folderSelected(File selection) {
 }
 
 void openModal(String img){
+  println(img);
   screenshotModal = loadImage(img);
   modalWidth = screenshotModal.width/1.5;
   modalHeight = screenshotModal.height/1.5;

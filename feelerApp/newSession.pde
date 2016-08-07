@@ -408,8 +408,8 @@ void simulate() {
   //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
   //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
   
-  //attentionEvent(int(random(100)));  
-  //meditationEvent(int(random(100)));
+  //attentionEvent(int(random(-50,10)));  
+  //meditationEvent(int(random(-50,10)));
   
   eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
   int(random(20000)), int(random(20000)), int(random(20000)), 

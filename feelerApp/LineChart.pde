@@ -4,7 +4,7 @@ class LineChart {
   int grainSize;
   int maxVal = 100;
   float stepSize;
-  int _visY;
+  //int visX;
   
   float relaxEnd = 0;
   float studyEnd = 0;
@@ -25,11 +25,10 @@ class LineChart {
   
   void setup(String _type){
     type = _type;
-    _visY = visY;
     
     if(sessionFolders != null){
       if(type == "averages"){
-        //_visY = visY;
+        //visX = visY;
         grainSize = 1;
         if(sessionFolders.length < 10){
          _listSize = listSize;
@@ -41,7 +40,7 @@ class LineChart {
         _listSize = 3;
       } else if (type == "values") {
         grainSize = 40;
-        //_visY = visY + headerHeight + padding*2;
+        //visX = visY + headerHeight + padding*2;
         //_listSize = sessionFolders.length;
     
         //for(int i = 0; i < _listSize; i++){
@@ -69,10 +68,43 @@ class LineChart {
                      assessEnd = thisX.get(j);
                    }
                    
-                   previousAtt.set(j, map(data.data[j-grainSize][10], maxVal, 0, _visY, visHeight + _visY));
-                   thisAtt.set(j, map(data.data[j][10], maxVal, 0, _visY, visHeight + _visY));
-                   previousRelax.set(j, map(data.data[j-grainSize][11], maxVal, 0, _visY, visHeight + _visY));
-                   thisRelax.set(j, map(data.data[j][11], maxVal, 0, _visY, visHeight + _visY));
+                   if(data.data[j-grainSize][10] > 0) {
+                     previousAtt.set(j, map(data.data[j-grainSize][10], 0, maxVal, lowerBoundary, upperBoundary));
+                   } else {
+                     previousAtt.set(j,lowerBoundary);
+                   }
+                   
+                   if(data.data[j][10] > 0) {
+                     thisAtt.set(j, map(data.data[j][10], 0, maxVal, lowerBoundary, upperBoundary));
+                   } else {
+                     thisAtt.set(j,lowerBoundary);
+                   }
+                   
+                   if(data.data[j-grainSize][11] > 0) {
+                     previousRelax.set(j, map(data.data[j-grainSize][11], 0, maxVal, lowerBoundary, upperBoundary));
+                   } else {
+                     previousRelax.set(j,lowerBoundary);
+                   }
+                   
+                   if(data.data[j][11] > 0) {
+                     thisRelax.set(j, map(data.data[j][11], 0, maxVal, lowerBoundary, upperBoundary));
+                   } else {
+                     thisRelax.set(j,lowerBoundary);
+                   }
+                   
+                   //previousAtt.set(j,upperBoundary);
+                   //thisAtt.set(j,upperBoundary);
+                   //previousRelax.set(j,lowerBoundary);
+                   //thisRelax.set(j,map(-60, 0, maxVal, lowerBoundary, upperBoundary));
+                   
+                   //previousAtt.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
+                   //thisAtt.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
+                   //previousRelax.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
+                   //thisRelax.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
+                   
+                   
+                   
+                   
                    
                    /////////////////////////////// Image stuff
                    //////////////////////////////////////////////
@@ -98,7 +130,7 @@ class LineChart {
       }
       stepSize = visWidth/_listSize;
     } else {
-      //_visY = visY;
+      //visX = visY;
       _listSize = 1;
       stepSize = 1;      
     }
@@ -106,50 +138,50 @@ class LineChart {
   
   void display(){    
     fill(graphBgColor);
-    rect(visX - padding, _visY - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
+    rect(visX - padding, visX - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
     
     if(fileName != null && sessionFolders != null){
       displayData();
     } else {
         fill(textDarkColor);
         textAlign(CENTER);
-        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + _visY, visWidth, visHeight);
+        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + visX, visWidth, visHeight);
     }
     
     //Labels
     textAlign(LEFT, CENTER);
     fill(textDarkColor);
-    text("100%", visX - padding/2, _visY);
-    text("50%", visX - padding/2, _visY + visHeight/2 + dotSize/2);
-    text("0%", visX - padding/2, _visY + visHeight + dotSize/2);
+    text("100%", visX - padding/2, visX);
+    text("50%", visX - padding/2, visX + visHeight/2 + dotSize/2);
+    text("0%", visX - padding/2, visX + visHeight + dotSize/2);
   }
   
   void displayData(){
       fill(textDarkColor);
       if(type == "averages"){
         textAlign(LEFT);
-        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + _visY + padding * 5);
+        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + visX + padding * 5);
       } else if(type == "values"){
         textAlign(CENTER, CENTER);
         
         stroke(100,100);
-        line(relaxEnd, _visY, relaxEnd, _visY + visHeight);
-        line(studyEnd, _visY, studyEnd, _visY + visHeight);
+        line(relaxEnd, visX, relaxEnd, visX + visHeight);
+        line(studyEnd, visX, studyEnd, visX + visHeight);
         
         pushStyle();
         fill(textDarkColor);
         textAlign(CENTER);
-        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        text("Meditate", visX + padding, visX, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, visX, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, visX, assessEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
         textAlign(CENTER);
         fill(textDarkColor);
-        text("Meditate", visX + padding, _visY, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, _visY, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, _visY, assessEnd - studyEnd, 20);
+        text("Meditate", visX + padding, visX, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, visX, studyEnd - relaxEnd, 20);
+        text("Play", studyEnd, visX, assessEnd - studyEnd, 20);
         popStyle();
       }
       
@@ -164,7 +196,7 @@ class LineChart {
         if(type == "eeg"){
           fill(textDarkColor);
           textAlign(LEFT, CENTER);
-          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, _visY - padding);
+          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, visX - padding);
           
           rlxAvg = relaxationAverageList[currentItem];
           attAvg = attentionAverageList[currentItem];
@@ -173,7 +205,7 @@ class LineChart {
 
       if(type == "averages"){
         
-        text("Your activity", visX, _visY - padding*2);
+        text("Your activity", visX, visX - padding*2);
         
         for(int i = 0; i < _listSize; i+=grainSize){
           float thisX = i * stepSize + visX + stepSize/2;
@@ -189,22 +221,22 @@ class LineChart {
             float prevAttAvg = 0;
             float prevRlxAvg = 0;
             
-            attAvg = map(attentionAverageList[i], 100, 0, _visY, visHeight + _visY);
-            rlxAvg = map(relaxationAverageList[i], 100, 0, _visY, visHeight + _visY);
+            attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX);
+            rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX);
             
             if(i>0){
-              prevAttAvg = map(attentionAverageList[i-1], 100, 0, _visY, visHeight + _visY);
-              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, _visY, visHeight + _visY);
+              prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX);
+              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX);
             }
             
             if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
               if(type == "averages"){
-                hoverUpLeft.set(thisX - dotSize/2, _visY);
-                hoverDownRight.set(thisX + dotSize/2, _visY + visHeight + dotSize/2);
+                hoverUpLeft.set(thisX - dotSize/2, visX);
+                hoverDownRight.set(thisX + dotSize/2, visX + visHeight + dotSize/2);
                 
-                if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
+                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
                   fill(250);
-                  rect(thisX - dotSize/2, _visY, dotSize, visHeight + dotSize/2);
+                  rect(thisX - dotSize/2, visX, dotSize, visHeight + dotSize/2);
                   
                   pushStyle();
                   fill(255);
@@ -234,8 +266,8 @@ class LineChart {
 
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
-            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + _visY + padding*2);
-            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + _visY + padding*3);
+            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visX + padding*2);
+            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visX + padding*3);
             
           }
             
@@ -250,12 +282,12 @@ class LineChart {
           float prevStudy = 0;
           float thisStudy = 0;
           
-          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, _visY, visHeight + _visY);
-          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, _visY, visHeight + _visY);
+          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX);
+          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX, visHeight + visX);
           
           if(i > 0){
-            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, _visY, visHeight + _visY);
-            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, _visY, visHeight + _visY);
+            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX);
+            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX, visHeight + visX);
 
             stroke(relaxationColor);
             line(
@@ -275,9 +307,9 @@ class LineChart {
           noStroke();
           
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            if(mouseY >= _visY + dotSize && mouseY <= _visY + dotSize + visHeight){
+            if(mouseY >= visX + dotSize && mouseY <= visX + dotSize + visHeight){
               fill(250);
-              rect(thisX - dotSize/2, _visY + dotSize, dotSize, visHeight);
+              rect(thisX - dotSize/2, visX + dotSize, dotSize, visHeight);
               
               pushStyle();
               fill(255);
@@ -314,7 +346,7 @@ class LineChart {
         String[] fileDate = split(fileName[0], '-');
         fill(textDarkColor);
         textAlign(LEFT);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal impressions", visX, _visY - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal impressions", visX, visX - padding*2);
         
       } else {
         for(int i = 0; i < _listSize; i+=grainSize){
@@ -332,7 +364,7 @@ class LineChart {
         String[] fileDate = split(fileName[0], '-');
         fill(textDarkColor);
         textAlign(LEFT);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", visX, _visY - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", visX, visX - padding*2);
         
       }
   }
@@ -345,9 +377,9 @@ class LineChart {
         &&
         mouseX < thisX.get(i)
         &&
-        mouseY > _visY
+        mouseY > visX
         &&
-        mouseY < visHeight + _visY
+        mouseY < visHeight + visX
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
         imageMode(CENTER);
@@ -363,7 +395,7 @@ class LineChart {
 
     if(screenshots.get(i) != "" && screenshots.get(i) != null){
       fill(255, 100);
-      rect(previousX.get(i), _visY + padding, thisX.get(i) - previousX.get(i) - 1, visHeight);
+      rect(previousX.get(i), visX + padding, thisX.get(i) - previousX.get(i) - 1, visHeight);
     }
     
     String currentScreenshot = "";
@@ -385,7 +417,8 @@ class LineChart {
     );
     noStroke();
   }
-  
+     
+
   void onClick(){
     hoverUpLeft.set(0,0);
     hoverDownRight.set(0,0);
@@ -403,7 +436,7 @@ class LineChart {
             float thisX = i * stepSize + visX + stepSize/2;
             if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
               if(type == "averages"){
-                if(mouseY >= _visY && mouseY <= _visY + visHeight + dotSize/2){
+                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
                   currentPage = "singleSession";
                   cp5.getTab("singleSession").bringToFront();
                   currentSession = sessionFolders[i];
@@ -414,7 +447,7 @@ class LineChart {
               }
             }
             
-            if(type == "values" && i == currentImg && mouseY >= _visY){
+            if(type == "values" && i == currentImg && mouseY >= visX && currentPage == "eegActivity"){
               modal = true;
               openModal(screenshots.get(currentImg));
             }
