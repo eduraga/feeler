@@ -1,8 +1,4 @@
 public void loadFile(int n){   
-    if(currentPage == "eegActivity"){
-      eegAct.setup("values");
-    }
-    
     fileName = splitTokens(sessionFolders[n]);
   
     filenameString = sessionFolders[n];
@@ -34,4 +30,8 @@ public void loadFile(int n){
     
     attentionAverageList[n] = attentionAverage;
     relaxationAverageList[n] = relaxationAverage;
+    
+    if(currentPage == "eegActivity"){
+      eegAct.setup("values");
+    }
 }

@@ -1180,8 +1180,6 @@ public void mousePressed() {
     case "singleSession":
       eegAvg.onClick(mouseX, mouseY);
       personalAssSesion.onClick(mouseX, mouseY);
-      //personalAssSesion.setup(visWidth/2, visHeight/3);
-      //personalAvg.setup(visWidth/2, visHeight/3);
       cp5.getController("session").show();
       loadFile(currentItem);
       break;
@@ -1336,7 +1334,6 @@ void folderSelected(File selection) {
 }
 
 void openModal(String img){
-  println(img);
   screenshotModal = loadImage(img);
   modalWidth = screenshotModal.width/1.5;
   modalHeight = screenshotModal.height/1.5;
