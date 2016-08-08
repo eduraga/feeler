@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .05;
-float countDownStartStudy = .05;
+float countDownStartMeditate = .2;
+float countDownStartStudy = .2;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -1016,6 +1016,16 @@ public void assess3Bt(int theValue) {
     
     output.flush();
     output.close();
+    
+    feelingAssessMeditation = "";
+    feelingAssessStudy = "";
+    feelingAssessPlay = "";
+    assessRelaxationMeditation = 0;
+    assessRelaxationStudy = 0;
+    assessRelaxationPlay = 0;
+    assessAttentionMeditation = 0;
+    assessAttentionStudy = 0;
+    assessAttentionPlay = 0;
   }
 }
 

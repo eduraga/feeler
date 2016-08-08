@@ -8,7 +8,7 @@ class LineChart {
   
   float relaxEnd = 0;
   float studyEnd = 0;
-  float assessEnd = 0;
+  float playEnd = 0;
 
   FloatList thisX = new FloatList();
   FloatList previousX = new FloatList();
@@ -60,12 +60,12 @@ class LineChart {
                      relaxEnd = thisX.get(j);
                    }
                    if(data.data[j][12] == 2){
-                    fill(230);
-                    studyEnd = thisX.get(j);
+                     fill(230);
+                     studyEnd = thisX.get(j);
                    }
                    if(data.data[j][12] == 3){
                      fill(210);
-                     assessEnd = thisX.get(j);
+                     playEnd = thisX.get(j);
                    }
                    
                    if(data.data[j-grainSize][10] > 0) {
@@ -165,23 +165,23 @@ class LineChart {
         textAlign(CENTER, CENTER);
         
         stroke(100,100);
-        line(relaxEnd, visX, relaxEnd, visX + visHeight);
-        line(studyEnd, visX, studyEnd, visX + visHeight);
+        line(relaxEnd, visY + padding*3, relaxEnd, visY + padding*3 + visHeight);
+        line(studyEnd, visY + padding*3, studyEnd, visY + padding*3 + visHeight);
         
         pushStyle();
         fill(textDarkColor);
         textAlign(CENTER);
-        text("Meditate", visX + padding, visX, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, visX, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, visX, assessEnd - studyEnd, 20);
+        text("Meditate", visX + padding, visY + padding*3, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, visY + padding*3, studyEnd - relaxEnd, 20);
+        //text("Play", studyEnd, visY + padding*3, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
         textAlign(CENTER);
         fill(textDarkColor);
-        text("Meditate", visX + padding, visX, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, visX, studyEnd - relaxEnd, 20);
-        text("Play", studyEnd, visX, assessEnd - studyEnd, 20);
+        text("Meditate", visX + padding, visY + padding*3, relaxEnd - (visX + padding), 20);
+        text("Study", relaxEnd, visY + padding*3, studyEnd - relaxEnd, 20);
+        //text("Play", studyEnd, visY + padding*3, playEnd - studyEnd, 20);
         popStyle();
       }
       
@@ -338,7 +338,7 @@ class LineChart {
             studyEnd = thisX + offset;
           }
           if(i == 2){
-            assessEnd = thisX + offset;
+            playEnd = thisX + offset;
           }
         }
         
