@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .1;
-float countDownStartStudy = .2;
+float countDownStartMeditate = .05;
+float countDownStartStudy = .05;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -740,7 +740,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
     println("startSession");
-    sw.start();
+    sw.start(countDownStartMeditate);
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
@@ -912,9 +912,11 @@ public void stopBt(int theValue){
 public void endGame(int theValue){
   println("end game");
   assessQuestion = 1;
-  boxState = 400;
-  sw.stop();
   cp5.getController("endGame").hide();
+  cp5.getController("playPauseBt").hide();
+  cu.stop();
+  cp5.getController("stopBt").hide();
+  boxState = 400;
   cp5.getController("assess1Bt").show();
 }
 
@@ -1001,6 +1003,8 @@ public void assess3Bt(int theValue) {
   } else {
     saveAssessmentTxt();
     assessQuestion = 4;
+    cu.start();
+    
     cp5.getController("assessAttentionMeditation").hide();
     cp5.getController("assessAttentionStudy").hide();
     cp5.getController("assessAttentionPlay").hide();
@@ -1012,10 +1016,6 @@ public void assess3Bt(int theValue) {
     
     output.flush();
     output.close();
-    
-    isRecordingMind = false;
-    currentPage = "overall";
-    loadFiles();
   }
 }
 
@@ -1272,7 +1272,7 @@ public void keyPressed() {
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
       break;
     case 's':
-      sw.start();
+      sw.start(countDownStartMeditate);
       boxState = 200;
       break;
     case 'p':
@@ -1300,7 +1300,7 @@ public void keyPressed() {
       cp5.getController("playPauseBt").hide();
       break;
     case 'w':
-      sw.start();
+      sw.start(countDownStartStudy);
       break;
     case 'e':
       sw.playPause();

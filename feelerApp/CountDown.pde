@@ -10,12 +10,14 @@ class CountDown {
   //public int countDownStart = 1000 * 30;
   boolean paused = false;
   
-  void start() {
-    if(boxState == 100){
-      countDownStart = int(1000 * 60 * countDownStartMeditate);
-    } else if (boxState == 200){
-      countDownStart = int(1000 * 60 * countDownStartStudy);
-    }
+  void start(float start) {
+    //if(boxState == 100){
+    //  countDownStart = int(1000 * 60 * countDownStartMeditate);
+    //} else if (boxState == 200){
+    //  countDownStart = int(1000 * 60 * countDownStartStudy);
+    //}
+    
+    countDownStart = int(1000 * 60 * start);
     
     pauseTime = 0;
     startTime = millis();

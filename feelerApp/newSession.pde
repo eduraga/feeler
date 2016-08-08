@@ -187,11 +187,12 @@ void newSession(){
         feelerS.setBox2LedState(ledState);
         
         if(!timerOn){
-          sw.start();
+          sw.start(countDownStartStudy);
           timerOn = true;
         //} else if(sw.minute() == 0 && sw.second() == 0){
         } else if(sw.getElapsedTime() <= 50){
           println("End study");
+          cancelScreenshots();
           sw.stop();
           timerOn = false;
           boxState = 300;
@@ -212,21 +213,18 @@ void newSession(){
         cu.start();
         timerOn = true;
         cp5.getController("endGame").show();
+      //} else if(cu.getElapsedTime() >= 50){
+      //  println(cu.getElapsedTime());
+      //  boxState = 350;
+      //  cu.stop();
+      //  timerOn = false;
       }
-      
-      //button: end game
-      
-      //if(sw.minute() == 0 && sw.second() == 0){
-      //  println("End play");
-      //  sw.start();
-      //  boxState = 400;
-      //  assessQuestion = 1;
-      //  cp5.getController("assess1Bt").show();
-      //}
       break;
     case 400:
       recording = false;
-      sw.stop();
+      isRecordingMind = false;
+      timeline = 4;
+      
       pageH1("Assess your personal experience");
       if(assessQuestion == 1){
         assess(assessQuestion, "1/3 Select how you felt during:");
@@ -241,9 +239,21 @@ void newSession(){
         assess(assessQuestion, "3/3 Select how your level of attention during");
         hasFinished = false;
       } else if(assessQuestion == 4){
-        assess(assessQuestion, "Answers saved!\nYour data is being loaded.");
+        assess(assessQuestion, "Answers saved!\nYour data is being loaded.");        
+        if(!timerOn){
+          timerOn = true;
+          //cp5.getController("stopBt").hide();
+          //cp5.getController("playPauseBt").hide();
+        } else if(cu.getElapsedTime() >= 3000){
+          println("geral!!! " + cu.getElapsedTime());
+          cu.stop();
+          timerOn = false;
+          currentPage = "overall";
+          println("loadFiles");
+          loadFiles();
+        }
+        //println(sw.getElapsedTime());
       }
-      timeline = 4;
       break;
     default:
       pageH1("Start a session");
@@ -288,17 +298,19 @@ void assess(int questionNo, String question){
   if(questionNo != 4){
     text(questionNo, padding, headerHeight + padding*2);
   } else {
-    if(hasFinished == false){
-      hasFinished = true;
-      t.schedule(new TimerTask() {
-        public void run() {
-          println("trigger");
-          hasFinished = true;
-          print(" " + nf(3, 0, 2));
-          currentPage = "eegActivity";
-        }
-      }, (long) (3*1e3));
-    }
+    hasFinished = true;
+    //currentPage = "eegActivity";
+    //if(hasFinished == false){
+    //  hasFinished = true;
+    //  t.schedule(new TimerTask() {
+    //    public void run() {
+    //      println("trigger");
+    //      hasFinished = true;
+    //      print(" " + nf(3, 0, 2));
+    //      currentPage = "eegActivity";
+    //    }
+    //  }, (long) (3*1e3));
+    //}
   }
 }
 
@@ -321,8 +333,8 @@ void counterDisplay(){
 
   if(boxState > 0){
     text(minute + ":" + second, width/2, containerPosY + padding);
-    popStyle();
   }
+  popStyle();
 }
 
 void screenshotThresholds(){
@@ -395,24 +407,26 @@ float attoff = 0.01;
 float medoff = 0.0;
 
 void simulate() {
-  poorSignalEvent(int(random(200)));
+  if(recording){
+    poorSignalEvent(int(random(200)));
+    
+    //simulate with noise
+    attoff = attoff + .02;
+    attentionEvent(int(noise(attoff) * 100));
+    medoff = medoff + .01;
+    meditationEvent(int(noise(medoff) * 100));
   
-  //simulate with noise
-  attoff = attoff + .02;
-  attentionEvent(int(noise(attoff) * 100));
-  medoff = medoff + .01;
-  meditationEvent(int(noise(medoff) * 100));
-
-  //simulate with mouse
-  //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
-  //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
-  
-  //attentionEvent(int(random(-50,10)));  
-  //meditationEvent(int(random(-50,10)));
-  
-  eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
-  int(random(20000)), int(random(20000)), int(random(20000)), 
-  int(random(20000)), int(random(20000)) );
+    //simulate with mouse
+    //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
+    //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
+    
+    //attentionEvent(int(random(-50,10)));  
+    //meditationEvent(int(random(-50,10)));
+    
+    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
+    int(random(20000)), int(random(20000)), int(random(20000)), 
+    int(random(20000)), int(random(20000)) );
+  }
 }
 
 public void poorSignalEvent(int sig) {

@@ -45,7 +45,6 @@ public void loadFiles(){
   } else {
     println("Directory is empty!");
   }
-  
   trends.setup("averages");
   personalExperience.setup("personal");
 }
