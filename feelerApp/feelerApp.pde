@@ -9,10 +9,10 @@
 
 boolean debug = true;
 boolean simulateMindSet = true;
-boolean simulateBoxes = true;
+boolean simulateBoxes = false;
 
 float countDownStartMeditate = .2;
-float countDownStartStudy = .2;
+float countDownStartStudy = 2;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ public void setup() {
 
   visX = (width/3)/2;
   visY = headerHeight + padding + 60;
-  visWidth = width - width/3;
+  visWidth = width - width/4;
   visHeight = 300;
   lowerBoundary = visHeight + visY + padding*4;
   upperBoundary = visY + padding*3;

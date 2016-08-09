@@ -182,7 +182,8 @@ void newSession(){
       feelerS.setBoxState(3);
       
       if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
-        int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 50, 1, 20));
+        int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 0, 1, 20));
+        println("getElapsedTime: " + sw.getElapsedTime() + ", sw.countDownStart: " + sw.countDownStart);
         // increase this from 0 to 20
         feelerS.setBox2LedState(ledState);
         
@@ -201,6 +202,7 @@ void newSession(){
         
       break;
     case 300:
+      if(!recording) recording = true;
       pageH1("Play");
       text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
       timeline = 3;
@@ -343,7 +345,7 @@ void screenshotThresholds(){
         if (hasFinished) {
           triggerScreenshots(10);
         }
-        if ((frameCount & 0xF) == 0)   print('.');
+        //if ((frameCount & 0xF) == 0)   print('.');
       } else {
         cancelScreenshots();
       }
@@ -365,12 +367,12 @@ void triggerScreenshots(final float sec) {
  
   t.schedule(new TimerTask() {
     public void run() {
-      print(" " + nf(sec, 0, 2));
+      //print(" " + nf(sec, 0, 2));
       hasFinished = true;
 
       //feelerS.sendValues();
       //feelerS.get();
-      //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
+      println(", getBoxesConnected: " + feelerS.getBoxesConnected());
       //println(feelerS.checkConnection());
     }
   }, (long) (sec*1e3));
@@ -380,8 +382,8 @@ void triggerScreenshots(final float sec) {
   //feelerS.get();
   //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
   
-  println("\n\nScreenshot scheduled for "
-    + nf(10, 0, 2) + " secs.\n");
+  //println("\n\nScreenshot scheduled for "
+  //  + nf(10, 0, 2) + " secs.\n");
     
     //feelerS.sendValues();
     //feelerS.get();

@@ -369,7 +369,6 @@ class LineChart {
       }
   }
   
-  
   void displayThumbs(int i){
     if(screenshots.get(i) != "" && screenshots.get(i) != null){
       if(
@@ -384,8 +383,17 @@ class LineChart {
         PImage screenshotImg = loadImage(screenshots.get(i));
         imageMode(CENTER);
         currentImg = i;
+        
+        rect(thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
         image(screenshotImg, thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
         imageMode(CORNER);
+        textAlign(LEFT);
+        fill(attentionColor);
+        text("Attention " + thisAtt.get(i), mouseX, mouseY);
+        fill(relaxationColor);
+        text("Relaxtation " + thisRelax.get(i), mouseX, mouseY+padding);
+        
+  
       } else {
       }
     }
