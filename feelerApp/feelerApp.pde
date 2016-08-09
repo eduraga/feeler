@@ -195,7 +195,7 @@ Serial mindSetPort;
 int mindSetId;
 
 public void setup() {
-  font = createFont("SansSerif-48", 11);
+  font = createFont("Nunito-Regular-48", 20);
   smooth();
   
   homeImg = loadImage("home.png");
@@ -350,6 +350,8 @@ public void setup() {
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
+    .toUpperCase(false)
+    .setFont(font)
     ;
   cp5.getController("loginBt").moveTo("default");
 
@@ -561,6 +563,8 @@ public void setup() {
 }
 
 public void draw() {
+  textFont(font);
+  
   background(255);
   fill(0);
   image(logo, 20, 20);
