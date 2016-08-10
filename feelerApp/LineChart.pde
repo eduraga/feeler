@@ -144,33 +144,37 @@ class LineChart {
       displayData();
     } else {
         fill(textDarkColor);
+        pushStyle();
         textAlign(CENTER);
         text("Eager to see some data?\nStart a New session", visX, visHeight/2 + visX, visWidth, visHeight);
+        popStyle();
     }
     
     //Labels
+    pushStyle();
     textAlign(LEFT, CENTER);
     fill(textDarkColor);
     text("100%", visX - padding/2, visX);
     text("50%", visX - padding/2, visX + visHeight/2 + dotSize/2);
     text("0%", visX - padding/2, visX + visHeight + dotSize/2);
+    popStyle();
   }
   
   void displayData(){
       fill(textDarkColor);
       if(type == "averages"){
+        pushStyle();
         textAlign(LEFT);
         text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + visX + padding * 5);
+        popStyle();
       } else if(type == "values"){
-        textAlign(CENTER, CENTER);
-        
         stroke(100,100);
         line(relaxEnd, visY + padding*3, relaxEnd, visY + padding*3 + visHeight);
         line(studyEnd, visY + padding*3, studyEnd, visY + padding*3 + visHeight);
         
         pushStyle();
         fill(textDarkColor);
-        textAlign(CENTER);
+        textAlign(CENTER, CENTER);
         text("Meditate", visX + padding, visY + padding*3, relaxEnd - (visX + padding), 20);
         text("Study", relaxEnd, visY + padding*3, studyEnd - relaxEnd, 20);
         //text("Play", studyEnd, visY + padding*3, playEnd - studyEnd, 20);
@@ -194,9 +198,11 @@ class LineChart {
         float attAvg = 0;
         
         if(type == "eeg"){
+          pushStyle();
           fill(textDarkColor);
           textAlign(LEFT, CENTER);
           text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, visX - padding);
+          popStyle();
           
           rlxAvg = relaxationAverageList[currentItem];
           attAvg = attentionAverageList[currentItem];
@@ -212,6 +218,7 @@ class LineChart {
           float previousX = (i-1) * stepSize + visX + stepSize/2;
 
           if(sessionFolders[i].charAt(0) == '2'){
+            pushStyle();
             textAlign(LEFT, CENTER);
             String[] fileDate = split(sessionFolders[i], '-');
             
@@ -268,7 +275,7 @@ class LineChart {
             textAlign(CENTER, CENTER);
             text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visX + padding*2);
             text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visX + padding*3);
-            
+            popStyle();
           }
             
         }
@@ -344,9 +351,11 @@ class LineChart {
         
 
         String[] fileDate = split(fileName[0], '-');
+        pushStyle();
         fill(textDarkColor);
         textAlign(LEFT);
         text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal impressions", visX, visX - padding*2);
+        popStyle();
         
       } else {
         for(int i = 0; i < _listSize; i+=grainSize){
@@ -361,11 +370,12 @@ class LineChart {
           }
         }
     
+        pushStyle();
         String[] fileDate = split(fileName[0], '-');
         fill(textDarkColor);
         textAlign(LEFT);
         text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", visX, visX - padding*2);
-        
+        popStyle();
       }
   }
   
@@ -381,17 +391,21 @@ class LineChart {
         mouseY < visHeight + visX
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
-        imageMode(CENTER);
+        //imageMode(CENTER);
         currentImg = i;
         
-        rect(thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
-        image(screenshotImg, thisX.get(i), mouseY + screenshotImg.height/8 + padding, screenshotImg.width/4, screenshotImg.height/4);
-        imageMode(CORNER);
+        fill(255);
+        stroke(textLightColor);
+        rect(thisX.get(i) - screenshotImg.height/6 - padding, mouseY - padding, screenshotImg.width/4 + padding*2, screenshotImg.height/4 + padding*5);
+        noStroke();
+        image(screenshotImg, thisX.get(i) - screenshotImg.height/6, mouseY + padding*3, screenshotImg.width/4, screenshotImg.height/4);
+        pushStyle();
         textAlign(LEFT);
         fill(attentionColor);
-        text("Attention " + thisAtt.get(i), mouseX, mouseY);
+        text("Attention " + thisAtt.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
-        text("Relaxtation " + thisRelax.get(i), mouseX, mouseY+padding);
+        text("Relaxtation " + thisRelax.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        popStyle();
         
   
       } else {
