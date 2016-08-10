@@ -195,7 +195,7 @@ Serial mindSetPort;
 int mindSetId;
 
 public void setup() {
-  font = createFont("Nunito-Regular-48", 20);
+  font = createFont("GlacialIndifference-Regular-48", 12);
   smooth();
   
   homeImg = loadImage("home.png");
