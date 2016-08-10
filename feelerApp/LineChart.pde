@@ -10,6 +10,7 @@ class LineChart {
   float studyEnd = 0;
   float playEnd = 0;
 
+  FloatList thisTime = new FloatList();
   FloatList thisX = new FloatList();
   FloatList previousX = new FloatList();
   FloatList thisAtt = new FloatList();
@@ -49,7 +50,6 @@ class LineChart {
                _listSize = data.data.length;
                
                for (int j = 0; j < _listSize; j+=grainSize) {
-                 
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
                    thisX.set(j, j * (visWidth - padding*2)/data.data.length + visX + padding);
@@ -92,18 +92,13 @@ class LineChart {
                      thisRelax.set(j,lowerBoundary);
                    }
                    
-                   //previousAtt.set(j,upperBoundary);
-                   //thisAtt.set(j,upperBoundary);
-                   //previousRelax.set(j,lowerBoundary);
-                   //thisRelax.set(j,map(-60, 0, maxVal, lowerBoundary, upperBoundary));
-                   
-                   //previousAtt.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
-                   //thisAtt.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
-                   //previousRelax.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
-                   //thisRelax.set(j, map(100, maxVal, 0, lowerBoundary, upperBoundary));
-                   
-                   
-                   
+
+                 if (data.data[j][0] > 0) {
+                   if(data.data[j][0] != data.data[j-grainSize][0])
+                   thisTime.set(j, data.data[j][0]);
+                 } else {
+                   thisTime.set(j, 0);
+                 }
                    
                    
                    /////////////////////////////// Image stuff
@@ -201,7 +196,7 @@ class LineChart {
           pushStyle();
           fill(textDarkColor);
           textAlign(LEFT, CENTER);
-          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, visX - padding);
+          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, visY + visHeight + padding);
           popStyle();
           
           rlxAvg = relaxationAverageList[currentItem];
@@ -438,6 +433,28 @@ class LineChart {
          thisRelax.get(i)
     );
     noStroke();
+    
+    
+    int step;
+    
+    if(_listSize <= 10000) {
+      println("<= 10000 " + _listSize);
+      step = 100;
+    } else if(_listSize <=100000) {
+      println("<= 100000 " + _listSize);
+      step = 1000;
+    } else {
+      println("big");
+      step = 10000;
+    }
+    
+    
+    
+    
+    if(i % step == 0 && thisTime.get(i) != 0) {
+      fill(textDarkColor);
+      text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4);
+    }
   }
      
 
