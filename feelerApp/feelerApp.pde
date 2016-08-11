@@ -92,7 +92,7 @@ boolean recording = false;
 PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct, personalExperience;
-int headerHeight = 100;
+int headerHeight = 150;
 int padding = 20;
 int userTabsX;
 int buttonWidth = 70;
@@ -227,7 +227,7 @@ public void setup() {
 
   visX = (width/3)/2;
   visY = headerHeight + padding + 60;
-  visWidth = width - width/3;
+  visWidth = width - width/4;
   visHeight = 300;
   lowerBoundary = visHeight + visY + padding*4;
   upperBoundary = visY + padding*3;
@@ -253,9 +253,9 @@ public void setup() {
   
   logo = loadImage("feeler-logo.png");
   
-  feelingRadioMeditation = new FeelingRadio(20, 300, "Mediatation");
-  feelingRadioStudy = new FeelingRadio(20, 300 + 50 + padding*2, "Study");
-  feelingRadioPlay = new FeelingRadio(20, 300 + 50*2 + padding*4, "Play");
+  feelingRadioMeditation = new FeelingRadio(20, 240, "Meditation");
+  feelingRadioStudy = new FeelingRadio(20, 240 + 50 + padding*2, "Study");
+  feelingRadioPlay = new FeelingRadio(20, 240 + 50*2 + padding*4, "Play");
   
   //Make a new feelerSerial
   feelerS = new feelerSerial(this); 
@@ -422,7 +422,7 @@ public void setup() {
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight + padding * 6)
+    .setPosition(padding, headerHeight+240 + padding * 6)
     .setSize(70, 20)
     .setValue(1)
     .setBroadcast(true)
@@ -564,6 +564,7 @@ public void setup() {
 
 public void draw() {
   textFont(font);
+  textAlign(LEFT);
   
   background(255);
   fill(0);
@@ -592,13 +593,17 @@ public void draw() {
   
 
   if (isLoggedIn) {
+    pushStyle();
     textAlign(RIGHT);
     text("Hello, " + currentUser, width - padding, padding *3);
+    popStyle();
   }
 
   if (isWrongPassword) {
+    pushStyle();
     textAlign(CENTER);
     text("Wrong username or password", width/2, height/2 - 60);
+    popStyle();
   }
 
 
@@ -871,7 +876,11 @@ public void newSession(int theValue) {
 public void overall(int theValue) {
   modal = false;
   cp5.getController("overall").hide();
+  cp5.getController("newSession").show();
   cp5.getTab("overall").bringToFront();
+  cp5.getController("playPauseBt").hide();
+  cp5.getController("stopBt").hide();
+  cleanUpSurvey();
 }
 
 
@@ -896,6 +905,8 @@ public void export(int theValue) {
 public void startSession(int theValue) {
   //currentPage = "meditate";
   boxState = 100;
+  cp5.getController("newSession").hide();
+  //cp5.getController("overall").show();
 }
 
 public void playPauseBt(int theValue){
@@ -918,8 +929,8 @@ public void endGame(int theValue){
   assessQuestion = 1;
   cp5.getController("endGame").hide();
   cp5.getController("playPauseBt").hide();
-  cu.stop();
   cp5.getController("stopBt").hide();
+  cu.stop();
   boxState = 400;
   cp5.getController("assess1Bt").show();
 }
@@ -996,6 +1007,7 @@ public void assess33Bt(int theValue) {
   cp5.getController("assess22Bt").show();
   cp5.getController("assess3Bt").hide();
   cp5.getController("assess33Bt").hide();
+  
 }
 
 public void assess3Bt(int theValue) {

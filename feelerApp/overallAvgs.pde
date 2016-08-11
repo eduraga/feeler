@@ -48,9 +48,11 @@ class OverallAvgs{
       float attAvg = 0;
       
       if(type == "eeg"){
+        pushStyle();
         fill(textDarkColor);
         textAlign(LEFT, CENTER);
         text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
+        popStyle();
         
         if(relaxationAverageList[i] > 0) {
           rlxAvg = relaxationAverageList[i];
@@ -75,6 +77,7 @@ class OverallAvgs{
         attAvg = assessmentRlxAvgs;
       }
 
+      pushStyle();
       textAlign(CENTER, CENTER);
     
       fill(relaxationColor);
@@ -90,6 +93,7 @@ class OverallAvgs{
       fill(textDarkColor);
       textAlign(LEFT, CENTER);
       text(caption, thisX, thisY + rectHeight + padding*2);
+      popStyle();
     }
   }
   

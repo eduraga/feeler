@@ -1,50 +1,3 @@
-/*
-Communication stuff
- 
- setup: feelerS.play();
- 
- // create a thread to check if boxes are connected
- // feelerS.isConnected();
- feelerS.getButton1();
- 4. play: set countUp, unlimited
- 
- */
-
-/*
-0: connecting
-on a new thread:
-feelerS.setSettings(10000, 2000, 3000);
-feelerS.init("/dev/tty.Feeler-RNI-SPP");
-feelerS.setBoxState(0);
-isConnected = true;
-
-1: meditating (5 minutes)
-feelerS.setBoxState(2);
-end of meditation
-
-2: show picture of connecting boxes
-wait for:
-if feelerS.getBoxStateInput() == 3 then:
-
-3: boxes are connected, go to study
-feelerS.setBox2LedSpeed(studyTime/20);
-studyTime/20
-after each cycle
-feelerS.setBox2LedState(currentLed++);
-end of study:
-feelerS.setBoxState(4);
-currentLed = 0;
-feelerS.setBox2LedState(0);
-
-4: show image of connecting boxes
-if feelerS.getBoxStateInput() == 5 then:
-
-5: start play mode
-if feelerS.getBoxStateInput() == 6 then:
-end of play
-feelerS.setBoxState(6);
-
-*/
 int[] boxStates = {0, 1, 2, 3};
 
 boolean isRecordingMind = false;
@@ -182,7 +135,8 @@ void newSession(){
       feelerS.setBoxState(3);
       
       if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
-        int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 50, 1, 20));
+        int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 0, 1, 20));
+        println("getElapsedTime: " + sw.getElapsedTime() + ", sw.countDownStart: " + sw.countDownStart);
         // increase this from 0 to 20
         feelerS.setBox2LedState(ledState);
         
@@ -201,6 +155,7 @@ void newSession(){
         
       break;
     case 300:
+      if(!recording) recording = true;
       pageH1("Play");
       text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
       timeline = 3;
@@ -225,10 +180,10 @@ void newSession(){
       isRecordingMind = false;
       timeline = 4;
       
-      pageH1("Assess your personal experience");
+      pageH1("Personal experience");
       if(assessQuestion == 1){
         assess(assessQuestion, "1/3 Select how you felt during:");
-        
+       
         feelingRadioMeditation.draw();
         feelingRadioStudy.draw();
         feelingRadioPlay.draw();
@@ -249,6 +204,8 @@ void newSession(){
           cu.stop();
           timerOn = false;
           currentPage = "overall";
+          cp5.getController("overall").hide();
+          cp5.getController("newSession").show();
           println("loadFiles");
           loadFiles();
         }
@@ -343,7 +300,7 @@ void screenshotThresholds(){
         if (hasFinished) {
           triggerScreenshots(10);
         }
-        if ((frameCount & 0xF) == 0)   print('.');
+        //if ((frameCount & 0xF) == 0)   print('.');
       } else {
         cancelScreenshots();
       }
@@ -365,12 +322,12 @@ void triggerScreenshots(final float sec) {
  
   t.schedule(new TimerTask() {
     public void run() {
-      print(" " + nf(sec, 0, 2));
+      //print(" " + nf(sec, 0, 2));
       hasFinished = true;
 
       //feelerS.sendValues();
       //feelerS.get();
-      //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
+      println(", getBoxesConnected: " + feelerS.getBoxesConnected());
       //println(feelerS.checkConnection());
     }
   }, (long) (sec*1e3));
@@ -380,8 +337,8 @@ void triggerScreenshots(final float sec) {
   //feelerS.get();
   //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
   
-  println("\n\nScreenshot scheduled for "
-    + nf(10, 0, 2) + " secs.\n");
+  //println("\n\nScreenshot scheduled for "
+  //  + nf(10, 0, 2) + " secs.\n");
     
     //feelerS.sendValues();
     //feelerS.get();

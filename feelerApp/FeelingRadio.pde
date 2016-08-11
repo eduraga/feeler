@@ -64,7 +64,7 @@ class FeelingRadio {
     }
     
     switch(_label) {
-      case "Mediatation":
+      case "Meditation":
         feelingAssessMeditation = this.checked;
         break;
       case "Study":
