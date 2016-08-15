@@ -231,12 +231,22 @@ void newSession(){
         feelingRadioPlay.draw();
         
       } else if(assessQuestion == 2){
-        assess(assessQuestion, "2/3 Select how your level of relaxation during:");
+        textSize(20);// added by Eva
+        assess(assessQuestion, "/3 Select how your level of relaxation during:");
+        text("Meditation", padding, 250); //added by Evad
+        text("Study", padding, 250 + 50 + padding*3); //added by Eva
+        text("Play", padding, 250 + 50*2 + padding*6.2); //added by Eva
       } else if(assessQuestion == 3){
-        assess(assessQuestion, "3/3 Select how your level of attention during");
+        textSize(20);// added by Eva
+        assess(assessQuestion, "/3 Select how your level of attention during:");
+        text("Meditation", padding, 250); //added by Evad
+        text("Study", padding, 250 + 50 + padding*3); //added by Eva
+        text("Play", padding, 250 + 50*2 + padding*6.2); //added by Eva
         hasFinished = false;
       } else if(assessQuestion == 4){
-        assess(assessQuestion, "Answers saved!\nYour data is being loaded.");        
+        textSize(20);// added by Eva
+        textAlign(LEFT);
+        assess(assessQuestion, "Answers saved!\nYour data is being loaded");   
         if(!timerOn){
           timerOn = true;
           //cp5.getController("stopBt").hide();

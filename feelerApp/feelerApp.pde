@@ -265,7 +265,7 @@ public void setup() {
   
   logo = loadImage("feeler-logo.png");
   
-  feelingRadioMeditation = new FeelingRadio(20, 250, "Mediatation");
+  feelingRadioMeditation = new FeelingRadio(20, 250, "Meditation");
   feelingRadioStudy = new FeelingRadio(20, 250 + 50 + padding*5, "Study");
   feelingRadioPlay = new FeelingRadio(20, 250 + 50*2 + padding*10, "Play");
   
@@ -481,27 +481,36 @@ public void setup() {
   
   // assessment 2/3
   cp5.addSlider("assessRelaxationMeditation")
-    .setLabel("Meditation")
+    //.setLabel("Meditation")//old label
+    .setLabel("%")
+    .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 3)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 8)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationMeditation").moveTo("global");
   cp5.getController("assessRelaxationMeditation").hide();
   
   cp5.addSlider("assessRelaxationStudy")
-    .setLabel("Study")
+  //.setLabel("Study")//old label
+    .setLabel("%")
+    .setFont(createFont("font",16))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 4)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 13.6)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationStudy").moveTo("global");
   cp5.getController("assessRelaxationStudy").hide();
   
   cp5.addSlider("assessRelaxationPlay")
-    .setLabel("Play")
+  //.setLabel("Play")//old label
+    .setLabel("%")
+    .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 5)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 19.3)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationPlay").moveTo("global");
@@ -510,8 +519,12 @@ public void setup() {
   cp5.addButton("assess22Bt")
     .setBroadcast(false)
     .setLabel("Previous")
-    .setPosition(padding, headerHeight + padding * 6)
-    .setSize(70, 20)
+    .setFont(createFont("font",14))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(padding + 160, headerHeight + padding * 23.2)
+    .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -522,8 +535,12 @@ public void setup() {
   cp5.addButton("assess2Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding + 80, headerHeight + padding * 6)
-    .setSize(70, 20)
+    .setFont(createFont("font",14))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(padding + 260, headerHeight + padding * 23.2)
+    .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -533,27 +550,36 @@ public void setup() {
   
   // assessment 3/3
   cp5.addSlider("assessAttentionMeditation")
-    .setLabel("Meditation")
+     //.setLabel("Meditation")//old label
+    .setLabel("%")
+    .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 3)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 8)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionMeditation").moveTo("global");
   cp5.getController("assessAttentionMeditation").hide();
   
   cp5.addSlider("assessAttentionStudy")
-    .setLabel("Study")
+     //.setLabel("Study")//old label
+    .setLabel("%")
+    .setFont(createFont("font",16))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 4)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 13.6)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionStudy").moveTo("global");
   cp5.getController("assessAttentionStudy").hide();
   
   cp5.addSlider("assessAttentionPlay")
-    .setLabel("Play")
+    //.setLabel("Play")//old label
+    .setLabel("%")
+    .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setPosition(padding, headerHeight + padding * 5)
+    .setSize(340,60)
+    .setPosition(padding, headerHeight + padding * 19.3)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionPlay").moveTo("global");
@@ -585,8 +611,12 @@ public void setup() {
   cp5.addButton("assess33Bt")
   .setBroadcast(false)
   .setLabel("Previous")
-  .setPosition(padding, headerHeight + padding * 6)
-  .setSize(70, 20)
+  .setFont(createFont("font",14))//Added by Eva
+  .setColorForeground(color(145,44,238))//Added by Eva
+  .setColorBackground(color(85,26,139))//Added by Eva
+  .setColorActive(color(85,26,139))//Added by Eva
+  .setPosition(padding + 160, headerHeight + padding * 23.2)
+  .setSize(80, 40)
   //.setValue(1)
   .setBroadcast(true)
   .getCaptionLabel().align(CENTER, CENTER)
@@ -597,11 +627,15 @@ public void setup() {
   cp5.addButton("assess3Bt")
   .setBroadcast(false)
   .setLabel("Submit")
-  .setPosition(padding + 80, headerHeight + padding * 6)
-  .setSize(70, 20)
-  //.setValue(1)
+  .setFont(createFont("font",14))//Added by Eva
+  .setColorForeground(color(145,44,238))//Added by Eva
+  .setColorBackground(color(85,26,139))//Added by Eva
+  .setColorActive(color(85,26,139))//Added by Eva
+  .setPosition(padding + 260, headerHeight + padding * 23.2)
+  .setSize(80, 40)
   .setBroadcast(true)
   .getCaptionLabel().align(CENTER, CENTER)
+  //.setValue(1)
   ;
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
