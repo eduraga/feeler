@@ -92,7 +92,7 @@ boolean recording = false;
 PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct, personalExperience;
-int headerHeight = 150;
+int headerHeight = 100;
 int padding = 20;
 int userTabsX;
 int buttonWidth = 70;
@@ -134,13 +134,24 @@ PImage close;
 boolean modal = false;
 float modalWidth;
 float modalHeight;
+PImage one;//Added by Eva
+PImage two;//Added by Eva
+PImage three;//Added by Eva
+PImage meditatebox;//Added by Eva
+PImage studybox;//Added by Eva
+PImage playbox;//Added by Eva
+PImage one_1;//Added by Eva
+PImage one_2;//Added by Eva
+PImage one_3;//Added by Eva
 
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
 color textLightColor = color(180);
-color attentionColor = color(234, 79, 51);
-color relaxationColor = color(167, 196, 58);
+color attentionColor = color(255, 71, 0); //added by Eva
+color relaxationColor = color(147, 192, 31); // added by Eva
+//color attentionColor = color(234, 79, 51); 
+//color relaxationColor = color(167, 196, 58);
 
 // files handling
 int listSize;
@@ -248,14 +259,15 @@ public void setup() {
   personalAssSesion.setup(visWidth, visHeight);
 
   //Create UI elements
+  containerPosY = 350;//added by Eva
+  //containerPosY = height/2 - videoHeight/2;
   containerPosX = width/2 - videoWidth/2;
-  containerPosY = height/2 - videoHeight/2;
   
   logo = loadImage("feeler-logo.png");
   
-  feelingRadioMeditation = new FeelingRadio(20, 240, "Meditation");
-  feelingRadioStudy = new FeelingRadio(20, 240 + 50 + padding*2, "Study");
-  feelingRadioPlay = new FeelingRadio(20, 240 + 50*2 + padding*4, "Play");
+  feelingRadioMeditation = new FeelingRadio(20, 250, "Mediatation");
+  feelingRadioStudy = new FeelingRadio(20, 250 + 50 + padding*5, "Study");
+  feelingRadioPlay = new FeelingRadio(20, 250 + 50*2 + padding*10, "Play");
   
   //Make a new feelerSerial
   feelerS = new feelerSerial(this); 
@@ -302,6 +314,13 @@ public void setup() {
    .setId(2)
    ;
 
+  cp5.addTextlabel("label")
+  .setText("Login")
+  .setPosition(width/2 - 60, height/2 - 150)
+  .setColorValue(color(0))
+  .setFont(createFont("",40));
+  cp5.getController("label").moveTo("login");
+
   username = cp5.addTextfield("username")
     .setPosition(width/2 - 100, height/2 - 40)
     .setSize(200, 20)
@@ -344,14 +363,18 @@ public void setup() {
 
   cp5.addButton("loginBt")
     .setBroadcast(false)
-    .setLabel("login")
+    .setLabel("Login")
+    .setFont(createFont("font",12))//Added by Eva doesn't work
+    .setColorForeground(color(153))//Added by Eva
+    .setColorBackground(color(85))//Added by Eva
+    .setColorActive(color(50))//Added by Eva
     .setPosition(width - 100, 20)
     .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
-    .toUpperCase(false)
-    .setFont(font)
+    //.toUpperCase(false)
+    //.setFont(font)
     ;
   cp5.getController("loginBt").moveTo("default");
 
@@ -372,11 +395,17 @@ public void setup() {
   cp5.addButton("startSession")
     .setBroadcast(false)
     .setLabel("Record")
-    .setPosition(padding, headerHeight + padding * 7)
-    .setSize(200, 80)
+    .setFont(createFont("font",16))//Added by Eva
+    .setColorForeground(color(153))//Added by Eva
+    .setColorBackground(color(85))//Added by Eva
+    .setColorActive(color(50))//Added by Eva
+    
+    .setPosition(padding + 80, headerHeight + padding * 11)
+    .setSize(200, 60)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
+    //.toUpperCase(false)
     ;
   cp5.getController("startSession").moveTo("global");
   cp5.getController("startSession").hide();
@@ -384,8 +413,13 @@ public void setup() {
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
     .setLabel("Pause")
-    .setPosition(width/2 - 50, containerPosY + padding * 2)
-    .setSize(50, 50)
+    .setFont(createFont("font",16))//Added by Eva
+    .setColorForeground(color(153))//Added by Eva
+    .setColorBackground(color(85))//Added by Eva
+    .setColorActive(color(50))//Added by Eva
+    .setPosition(width/2 - 90, containerPosY + padding * 3)//added by Eva
+    //.setPosition(width/2 - 50, containerPosY + padding * 2)
+    .setSize(80, 80)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -396,8 +430,13 @@ public void setup() {
   cp5.addButton("stopBt")
     .setBroadcast(false)
     .setLabel("Stop")
-    .setPosition(width/2, containerPosY + padding * 2)
-    .setSize(50, 50)
+    .setFont(createFont("font",16))//Added by Eva
+    .setColorForeground(color(153))//Added by Eva
+    .setColorBackground(color(85))//Added by Eva
+    .setColorActive(color(50))//Added by Eva
+    .setPosition(width/2 + 10, containerPosY + padding * 3)//added by Eva
+    //.setPosition(width/2, containerPosY + padding * 2)
+    .setSize(80, 80)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -409,8 +448,13 @@ public void setup() {
   cp5.addButton("endGame")
   .setBroadcast(false)
   .setLabel("End game")
-  .setPosition(padding, headerHeight + padding * 4)
-  .setSize(70, 20)
+  .setFont(createFont("font",16))//Added by Eva
+  .setColorForeground(color(153))//Added by Eva
+  .setColorBackground(color(85))//Added by Eva
+  .setColorActive(color(50))//Added by Eva
+  .setPosition(width/2 - 60, containerPosY + padding * 3)//added by Eva
+  //.setPosition(padding, headerHeight + padding * 4)
+  .setSize(120, 80)
   //.setValue(1)
   .setBroadcast(true)
   .getCaptionLabel().align(CENTER, CENTER)
@@ -422,8 +466,12 @@ public void setup() {
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setPosition(padding, headerHeight+240 + padding * 6)
-    .setSize(70, 20)
+    .setFont(createFont("font",14))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(padding + 260, headerHeight + padding * 29)
+    .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -565,6 +613,7 @@ public void setup() {
 public void draw() {
   textFont(font);
   textAlign(LEFT);
+  
   
   background(255);
   fill(0);
@@ -1150,6 +1199,12 @@ public void addUserAreaControllers() {
   cp5.addButton("newSession")
     .setBroadcast(false)
     .setLabel("New session")
+    
+    .setFont(createFont("",14))//Added by Eva
+    .setColorForeground(color(85))//Added by Eva
+    .setColorBackground(color(153))//Added by Eva
+    .setColorActive(color(50))//Added by Eva
+    
     //.setPosition(width - 160, 10)
     .setPosition(width - padding*2 - buttonWidth*2, padding)
     .setSize(buttonWidth, buttonHeight)

@@ -11,7 +11,7 @@
 
 ### With PHP backend
 - Install a PHP server, such as MAMP https://www.mamp.info/en/, and run it.
-- Install this https://github.com/Repox/SimpleUsers and create a user.
+- Install the contents of /SimpleUsers (a modified version of: https://github.com/Repox/SimpleUsers and create a user).
   - Edit the configuration file, located at simpleusers/config.inc.php, then run the install script which is located at simpleusers/install.php As an alternative to the install script, edit the configuration file. The tables can be created manually, by opening tables.sql and pasting the tables into phpMyAdmin.
 - Edit feelerApp/data/config.json to reflect your environment.
 

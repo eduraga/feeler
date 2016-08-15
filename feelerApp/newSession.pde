@@ -78,9 +78,14 @@ void newSession(){
   switch(boxState){
     case 0:
       pageH1("New session");
+      textSize(20); //added by Eva
+      //fill(100);//added by Eva
 
       if (!mindSetOK && !simulateMindSet) {
-         text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
+         PImage one = loadImage("one.png");// Added by Eva
+        image(one, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+        text("Connect the EEG headset", padding + 80, headerHeight + padding + 75);
+       
          try {
            //mindSetPort = new Serial(this, Serial.list()[2]);
            mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
@@ -91,28 +96,48 @@ void newSession(){
            mindSetOK = false;
          }
       } else if(!feelerS.checkConnection() && !simulateBoxes) {
-        text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
-        PImage learningGoal = loadImage("learning-goal.png");
-        image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
-        text("2. Connect the boxes", padding, headerHeight + padding + 60);
+        PImage one = loadImage("one.png");// Added by Eva
+        image(one, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+        text("Connect the EEG headset", padding + 80, headerHeight + padding + 75);
+        PImage learningGoal = loadImage("checked_big.png");
+        image(learningGoal, padding + 340, headerHeight + padding + 50, 35, 35);
+        PImage two = loadImage("two.png");// Added by Eva
+        image(two, padding, headerHeight + padding*2 + 100, 60, 60);// Added by Eva
+        text("Connect the boxes", padding + 80, headerHeight + padding + 155);
+        image(learningGoal, padding + 280, headerHeight + padding*2 + 110, 35, 35);
+        PImage three = loadImage("three.png");// Added by Eva
+        image(three, padding, headerHeight + padding*2 + 180, 60, 60);// Added by Eva
       } else {
-        text("1. Connect the EEG headset", padding, headerHeight + padding + 40);
-        PImage learningGoal = loadImage("learning-goal.png");
-        image(learningGoal, padding + 170, headerHeight + padding + 20, 30, 30);
-        text("2. Connect the boxes", padding, headerHeight + padding + 60);
-        image(learningGoal, padding + 130, headerHeight + padding*2 + 20, 30, 30);
+        PImage one = loadImage("one.png");// Added by Eva
+        image(one, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+        text("Connect the EEG headset", padding + 80, headerHeight + padding + 75);
+        PImage learningGoal = loadImage("checked_big.png");
+        image(learningGoal, padding + 340, headerHeight + padding + 50, 35, 35);
+        PImage two = loadImage("two.png");// Added by Eva
+        image(two, padding, headerHeight + padding*2 + 100, 60, 60);// Added by Eva
+        text("Connect the boxes", padding + 80, headerHeight + padding + 155);
+        image(learningGoal, padding + 280, headerHeight + padding*2 + 110, 35, 35);
+        PImage three = loadImage("three.png");// Added by Eva
+        image(three, padding, headerHeight + padding*2 + 180, 60, 60);// Added by Eva
         
         cp5.getController("startSession").show();
       }
       break;
     case 100:
       cp5.getController("startSession").hide();
-      pageH1("Meditate");
+      pageH1("New session");
+      PImage one = loadImage("one.png");// Added by Eva
+      image(one, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+      textSize(24); //added by Eva
+      text("Meditate", padding + 80, headerHeight + padding + 60);
       isRecordingMind = true;
       timerOn = true;
       timeline = 1;
       fill(textDarkColor);
-      text("Sync your breathing with the box lighting", padding, headerHeight + padding + 20);
+      textSize(16); //added by Eva
+      text("Sync your breathing with the box lighting", padding + 80, headerHeight + padding + 90);
+      PImage meditatebox = loadImage("meditate_box.png");// Added by Eva
+      image(meditatebox, padding + 80, headerHeight + padding + 120,270,386);// Added by Eva
       counterDisplay();
       
       feelerS.setBoxState(1);
@@ -127,8 +152,16 @@ void newSession(){
       }
       break;
     case 200:
-      pageH1("Study");
-      text("Focus on your work. Let the time fly", padding, headerHeight + padding + 20);
+      pageH1("New session");
+      PImage two = loadImage("two.png");// Added by Eva
+      image(two, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+      textSize(24); //added by Eva
+      text("Study", padding + 80, headerHeight + padding + 60);
+      fill(textDarkColor);
+      textSize(16); //added by Eva
+      text("Focus on your work. Let the time fly", padding + 80, headerHeight + padding + 90);
+      PImage studybox = loadImage("study_box.png");// Added by Eva
+      image(studybox, padding + 80, headerHeight + padding + 120,270,386);// Added by Eva
       timeline = 2;
       counterDisplay();
       
@@ -156,8 +189,16 @@ void newSession(){
       break;
     case 300:
       if(!recording) recording = true;
-      pageH1("Play");
-      text("Repeat the light sequence as long as you can", padding, headerHeight + padding + 20);
+      pageH1("New session");
+      PImage three = loadImage("three.png");// Added by Eva
+      image(three, padding, headerHeight + padding + 40, 60, 60);// Added by Eva
+      textSize(24); //added by Eva
+      text("Play", padding + 80, headerHeight + padding + 60);
+      fill(textDarkColor);
+      textSize(16); //added by Eva
+      text("Repeat the light sequence as long as you can", padding + 80, headerHeight + padding + 90);
+      PImage playbox = loadImage("play_box.png");// Added by Eva
+      image(playbox, padding + 80, headerHeight + padding + 120,270,386);// Added by Eva
       timeline = 3;
       counterDisplay();
       
@@ -182,8 +223,9 @@ void newSession(){
       
       pageH1("Personal experience");
       if(assessQuestion == 1){
-        assess(assessQuestion, "1/3 Select how you felt during:");
-       
+        textSize(20);// added by Eva
+        assess(assessQuestion, "/3 Select how you felt during:");
+        
         feelingRadioMeditation.draw();
         feelingRadioStudy.draw();
         feelingRadioPlay.draw();
@@ -250,10 +292,12 @@ void newSession(){
 }
 
 void assess(int questionNo, String question){
-  text(question, padding*2, headerHeight + padding*2);
+  text(question, padding + 15, headerHeight + padding + 60);//added by Eva
+  //text(question, padding*2, headerHeight + padding*2);
   
   if(questionNo != 4){
-    text(questionNo, padding, headerHeight + padding*2);
+    text(questionNo, padding, headerHeight + padding + 60);//added by Eva
+    //text(questionNo, padding, headerHeight + padding*2);
   } else {
     hasFinished = true;
     //currentPage = "eegActivity";
@@ -274,8 +318,10 @@ void assess(int questionNo, String question){
 
 void counterDisplay(){
   pushStyle();
-  textSize(38);
+  textSize(100);
   textAlign(CENTER);
+  //textAlign(10,10);
+ 
   
   String second;
   String minute;

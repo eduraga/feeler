@@ -1,5 +1,5 @@
 void assessmentActivity(){
-  pageH1("Personal experience");
+  pageH1("Relaxation and Attention levels");
   //personalAssSesion.display(currentItem);
   //personalAvg.display(currentItem);
   personalExperience.display();
@@ -9,7 +9,7 @@ void assessmentActivity(){
     &&
     boolean(loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt")[3])
   ){
-    PImage learningGoal = loadImage("learning-goal.png");
+    PImage learningGoal = loadImage("checked_small.png");
     image(learningGoal, visX + (visWidth/2 - dotSize/2)/2 + padding*2, 430);
   }
   

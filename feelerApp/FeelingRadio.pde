@@ -1,6 +1,7 @@
 class FeelingRadio { 
   int _x, _y, imgY;
-  int imgSz = 48;
+  int imgSz = 120;
+  //int imgSz = 48;
   String _label;
   String[] feelings = {"good", "neutral", "bad"};
   String checked = "";
@@ -64,7 +65,7 @@ class FeelingRadio {
     }
     
     switch(_label) {
-      case "Meditation":
+      case "Mediatation":
         feelingAssessMeditation = this.checked;
         break;
       case "Study":

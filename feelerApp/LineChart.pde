@@ -205,7 +205,8 @@ class LineChart {
       }
 
       if(type == "averages"){
-        
+        pageH1("Relaxation and Attention levels");
+        pageH2("Relaxation and Attention levels");
         text("Your activity", visX, visX - padding*2);
         
         for(int i = 0; i < _listSize; i+=grainSize){
