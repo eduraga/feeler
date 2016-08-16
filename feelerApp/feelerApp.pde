@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .2;
-float countDownStartStudy = .2;
+float countDownStartMeditate = .1;
+float countDownStartStudy = .1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -265,9 +265,9 @@ public void setup() {
   
   logo = loadImage("feeler-logo.png");
   
-  feelingRadioMeditation = new FeelingRadio(20, 250, "Meditation");
-  feelingRadioStudy = new FeelingRadio(20, 250 + 50 + padding*5, "Study");
-  feelingRadioPlay = new FeelingRadio(20, 250 + 50*2 + padding*10, "Play");
+  feelingRadioMeditation = new FeelingRadio(20 + 80, 250 + 10, "Meditation");
+  feelingRadioStudy = new FeelingRadio(20 + 80, 250 + 50 + padding*5 + 10, "Study");
+  feelingRadioPlay = new FeelingRadio(20 + 80, 250 + 50*2 + padding*10 + 10, "Play");
   
   //Make a new feelerSerial
   feelerS = new feelerSerial(this); 
@@ -399,8 +399,7 @@ public void setup() {
     .setColorForeground(color(153))//Added by Eva
     .setColorBackground(color(85))//Added by Eva
     .setColorActive(color(50))//Added by Eva
-    
-    .setPosition(padding + 80, headerHeight + padding * 11)
+    .setPosition(padding + 80 + 80, headerHeight + padding * 11 + 30)
     .setSize(200, 60)
     .setValue(1)
     .setBroadcast(true)
@@ -470,7 +469,7 @@ public void setup() {
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(padding + 260, headerHeight + padding * 29)
+    .setPosition(padding + 260 + 80, headerHeight + padding * 29 + 10)
     .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
@@ -486,7 +485,7 @@ public void setup() {
     .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 8)
+    .setPosition(padding + 80, headerHeight + padding * 8 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationMeditation").moveTo("global");
@@ -498,7 +497,7 @@ public void setup() {
     .setFont(createFont("font",16))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 13.6)
+    .setPosition(padding + 80, headerHeight + padding * 13.6 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationStudy").moveTo("global");
@@ -510,7 +509,7 @@ public void setup() {
     .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 19.3)
+    .setPosition(padding + 80, headerHeight + padding * 19.3 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessRelaxationPlay").moveTo("global");
@@ -523,7 +522,7 @@ public void setup() {
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(padding + 160, headerHeight + padding * 23.2)
+    .setPosition(padding + 160 + 80, headerHeight + padding * 23.2 + 10)
     .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
@@ -539,7 +538,7 @@ public void setup() {
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(padding + 260, headerHeight + padding * 23.2)
+    .setPosition(padding + 260 + 80, headerHeight + padding * 23.2 + 10)
     .setSize(80, 40)
     .setValue(1)
     .setBroadcast(true)
@@ -555,7 +554,7 @@ public void setup() {
     .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 8)
+    .setPosition(padding + 80, headerHeight + padding * 8 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionMeditation").moveTo("global");
@@ -567,7 +566,7 @@ public void setup() {
     .setFont(createFont("font",16))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 13.6)
+    .setPosition(padding + 80, headerHeight + padding * 13.6 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionStudy").moveTo("global");
@@ -579,7 +578,7 @@ public void setup() {
     .setFont(createFont("font",14))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
-    .setPosition(padding, headerHeight + padding * 19.3)
+    .setPosition(padding + 80, headerHeight + padding * 19.3 + 10)
     .setRange(0, 100)
     ;
   cp5.getController("assessAttentionPlay").moveTo("global");
@@ -615,7 +614,7 @@ public void setup() {
   .setColorForeground(color(145,44,238))//Added by Eva
   .setColorBackground(color(85,26,139))//Added by Eva
   .setColorActive(color(85,26,139))//Added by Eva
-  .setPosition(padding + 160, headerHeight + padding * 23.2)
+  .setPosition(padding + 160 + 80, headerHeight + padding * 23.2 + 10)
   .setSize(80, 40)
   //.setValue(1)
   .setBroadcast(true)
@@ -631,7 +630,7 @@ public void setup() {
   .setColorForeground(color(145,44,238))//Added by Eva
   .setColorBackground(color(85,26,139))//Added by Eva
   .setColorActive(color(85,26,139))//Added by Eva
-  .setPosition(padding + 260, headerHeight + padding * 23.2)
+  .setPosition(padding + 260 + 80, headerHeight + padding * 23.2 + 10)
   .setSize(80, 40)
   .setBroadcast(true)
   .getCaptionLabel().align(CENTER, CENTER)
@@ -651,7 +650,7 @@ public void draw() {
   
   background(255);
   fill(0);
-  image(logo, 20, 20);
+  image(logo, 100, 20);// added by Eva, margin left was before 20
   
   if ( millis() % 100 == 0) {
     //feelerS.sendValues();
@@ -760,7 +759,9 @@ public void draw() {
 
   textAlign(CENTER);
   if (loading) {
-    text("Loading...", width/2, height/2);
+    //text("Loading...", width/2 + 20, height/2);
+    //textSize(12);
+    //fill(textLightColor);
   }
   
   if(modal){
@@ -1249,7 +1250,8 @@ public void addUserAreaControllers() {
   cp5.getController("newSession").moveTo("global");
 
   cp5.addButton("overall")
-    .setLabel("Your activity")
+    .setLabel("Review")
+    //.setLabel("Your activity")
     //.setColorBackground(color(255))
     //.setColorForeground(color(255))
     //.setColorLabel(textDarkColor)

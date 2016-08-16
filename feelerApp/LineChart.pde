@@ -133,7 +133,8 @@ class LineChart {
   
   void display(){    
     fill(graphBgColor);
-    rect(visX - padding, visX - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2);
+    //rect(190, visX - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2); // linechart background
+    rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
     
     if(fileName != null && sessionFolders != null){
       displayData();
@@ -141,7 +142,8 @@ class LineChart {
         fill(textDarkColor);
         pushStyle();
         textAlign(CENTER);
-        text("Eager to see some data?\nStart a New session", visX, visHeight/2 + visX, visWidth, visHeight);
+        textSize(24);
+        text("Eager to see some data?\nStart a New session", visX - 30, visHeight/2 + visX - 50, visWidth, visHeight);
         popStyle();
     }
     
@@ -149,9 +151,13 @@ class LineChart {
     pushStyle();
     textAlign(LEFT, CENTER);
     fill(textDarkColor);
-    text("100%", visX - padding/2, visX);
-    text("50%", visX - padding/2, visX + visHeight/2 + dotSize/2);
-    text("0%", visX - padding/2, visX + visHeight + dotSize/2);
+    textSize(12);// added by Eva
+    //text("100%", 200, visX);
+    text("100%", visX - padding/2 - 15, visX);
+    //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva
+    //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva
+    text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);
+    text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);
     popStyle();
   }
   
@@ -160,6 +166,7 @@ class LineChart {
       if(type == "averages"){
         pushStyle();
         textAlign(LEFT);
+        //text("Averaged values of the EEG data and your personal experience", 200, visHeight + visX + padding * 5);// added by Eva
         text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + visX + padding * 5);
         popStyle();
       } else if(type == "values"){
@@ -170,17 +177,17 @@ class LineChart {
         pushStyle();
         fill(textDarkColor);
         textAlign(CENTER, CENTER);
-        text("Meditate", visX + padding, visY + padding*3, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, visY + padding*3, studyEnd - relaxEnd, 20);
-        //text("Play", studyEnd, visY + padding*3, playEnd - studyEnd, 20);
+        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        //text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
         textAlign(CENTER);
         fill(textDarkColor);
-        text("Meditate", visX + padding, visY + padding*3, relaxEnd - (visX + padding), 20);
-        text("Study", relaxEnd, visY + padding*3, studyEnd - relaxEnd, 20);
-        //text("Play", studyEnd, visY + padding*3, playEnd - studyEnd, 20);
+        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       }
       
@@ -196,7 +203,8 @@ class LineChart {
           pushStyle();
           fill(textDarkColor);
           textAlign(LEFT, CENTER);
-          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], visX + padding, visY + visHeight + padding);
+          textSize(20);//added by Eva
+          text(fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], 100, headerHeight + padding + 60);
           popStyle();
           
           rlxAvg = relaxationAverageList[currentItem];
@@ -205,9 +213,11 @@ class LineChart {
       }
 
       if(type == "averages"){
-        pageH1("Relaxation and Attention levels");
-        pageH2("Relaxation and Attention levels");
-        text("Your activity", visX, visX - padding*2);
+        pageH1("Review");// added by Eva
+        textSize(20);// added by Eva
+        fill(50);
+        text("Your activity", 100, headerHeight + padding + 70);
+        //text("Your activity", visX - 30, visX - padding*2);
         
         for(int i = 0; i < _listSize; i+=grainSize){
           float thisX = i * stepSize + visX + stepSize/2;
@@ -247,6 +257,7 @@ class LineChart {
                   rect(mouseX, mouseY, 120, 60);
                   
                   fill(attentionColor);
+                  textSize(12);// added by Eva
                   text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
                   fill(relaxationColor);
                   text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
@@ -269,6 +280,7 @@ class LineChart {
 
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
+            textSize(12);
             text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visX + padding*2);
             text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visX + padding*3);
             popStyle();
@@ -348,9 +360,15 @@ class LineChart {
 
         String[] fileDate = split(fileName[0], '-');
         pushStyle();
-        fill(textDarkColor);
+        fill(50);
+        pageH1("Review");// added by Eva
+        textSize(20);// eva modifying personal experience menu
         textAlign(LEFT);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal impressions", visX, visX - padding*2);
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal experience", 100, headerHeight + padding + 70);
+        fill(textDarkColor);
+        textSize(12);
+        fill(textDarkColor);
+        text("Your personal experience during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);
         popStyle();
         
       } else {
@@ -368,9 +386,15 @@ class LineChart {
     
         pushStyle();
         String[] fileDate = split(fileName[0], '-');
-        fill(textDarkColor);
+        //fill(textDarkColor);
+        pageH1("Review");// added by Eva
         textAlign(LEFT);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", visX, visX - padding*2);
+        fill(50);
+        textSize(20);// eva modifying eeg data menu
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", 100, headerHeight + padding + 70);
+        textSize(12);
+        fill(textDarkColor);
+        text("Your EEG data during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);
         popStyle();
       }
   }
@@ -454,7 +478,7 @@ class LineChart {
     
     if(i % step == 0 && thisTime.get(i) != 0) {
       fill(textDarkColor);
-      text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4);
+      text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
     }
   }
      

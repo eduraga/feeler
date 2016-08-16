@@ -12,18 +12,22 @@ class OverallAvgs{
   }
   
   void setup(int _visWidth, int _visHeight){
-    rectWidth = (_visWidth - dotSize/2)/2;
-    rectHeight = _visHeight; 
+    rectWidth = (_visWidth - dotSize)/2 - 50;
+    //rectWidth = (_visWidth - dotSize/2)/2;
+    rectHeight = _visHeight + 50;
+    //rectHeight = _visHeight; 
   }
   
   void display(int i){
-    
     if(type == "assessment"){
-      thisX = visX + rectWidth + padding*3;
+      thisX = visX + rectWidth + padding*4;
+      thisY = visHeight; // added by Eva
+      
     } else {
-      thisX = visX;
+      thisX = visX - 30;
     }
-    thisY = visY;
+    thisY = visX - padding + 60; // added by Eva, this modifies y position of the square barcharts
+    //thisY = visY;
     
     if(
       mouseX > thisX - padding && mouseX < rectWidth + padding*2 + thisX - padding
@@ -49,11 +53,17 @@ class OverallAvgs{
       
       if(type == "eeg"){
         pushStyle();
-        fill(textDarkColor);
+        fill(50);
+        //fill(textDarkColor);
+        pageH1("Review");// added by Eva
         textAlign(LEFT, CENTER);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
+        textSize(20);// addded by Eva session data
+        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], 100, headerHeight + padding + 60);
+        //text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
+        pageH2("EEG data");// added by Eva
+        pageH3("Personal experience");// added by Eva
         popStyle();
-        
+       
         if(relaxationAverageList[i] > 0) {
           rlxAvg = relaxationAverageList[i];
         } else {
@@ -82,16 +92,20 @@ class OverallAvgs{
     
       fill(relaxationColor);
       rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
-      fill(textDarkColor);
+      fill(50);
+      //fill(textDarkColor);
+      textSize(24);// added by eva
       text("Relaxation "+round(rlxAvg)+"%", thisX, thisY, rectWidth, rectHeight/2);
       
       fill(attentionColor);
       rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
-      fill(textDarkColor);
+      fill(50);
+      //fill(textDarkColor);
       text("Attention "+round(attAvg)+"%", thisX, thisY + rectHeight/2, rectWidth, rectHeight/2);
       
       fill(textDarkColor);
       textAlign(LEFT, CENTER);
+      textSize(12);
       text(caption, thisX, thisY + rectHeight + padding*2);
       popStyle();
     }
@@ -103,7 +117,8 @@ class OverallAvgs{
     
     if(x >= this.thisX && x <= this.thisX + this.rectWidth){
       if(y >= this.thisY && y <= this.thisY + rectHeight){
-        text("Loading...", width/2, height/2);
+        text("Loading...", width/2 + 10, height/2);
+        textSize(20);//to change
         
         if(type == "eeg"){
           currentPage = "eegActivity";
