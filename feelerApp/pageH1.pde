@@ -13,7 +13,7 @@ void pageH2(String title){
   textAlign(LEFT);
   textSize(24);
   fill(textDarkColor);
-  text(title, 210, headerHeight + padding + 120);
+  text(title, 210, headerHeight + padding + 120 + 40);
   popStyle();
 }
 
@@ -22,6 +22,6 @@ void pageH3(String title){
   textAlign(LEFT);
   textSize(24);
   fill(textDarkColor);
-  text(title, 800, headerHeight + padding + 120);
+  text(title, 800, headerHeight + padding + 120 + 40);
   popStyle();
 }

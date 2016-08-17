@@ -133,8 +133,8 @@ class LineChart {
   
   void display(){    
     fill(graphBgColor);
-    //rect(190, visX - padding, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2); // linechart background
-    rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
+    rect(visX - padding - 120, visX - padding + 40, visWidth - dotSize/2 + padding*2 + 120, visHeight + dotSize/2 + padding*2); // linechart background
+    //rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
     
     if(fileName != null && sessionFolders != null){
       displayData();
@@ -152,12 +152,14 @@ class LineChart {
     textAlign(LEFT, CENTER);
     fill(textDarkColor);
     textSize(12);// added by Eva
-    //text("100%", 200, visX);
-    text("100%", visX - padding/2 - 15, visX);
-    //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva
-    //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva
-    text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);
-    text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);
+    text("100%", visX - padding/2 - 15 - 100, visX + 40);
+    //text("100%", visX - padding/2 - 15, visX);// old
+    //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva 0
+    //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva 0
+    text("50%", visX - padding/2 - 15 - 100, visX + visHeight/2 + dotSize/2 + 40);
+    text("0%", visX - padding/2 - 15 - 100, visX + visHeight + dotSize/2 + 40);
+    //text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);// old
+    //text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);// old
     popStyle();
   }
   
@@ -167,7 +169,7 @@ class LineChart {
         pushStyle();
         textAlign(LEFT);
         //text("Averaged values of the EEG data and your personal experience", 200, visHeight + visX + padding * 5);// added by Eva
-        text("Averaged values of the EEG data and your personal experience", visX - padding, visHeight + visX + padding * 5);
+        text("Averaged values of the EEG data and your personal experience", visX - padding - 100, visHeight + visX + padding * 5 + 40);
         popStyle();
       } else if(type == "values"){
         stroke(100,100);
@@ -177,17 +179,19 @@ class LineChart {
         pushStyle();
         fill(textDarkColor);
         textAlign(CENTER, CENTER);
-        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
-        text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        text("MEDITATE", visX + padding - 100, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        //text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);// old
+        text("STUDY", relaxEnd - 100, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        //text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);// old
         //text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
         textAlign(CENTER);
         fill(textDarkColor);
-        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
-        text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
-        text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
+        text("MEDITATE", visX + padding, visY + padding*3 - 15, relaxEnd - (visX + padding), 20);
+        text("STUDY", relaxEnd, visY + padding*3 - 15, studyEnd - relaxEnd, 20);
+        text("PLAY", studyEnd, visY + padding*3 - 15, playEnd - studyEnd, 20);
         popStyle();
       }
       
@@ -234,12 +238,16 @@ class LineChart {
             float prevAttAvg = 0;
             float prevRlxAvg = 0;
             
-            attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX);
-            rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX);
+            attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX + 95); // last value modifies the heigth of the ellipses
+            rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX + 100);
+            //attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX);// old
+            //rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX);// old
             
             if(i>0){
-              prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX);
-              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX);
+              prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
+              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
+              //prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX);// old
+              //prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX);// old
             }
             
             if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
@@ -249,7 +257,8 @@ class LineChart {
                 
                 if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
                   fill(250);
-                  rect(thisX - dotSize/2, visX, dotSize, visHeight + dotSize/2);
+                  rect(thisX - dotSize/2, visX + 40, dotSize, visHeight + dotSize);
+                  //rect(thisX - dotSize/2, visX, dotSize, visHeight + dotSize/2);//old
                   
                   pushStyle();
                   fill(255);
@@ -281,8 +290,8 @@ class LineChart {
             fill(textDarkColor);
             textAlign(CENTER, CENTER);
             textSize(12);
-            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visX + padding*2);
-            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visX + padding*3);
+            text(fileDate[2] + "." + fileDate[1], thisX, visHeight + visX + padding*2 + 40);
+            text(fileDate[3] + ":" + fileDate[4], thisX, visHeight + visX + padding*3 + 40);
             popStyle();
           }
             
@@ -297,12 +306,16 @@ class LineChart {
           float prevStudy = 0;
           float thisStudy = 0;
           
-          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX);
-          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX, visHeight + visX);
+          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
+          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
+          //thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX);// original
+          //thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX, visHeight + visX);// original
           
           if(i > 0){
-            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX);
-            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX, visHeight + visX);
+            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
+            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
+            //prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX);// original
+            //prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX, visHeight + visX);// original
 
             stroke(relaxationColor);
             line(
@@ -311,6 +324,7 @@ class LineChart {
                   thisX,
                   thisMeditate
             );
+            
             stroke(attentionColor);
             line(
                 previousX,
@@ -324,20 +338,21 @@ class LineChart {
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
             if(mouseY >= visX + dotSize && mouseY <= visX + dotSize + visHeight){
               fill(250);
-              rect(thisX - dotSize/2, visX + dotSize, dotSize, visHeight);
+              rect(thisX - dotSize/2, visX + dotSize + 30, dotSize, visHeight);
               
               pushStyle();
               fill(255);
               stroke(textLightColor);
               rect(mouseX, mouseY, 120, 60);
               fill(attentionColor);
-              text("Attention: " + assessmentData[i+3], mouseX + padding, mouseY + padding);
+              text("Attention: " + assessmentData[i+6], mouseX + padding, mouseY + padding);
               fill(relaxationColor);
-              text("Relaxation: " + assessmentData[i+6], mouseX + padding, mouseY + padding * 2);
+              text("Relaxation: " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
               popStyle();
             }
           }
           
+
           fill(relaxationColor);
           ellipse(thisX, thisMeditate, dotSize, dotSize);
           
@@ -368,7 +383,8 @@ class LineChart {
         fill(textDarkColor);
         textSize(12);
         fill(textDarkColor);
-        text("Your personal experience during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);
+        //text("Your personal experience during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);// old
+        text("Your personal experience during the different session stages", visX - padding - 100, visHeight + visX + padding * 5 + 10);
         popStyle();
         
       } else {
@@ -394,7 +410,7 @@ class LineChart {
         text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", 100, headerHeight + padding + 70);
         textSize(12);
         fill(textDarkColor);
-        text("Your EEG data during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);
+        text("Your EEG data during the different session stages", visX - padding - 100, visHeight + visX + padding * 5 + 10);
         popStyle();
       }
   }
@@ -424,7 +440,7 @@ class LineChart {
         fill(attentionColor);
         text("Attention " + thisAtt.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
-        text("Relaxtation " + thisRelax.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        text("Relaxatation " + thisRelax.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
         popStyle();
         
   
@@ -437,7 +453,7 @@ class LineChart {
 
     if(screenshots.get(i) != "" && screenshots.get(i) != null){
       fill(255, 100);
-      rect(previousX.get(i), visX + padding, thisX.get(i) - previousX.get(i) - 1, visHeight);
+      rect(previousX.get(i), visX + padding + 20, thisX.get(i) - previousX.get(i) - 1, visHeight);
     }
     
     String currentScreenshot = "";

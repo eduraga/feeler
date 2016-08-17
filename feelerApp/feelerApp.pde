@@ -235,9 +235,10 @@ public void setup() {
   textSize(12);
 
   userTabsX = width/2;
-
+  
   visX = (width/3)/2;
-  visY = headerHeight + padding + 60;
+  visY = headerHeight + padding + 100;
+  //visY = headerHeight + padding + 60;// old
   visWidth = width - width/4;
   visHeight = 300;
   lowerBoundary = visHeight + visY + padding*4;
@@ -318,7 +319,8 @@ public void setup() {
   .setText("Login")
   .setPosition(width/2 - 60, height/2 - 150)
   .setColorValue(color(0))
-  .setFont(createFont("",40));
+  .setFont(createFont("font",40))
+  ;
   cp5.getController("label").moveTo("login");
 
   username = cp5.addTextfield("username")
@@ -342,7 +344,11 @@ public void setup() {
   cp5.addButton("submit")
     .setBroadcast(false)
     .setLabel("login")
+    .setFont(createFont("font",14))
     .setPosition(width/2 - 100, height/2 + 40)
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
     .setSize(200, 40)
     .setValue(1)
     .setBroadcast(true)
@@ -353,6 +359,10 @@ public void setup() {
   cp5.addButton("signup")
     .setBroadcast(false)
     .setLabel("signup")
+    .setFont(createFont("font",14))
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
     .setPosition(width/2 - 100, height/2 + 90)
     .setSize(200, 40)
     .setValue(1)
@@ -364,12 +374,12 @@ public void setup() {
   cp5.addButton("loginBt")
     .setBroadcast(false)
     .setLabel("Login")
-    .setFont(createFont("font",12))//Added by Eva doesn't work
-    .setColorForeground(color(153))//Added by Eva
-    .setColorBackground(color(85))//Added by Eva
-    .setColorActive(color(50))//Added by Eva
-    .setPosition(width - 100, 20)
-    .setSize(80, 40)
+    .setFont(createFont("font",12))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(width - 180, 20)
+    .setSize(80, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -382,8 +392,12 @@ public void setup() {
     .setBroadcast(false)
     .setLabel("Logout")
     //.setPosition(width - 80, 10)
-    .setPosition(width - padding - buttonWidth, padding)
-    .setSize(buttonWidth, 20)
+    .setPosition(width - 180, padding)
+     .setFont(createFont("font",12))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setSize(buttonWidth, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -396,11 +410,14 @@ public void setup() {
     .setBroadcast(false)
     .setLabel("Record")
     .setFont(createFont("font",16))//Added by Eva
-    .setColorForeground(color(153))//Added by Eva
-    .setColorBackground(color(85))//Added by Eva
-    .setColorActive(color(50))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    //.setColorForeground(color(153))//Added by Eva
+    //.setColorBackground(color(85))//Added by Eva
+    //.setColorActive(color(50))//Added by Eva
     .setPosition(padding + 80 + 80, headerHeight + padding * 11 + 30)
-    .setSize(200, 60)
+    .setSize(300, 60)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -412,10 +429,13 @@ public void setup() {
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
     .setLabel("Pause")
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
     .setFont(createFont("font",16))//Added by Eva
-    .setColorForeground(color(153))//Added by Eva
-    .setColorBackground(color(85))//Added by Eva
-    .setColorActive(color(50))//Added by Eva
+    //.setColorForeground(color(153))//Added by Eva
+    //.setColorBackground(color(85))//Added by Eva
+    //.setColorActive(color(50))//Added by Eva
     .setPosition(width/2 - 90, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2 - 50, containerPosY + padding * 2)
     .setSize(80, 80)
@@ -430,9 +450,12 @@ public void setup() {
     .setBroadcast(false)
     .setLabel("Stop")
     .setFont(createFont("font",16))//Added by Eva
-    .setColorForeground(color(153))//Added by Eva
-    .setColorBackground(color(85))//Added by Eva
-    .setColorActive(color(50))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    //.setColorForeground(color(153))//Added by Eva
+    //.setColorBackground(color(85))//Added by Eva
+    //.setColorActive(color(50))//Added by Eva
     .setPosition(width/2 + 10, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2, containerPosY + padding * 2)
     .setSize(80, 80)
@@ -448,9 +471,12 @@ public void setup() {
   .setBroadcast(false)
   .setLabel("End game")
   .setFont(createFont("font",16))//Added by Eva
-  .setColorForeground(color(153))//Added by Eva
-  .setColorBackground(color(85))//Added by Eva
-  .setColorActive(color(50))//Added by Eva
+  .setColorForeground(color(145,44,238))//Added by Eva
+  .setColorBackground(color(85,26,139))//Added by Eva
+  .setColorActive(color(85,26,139))//Added by Eva
+  //.setColorForeground(color(153))//Added by Eva
+  //.setColorBackground(color(85))//Added by Eva
+  //.setColorActive(color(50))//Added by Eva
   .setPosition(width/2 - 60, containerPosY + padding * 3)//added by Eva
   //.setPosition(padding, headerHeight + padding * 4)
   .setSize(120, 80)
@@ -677,7 +703,7 @@ public void draw() {
   if (isLoggedIn) {
     pushStyle();
     textAlign(RIGHT);
-    text("Hello, " + currentUser, width - padding, padding *3);
+    text("Hello, " + currentUser, width - 110, padding*3 + 10);
     popStyle();
   }
 
@@ -1234,15 +1260,18 @@ public void addUserAreaControllers() {
   cp5.addButton("newSession")
     .setBroadcast(false)
     .setLabel("New session")
-    
-    .setFont(createFont("",14))//Added by Eva
-    .setColorForeground(color(85))//Added by Eva
-    .setColorBackground(color(153))//Added by Eva
-    .setColorActive(color(50))//Added by Eva
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("",12))//Added by Eva
+    //.setColorForeground(color(85))//Added by Eva
+    //.setColorBackground(color(153))//Added by Eva
+    //.setColorActive(color(50))//Added by Eva
     
     //.setPosition(width - 160, 10)
-    .setPosition(width - padding*2 - buttonWidth*2, padding)
-    .setSize(buttonWidth, buttonHeight)
+    .setPosition(width - 180 - 110, padding)
+    //.setPosition(width - padding*2 - buttonWidth*2, padding)
+    .setSize(100, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -1250,15 +1279,19 @@ public void addUserAreaControllers() {
   cp5.getController("newSession").moveTo("global");
 
   cp5.addButton("overall")
-    .setLabel("Review")
-    //.setLabel("Your activity")
+    .setLabel("Your activity")// before "review"
+    .setFont(createFont("font",12))//Added by Eva 
     //.setColorBackground(color(255))
     //.setColorForeground(color(255))
     //.setColorLabel(textDarkColor)
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(100, headerHeight + padding + 90)
     //.setPosition(width/2 - buttonWidth/2 - 1, padding)
     //.setPosition(visX - padding, visY - padding*2)
-    .setPosition(width - padding*3 - buttonWidth*3, padding)
-    .setSize(buttonWidth, buttonHeight)
+    //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
+    .setSize(100, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -1269,15 +1302,15 @@ public void addUserAreaControllers() {
   cp5.addButton("session")
     .setBroadcast(false)
     .setLabel("current session")
-    //.setColorBackground(color(255))
-    //.setColorActive(color(255))
-    //.setColorForeground(color(255))
-    //.setColorLabel(color(textDarkColor))
-    //.setPosition(width/2 + buttonWidth/2 + 1, padding)
-    .setPosition(width - padding*4 - buttonWidth*3 - 130, padding)
+    .setFont(createFont("font",12))//Added by Eva 
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(100 + 110, headerHeight + padding + 90)
+    //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
     //.setPosition(visX + 85, visY - padding*2 - 15)
     //.setFont(font)
-    .setSize(130, buttonHeight)
+    .setSize(160, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -1288,8 +1321,13 @@ public void addUserAreaControllers() {
   cp5.addButton("export")
     .setBroadcast(false)
     .setLabel("export data")
-    .setPosition(width - padding - buttonWidth, padding*4)
-    .setSize(buttonWidth, buttonHeight)
+    .setFont(createFont("font",12))//Added by Eva 
+    .setColorForeground(color(145,44,238))//Added by Eva
+    .setColorBackground(color(85,26,139))//Added by Eva
+    .setColorActive(color(85,26,139))//Added by Eva
+    .setPosition(width - 120 - 110, headerHeight + padding + 90)
+    //.setPosition(width - padding - buttonWidth, padding*4)// old
+    .setSize(120, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
