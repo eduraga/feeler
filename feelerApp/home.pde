@@ -16,7 +16,7 @@ void home(){
    containerPosY -= e;
    e = 0;
    
-   image(homeImg, (width - homeImg.width)/2, visY);
+   image(homeImg, (width - homeImg.width)/2, visY - 80);
   
   //fill(210);
   //rect(containerPosX, containerPosY, videoWidth, videoHeight);

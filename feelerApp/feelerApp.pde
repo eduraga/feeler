@@ -8,11 +8,11 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = true;
-boolean simulateBoxes = true;
+boolean simulateMindSet = false;
+boolean simulateBoxes = false;
 
-float countDownStartMeditate = .1;
-float countDownStartStudy = .1;
+float countDownStartMeditate = 1;
+float countDownStartStudy = 1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -210,6 +210,7 @@ public void setup() {
   smooth();
   
   homeImg = loadImage("home.png");
+  
   close = loadImage("close.png");
   
   trends = new LineChart();
@@ -858,7 +859,8 @@ void cleanUpSurvey(){
     cp5.getController("assess3Toggle1").hide();
     cp5.getController("assess3Toggle2").hide();
     cp5.getController("assess33Bt").hide();
-    cp5.addButton("assess3Bt").hide();
+    cp5.getController("assess3Bt").hide();// added by Eva
+    //cp5.addButton("assess3Bt").hide();
 }
 
 public void controlEvent(ControlEvent theControlEvent) {
