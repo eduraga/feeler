@@ -252,8 +252,10 @@ public void setup() {
 
   cp5 = new ControlP5(this);
 
-  eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
-  personalAssSesion = new OverallAvgs("assessment", "Values based on your personal experience");
+  eegAvg = new OverallAvgs("eeg", "");
+  //eegAvg = new OverallAvgs("eeg", "Values based on your EEG data");
+  personalAssSesion = new OverallAvgs("assessment", "");
+  //personalAssSesion = new OverallAvgs("assessment", "Values based on your personal experience");
   personalAvg = new OverallAvgs("eeg", "On average");
 
   eegAvg.setup(visWidth, visHeight);
@@ -317,15 +319,24 @@ public void setup() {
 
   cp5.addTextlabel("label")
   .setText("Login")
-  .setPosition(width/2 - 60, height/2 - 150)
+  .setPosition(width/2 - 70, height/2 - 250)
+  //.setPosition(width/2 - 60, height/2 - 150)
   .setColorValue(color(0))
-  .setFont(createFont("font",40))
+  .setFont(createFont("font",50))
   ;
   cp5.getController("label").moveTo("login");
 
   username = cp5.addTextfield("username")
-    .setPosition(width/2 - 100, height/2 - 40)
-    .setSize(200, 20)
+    .setPosition(width/2 - 115, height/2 - 80 -70)
+    .setSize(240, 40)
+    .setFont(createFont("font",12))// added by Eva
+    .setColorCaptionLabel(color(0))// added by Eva
+    .setColorLabel(color(0))
+    .setColorValue(color(0))// added by Eva
+    .setColorBackground(color(209))//Added by Eva
+    .setColorForeground(color(209))
+    .setColorActive(color(85,26,139))//Added by Eva
+    
     .setLabel("username")
     .setFocus(true)
     ;
@@ -333,8 +344,15 @@ public void setup() {
   cp5.getController("username").moveTo("login");
 
   password = cp5.addTextfield("password")
-    .setPosition(width/2 - 100, height/2)
-    .setSize(200, 20)
+    .setPosition(width/2 - 115, height/2 - 80)
+    .setSize(240, 40)
+    .setFont(createFont("font",12))// added by Eva
+    .setColorCaptionLabel(color(0))// added by Eva
+    .setColorLabel(color(0))
+    .setColorValue(color(0))// added by Eva
+    .setColorBackground(color(209))//Added by Eva
+    .setColorForeground(color(209))
+    .setColorActive(color(85,26,139))//Added by Eva
     .setPasswordMode(true)
     .setLabel("password")
     ;
@@ -345,11 +363,11 @@ public void setup() {
     .setBroadcast(false)
     .setLabel("login")
     .setFont(createFont("font",14))
-    .setPosition(width/2 - 100, height/2 + 40)
+    .setPosition(width/2 - 115, height/2)
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setSize(200, 40)
+    .setSize(240, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -363,8 +381,8 @@ public void setup() {
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(width/2 - 100, height/2 + 90)
-    .setSize(200, 40)
+    .setPosition(width/2 - 115, height/2 + 55)
+    .setSize(240, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -508,9 +526,12 @@ public void setup() {
   cp5.addSlider("assessRelaxationMeditation")
     //.setLabel("Meditation")//old label
     .setLabel("%")
-    .setFont(createFont("font",14))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(relaxationColor))//Added by Eva
+    .setColorForeground(color(relaxationColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 8 + 10)
     .setRange(0, 100)
     ;
@@ -520,9 +541,12 @@ public void setup() {
   cp5.addSlider("assessRelaxationStudy")
   //.setLabel("Study")//old label
     .setLabel("%")
-    .setFont(createFont("font",16))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(relaxationColor))//Added by Eva
+    .setColorForeground(color(relaxationColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 13.6 + 10)
     .setRange(0, 100)
     ;
@@ -532,9 +556,12 @@ public void setup() {
   cp5.addSlider("assessRelaxationPlay")
   //.setLabel("Play")//old label
     .setLabel("%")
-    .setFont(createFont("font",14))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(relaxationColor))//Added by Eva
+    .setColorForeground(color(relaxationColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 19.3 + 10)
     .setRange(0, 100)
     ;
@@ -577,9 +604,12 @@ public void setup() {
   cp5.addSlider("assessAttentionMeditation")
      //.setLabel("Meditation")//old label
     .setLabel("%")
-    .setFont(createFont("font",14))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(attentionColor))//Added by Eva
+    .setColorForeground(color(attentionColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 8 + 10)
     .setRange(0, 100)
     ;
@@ -589,9 +619,12 @@ public void setup() {
   cp5.addSlider("assessAttentionStudy")
      //.setLabel("Study")//old label
     .setLabel("%")
-    .setFont(createFont("font",16))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(attentionColor))//Added by Eva
+    .setColorForeground(color(attentionColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 13.6 + 10)
     .setRange(0, 100)
     ;
@@ -601,9 +634,12 @@ public void setup() {
   cp5.addSlider("assessAttentionPlay")
     //.setLabel("Play")//old label
     .setLabel("%")
-    .setFont(createFont("font",14))//Added by Eva
+    .setFont(createFont("font",20))//Added by Eva
     .setColorLabel(textDarkColor)
     .setSize(340,60)
+    .setColorBackground(color(209))//Added by Eva
+    .setColorActive(color(attentionColor))//Added by Eva
+    .setColorForeground(color(attentionColor))//Added by Eva
     .setPosition(padding + 80, headerHeight + padding * 19.3 + 10)
     .setRange(0, 100)
     ;

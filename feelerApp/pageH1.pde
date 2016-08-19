@@ -12,7 +12,8 @@ void pageH2(String title){
   pushStyle();
   textAlign(LEFT);
   textSize(24);
-  fill(textDarkColor);
+  fill(50);
+  //fill(textDarkColor);
   text(title, 210, headerHeight + padding + 120 + 40);
   popStyle();
 }
@@ -21,7 +22,26 @@ void pageH3(String title){
   pushStyle();
   textAlign(LEFT);
   textSize(24);
-  fill(textDarkColor);
+  fill(50);
+  //fill(textDarkColor);
   text(title, 800, headerHeight + padding + 120 + 40);
+  popStyle();
+}
+
+void pageH4(String title){
+  pushStyle();
+  textAlign(LEFT);
+  textSize(12);
+  fill(textDarkColor);
+  text(title, 210, headerHeight + 585);
+  popStyle();
+}
+
+void pageH5(String title){
+  pushStyle();
+  textAlign(LEFT);
+  textSize(12);
+  fill(textDarkColor);
+  text(title, 800, headerHeight + 585);
   popStyle();
 }

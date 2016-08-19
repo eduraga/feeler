@@ -31,20 +31,25 @@ class OverallAvgs{
     //thisY = visY;
     
     if(
-      mouseX > thisX - padding && mouseX < rectWidth + padding*2 + thisX - padding
+      mouseX > thisX - padding && mouseX < rectWidth + padding*4 + thisX - padding
       &&
       mouseY > thisY - padding && mouseY < thisY - padding + rectHeight + padding*2
     ){
       hoverUpLeft.set(thisX - padding, thisY - padding);
       hoverDownRight.set(rectWidth + padding*2 + thisX - padding, thisY - padding + rectHeight + padding*2);
-      fill(textLightColor);
+      //fill(209);
+      fill(color(85,26,139));
+      //fill(textLightColor);//commented by Eva
     } else {
-      fill(graphBgColor);
+       fill(209);
+      //fill(graphBgColor);
+      
     }
     
-    rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);
-    fill(250);
-    rect(thisX, thisY, rectWidth, rectHeight);
+    rect(thisX - padding - 1 + 10, thisY - padding - 1, rectWidth + padding - 12, rectHeight + padding - 12);
+    //rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);// old
+    fill(250);// commented by Eva
+    rect(thisX - 7, thisY - 10 - 7, rectWidth, rectHeight);//moves inside rectangles
     
     if(fileName[0].charAt(0) != '.'){
       String[] fileDate = split(fileName[0], '-');
@@ -63,6 +68,8 @@ class OverallAvgs{
         //text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
         pageH2("EEG data");// added by Eva
         pageH3("Personal experience");// added by Eva
+        pageH4("Values based on your EEG data");// added by Eva
+        pageH5("Values based on your personal experience");// added by Eva
         popStyle();
        
         if(relaxationAverageList[i] > 0) {
@@ -92,17 +99,19 @@ class OverallAvgs{
       textAlign(CENTER, CENTER);
     
       fill(relaxationColor);
-      rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      rect(thisX - 7, thisY - 10 - 7, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      //rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);//old
       fill(50);
       //fill(textDarkColor);
       textSize(24);// added by eva
-      text("Relaxation "+round(rlxAvg)+"%", thisX, thisY, rectWidth, rectHeight/2);
+      text("Relaxation "+round(rlxAvg)+"%", thisX - 100, thisY - 10, rectWidth, rectHeight/2);
       
       fill(attentionColor);
-      rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      rect(thisX - 7, thisY + rectHeight/2 - 10 - 7, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      //rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);//old
       fill(50);
       //fill(textDarkColor);
-      text("Attention "+round(attAvg)+"%", thisX, thisY + rectHeight/2, rectWidth, rectHeight/2);
+      text("Attention "+round(attAvg)+"%", thisX - 100, thisY + rectHeight/2 - 10, rectWidth, rectHeight/2);
       
       fill(textDarkColor);
       textAlign(LEFT, CENTER);
