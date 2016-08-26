@@ -320,10 +320,10 @@ public void setup() {
 
   cp5.addTextlabel("label")
   .setText("Login")
-  .setPosition(width/2 - 70, height/2 - 250)
+  .setPosition(width/2 - 58, height/2 - 230)
   //.setPosition(width/2 - 60, height/2 - 150)
   .setColorValue(color(0))
-  .setFont(createFont("font",50))
+  .setFont(createFont("font",40))
   ;
   cp5.getController("label").moveTo("login");
 
