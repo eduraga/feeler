@@ -131,6 +131,7 @@ PVector hoverUpLeft, hoverDownRight;
 
 PImage screenshotModal;
 PImage close;
+PImage close1;
 boolean modal = false;
 float modalWidth;
 float modalHeight;
@@ -212,6 +213,7 @@ public void setup() {
   homeImg = loadImage("home.png");
   
   close = loadImage("close.png");
+  close1 = loadImage("close1.png");
   
   trends = new LineChart();
   eegAct = new LineChart();
@@ -328,9 +330,9 @@ public void setup() {
   cp5.getController("label").moveTo("login");
 
   username = cp5.addTextfield("username")
-    .setPosition(width/2 - 115, height/2 - 80 -70)
-    .setSize(240, 40)
-    .setFont(createFont("font",12))// added by Eva
+    .setPosition(width/2 - 135, height/2 - 80 -70)
+    .setSize(300, 60)
+    .setFont(createFont("font",14))// added by Eva
     .setColorCaptionLabel(color(0))// added by Eva
     .setColorLabel(color(0))
     .setColorValue(color(0))// added by Eva
@@ -345,9 +347,9 @@ public void setup() {
   cp5.getController("username").moveTo("login");
 
   password = cp5.addTextfield("password")
-    .setPosition(width/2 - 115, height/2 - 80)
-    .setSize(240, 40)
-    .setFont(createFont("font",12))// added by Eva
+    .setPosition(width/2 - 135, height/2 - 60)
+    .setSize(300, 60)
+    .setFont(createFont("font",14))// added by Eva
     .setColorCaptionLabel(color(0))// added by Eva
     .setColorLabel(color(0))
     .setColorValue(color(0))// added by Eva
@@ -364,11 +366,12 @@ public void setup() {
     .setBroadcast(false)
     .setLabel("login")
     .setFont(createFont("font",14))
-    .setPosition(width/2 - 115, height/2)
+    .setPosition(width/2 - 135, height/2 + 40)
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setSize(240, 40)
+    .setSize(300, 60)
+    //.setSize(240, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -382,8 +385,10 @@ public void setup() {
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(width/2 - 115, height/2 + 55)
-    .setSize(240, 40)
+    .setPosition(width/2 - 135, height/2 + 120)
+    //.setPosition(width/2 - 115, height/2 + 55)
+    .setSize(300, 60)
+    //.setSize(240, 40)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -391,17 +396,30 @@ public void setup() {
   cp5.getController("signup").moveTo("login");
 
   cp5.addButton("loginBt")
-    .setBroadcast(false)
-    .setLabel("Login")
-    .setFont(createFont("font",12))//Added by Eva
+     .setBroadcast(false)
+    .setLabel("Let's go")
+    .setFont(createFont("font",14))//Added by Eva
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(width - 180, 20)
-    .setSize(80, 30)
+    .setPosition(width/2 - 135, height/2 + 270)
+    .setSize(300, 60)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
+    
+  //cp5.addButton("loginBt") //old
+    //.setBroadcast(false)
+    //.setLabel("Login")
+    //.setFont(createFont("font",12))//Added by Eva
+    //.setColorForeground(color(145,44,238))//Added by Eva
+    //.setColorBackground(color(85,26,139))//Added by Eva
+    //.setColorActive(color(85,26,139))//Added by Eva
+    //.setPosition(width - 180, 20)
+    //.setSize(80, 30)
+    //.setValue(1)
+    //.setBroadcast(true)
+    //.getCaptionLabel().align(CENTER, CENTER)
     //.toUpperCase(false)
     //.setFont(font)
     ;
@@ -835,14 +853,21 @@ public void draw() {
         mouseY <= modalHeight/4 - padding - 10 + 30
     ){
       cursor(HAND);
+      
     }
     
     fill(230);
-    rect(modalWidth/4 - padding, modalHeight/4 - padding, modalWidth + padding*2, modalHeight + padding*2);
-    image(screenshotModal, modalWidth/4, modalHeight/4, modalWidth, modalHeight);
+    //fill(160);
+    stroke(85,26,139);
+    //strokeWeight(3);
+    rect(modalWidth/4 - padding - 10, modalHeight/4 - padding - 10, modalWidth + padding*2 + 10 + 5, modalHeight + padding*2 + 10 +5);
+    noStroke();
+    image(screenshotModal, modalWidth/4, modalHeight/4 + 5, modalWidth, modalHeight);
     image(close,modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
+    
   }
 }
+
 
 void cleanUpSurvey(){
     cp5.getController("session").hide();
@@ -1302,17 +1327,12 @@ public void addUserAreaControllers() {
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
     .setFont(createFont("",12))//Added by Eva
-    //.setColorForeground(color(85))//Added by Eva
-    //.setColorBackground(color(153))//Added by Eva
-    //.setColorActive(color(50))//Added by Eva
-    
-    //.setPosition(width - 160, 10)
     .setPosition(width - 180 - 110, padding)
-    //.setPosition(width - padding*2 - buttonWidth*2, padding)
     .setSize(100, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
+    
     ;
   cp5.getController("newSession").moveTo("global");
 

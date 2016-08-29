@@ -430,8 +430,10 @@ class LineChart {
         //imageMode(CENTER);
         currentImg = i;
         
+        
         fill(255);
-        stroke(textLightColor);
+        stroke (85,26,139);
+        //stroke(textLightColor);
         rect(thisX.get(i) - screenshotImg.height/6 - padding, mouseY - padding, screenshotImg.width/4 + padding*2, screenshotImg.height/4 + padding*5);
         noStroke();
         image(screenshotImg, thisX.get(i) - screenshotImg.height/6, mouseY + padding*3, screenshotImg.width/4, screenshotImg.height/4);
