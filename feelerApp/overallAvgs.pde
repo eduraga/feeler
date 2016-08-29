@@ -64,7 +64,7 @@ class OverallAvgs{
         pageH1("Review");// added by Eva
         textAlign(LEFT, CENTER);
         textSize(20);// addded by Eva session data
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX - 110, headerHeight + padding + 60);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX - 110, headerHeight + padding + 60);
         //text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5], thisX, thisY - padding*2);
         pageH2("EEG data");// added by Eva
         pageH3("Personal experience");// added by Eva

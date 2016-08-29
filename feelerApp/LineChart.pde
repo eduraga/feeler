@@ -379,7 +379,7 @@ class LineChart {
         pageH1("Review");// added by Eva
         textSize(20);// eva modifying personal experience menu
         textAlign(LEFT);
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > Personal experience", 100, headerHeight + padding + 70);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / Personal experience", 100, headerHeight + padding + 70);
         fill(textDarkColor);
         textSize(12);
         fill(textDarkColor);
@@ -407,7 +407,7 @@ class LineChart {
         textAlign(LEFT);
         fill(50);
         textSize(20);// eva modifying eeg data menu
-        text("Your activity > " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " > EEG data", 100, headerHeight + padding + 70);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / EEG data", 100, headerHeight + padding + 70);
         textSize(12);
         fill(textDarkColor);
         text("Your EEG data during the different session stages", visX - padding - 100, visHeight + visX + padding * 5 + 10);
@@ -521,7 +521,7 @@ class LineChart {
                   cp5.getTab("singleSession").bringToFront();
                   currentSession = sessionFolders[i];
                   cp5.getController("overall").show();
-                  cp5.getController("session").setLabel(sessionFolders[i]);
+                  cp5.getController("session").setLabel("< "+ sessionFolders[i]);
                   currentItem = i;
                 }
               }

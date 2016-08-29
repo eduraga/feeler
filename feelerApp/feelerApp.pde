@@ -8,8 +8,8 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = false;
-boolean simulateBoxes = false;
+boolean simulateMindSet = true;
+boolean simulateBoxes = true;
 
 float countDownStartMeditate = 1;
 float countDownStartStudy = 1;
@@ -1317,7 +1317,7 @@ public void addUserAreaControllers() {
   cp5.getController("newSession").moveTo("global");
 
   cp5.addButton("overall")
-    .setLabel("Your activity")// before "review"
+    .setLabel("< Your activity")// before "review"
     .setFont(createFont("font",12))//Added by Eva 
     //.setColorBackground(color(255))
     //.setColorForeground(color(255))
@@ -1329,7 +1329,7 @@ public void addUserAreaControllers() {
     //.setPosition(width/2 - buttonWidth/2 - 1, padding)
     //.setPosition(visX - padding, visY - padding*2)
     //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
-    .setSize(100, 30)
+    .setSize(120, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
@@ -1339,16 +1339,16 @@ public void addUserAreaControllers() {
   
   cp5.addButton("session")
     .setBroadcast(false)
-    .setLabel("current session")
+    .setLabel("< current session")
     .setFont(createFont("font",12))//Added by Eva 
     .setColorForeground(color(145,44,238))//Added by Eva
     .setColorBackground(color(85,26,139))//Added by Eva
     .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(100 + 110, headerHeight + padding + 90)
+    .setPosition(100 + 130, headerHeight + padding + 90)
     //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
     //.setPosition(visX + 85, visY - padding*2 - 15)
     //.setFont(font)
-    .setSize(160, 30)
+    .setSize(170, 30)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
