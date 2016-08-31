@@ -1282,6 +1282,10 @@ public void loginCheck() {
     cp5.getController("logoutBt").show();
 
     addUserAreaControllers();
+    
+    currentPage = "overall";
+    loadFiles();
+    loading = false;
   } else {
     if (client.available() > 0) {
       serverAvailable = true;

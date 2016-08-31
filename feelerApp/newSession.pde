@@ -1,6 +1,4 @@
 int[] boxStates = {0, 1, 2, 3};
-
-boolean isRecordingMind = false;
 boolean timerOn = false;
 
 String filename;
@@ -75,6 +73,14 @@ void newSession(){
     }
   }
   
+  if(feelerS.checkConnection()){
+    text("Boxes: ok", width/2, visHeight);
+  } else {
+    text("Boxes: disconnected", width/2, visHeight);
+  }
+  
+  
+  
   switch(boxState){
     case 0:
       pageH1("New session");
@@ -131,7 +137,7 @@ void newSession(){
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
       textSize(24); //added by Eva
       text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
-      isRecordingMind = true;
+      recording = true;
       timerOn = true;
       timeline = 1;
       fill(textDarkColor);
@@ -219,7 +225,6 @@ void newSession(){
       break;
     case 400:
       recording = false;
-      isRecordingMind = false;
       timeline = 4;
       
       pageH1("Personal experience");
@@ -270,7 +275,7 @@ void newSession(){
       break;
   }
   
-  if(isRecordingMind && recording){
+  if(recording){
       int datetimestr1 = minute()*60+second();
       datetimestr = datetimestr1 - datetimestr0;
       
