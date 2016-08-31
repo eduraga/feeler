@@ -267,9 +267,9 @@ class LineChart {
                   
                   fill(attentionColor);
                   textSize(12);// added by Eva
-                  text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
+                  text("Attention " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
                   fill(relaxationColor);
-                  text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
+                  text("Relaxation " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
                   popStyle();
                 }
               }
@@ -343,11 +343,13 @@ class LineChart {
               pushStyle();
               fill(255);
               stroke(textLightColor);
-              rect(mouseX, mouseY, 120, 60);
+              rect(mouseX, mouseY, 160, padding*4);
               fill(attentionColor);
-              text("Attention: " + assessmentData[i+6], mouseX + padding, mouseY + padding);
+              text("Attention " + assessmentData[i+6], mouseX + padding, mouseY + padding);
               fill(relaxationColor);
-              text("Relaxation: " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
+              text("Relaxation " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
+              fill(textDarkColor);
+              text("Feeling " + assessmentData[i], mouseX + padding, mouseY + padding * 3);
               popStyle();
             }
           }
