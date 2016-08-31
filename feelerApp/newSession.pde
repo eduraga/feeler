@@ -73,12 +73,20 @@ void newSession(){
     }
   }
   
-  if(feelerS.checkConnection()){
-    text("Boxes: ok", width/2, visHeight);
+  
+  //display status of boxes
+  if(feelerS.checkConnection() || simulateBoxes){
+    text("Boxes: ok", width/2, padding);
   } else {
-    text("Boxes: disconnected", width/2, visHeight);
+    text("Boxes: disconnected", width/2, padding);
   }
   
+  //display status of MindWave
+  if(mindSetOK || simulateMindSet){
+    text("EEG headset: ok", width/2, padding*2);
+  } else {
+    text("EEG headset: disconnected", width/2, padding*2);
+  }
   
   
   switch(boxState){
