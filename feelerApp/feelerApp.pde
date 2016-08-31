@@ -72,14 +72,15 @@ String newUserAddress;
 
 boolean isLoggedIn = false;
 boolean isWrongPassword = false;
+boolean registered = false;
+boolean isNewUser = false;
+boolean serverAvailable = true;
 String currentUser = "";
 String currentSession = "";
 int currentItem;
 String currentPassword = "";
 Textfield username;
 Textfield password;
-
-boolean isNewUser = false;
 
 final static int TIMER = 100;
 static boolean isEnabled = true;
@@ -765,7 +766,21 @@ public void draw() {
   if (isWrongPassword) {
     pushStyle();
     textAlign(CENTER);
-    text("Wrong username or password", width/2, height/2 - 60);
+    text("Wrong username or password", width/2, height/2 - 270);
+    popStyle();
+  }
+  
+  if (registered) {
+    pushStyle();
+    textAlign(CENTER);
+    text("New user successfully registered!\nPlease log in.", width/2, height/2 - 270);
+    popStyle();
+  }
+  
+  if(!serverAvailable){
+    pushStyle();
+    textAlign(CENTER);
+    text("Server not available", width/2, height/2 - 270);
     popStyle();
   }
 
@@ -1269,6 +1284,7 @@ public void loginCheck() {
     addUserAreaControllers();
   } else {
     if (client.available() > 0) {
+      serverAvailable = true;
       loginData = client.readString();
       println(loginData);
       String[] m = match(loginData, "<logintest>(.*?)</logintest>");
@@ -1276,21 +1292,27 @@ public void loginCheck() {
         cp5.getTab("overall").bringToFront();
         isLoggedIn = true;
         isWrongPassword = false;
+        registered = false;
         cp5.getController("logoutBt").show();
         addUserAreaControllers();
+
+        currentPage = "overall";
+        loadFiles();
+        loading = false;
       } else if (m[1].equals("registered")) {
+        registered = true;
+        isWrongPassword = false;
         cp5.getTab("login").bringToFront();
       } else {
         println("wrong password");
         isLoggedIn = false;
         isWrongPassword = true;
       }
+    } else {
+      println("Server not available.");
+      serverAvailable = false;
     }
   }
-
-  currentPage = "overall";
-  loadFiles();
-  loading = false;
 }
 
 public void addUserAreaControllers() {
