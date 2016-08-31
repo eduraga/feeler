@@ -75,7 +75,7 @@ class LineChart {
                    }
                    
                    if(data.data[j][10] > 0) {
-                     thisAtt.set(j, map(data.data[j][10], 0, maxVal, lowerBoundary, upperBoundary));
+                     thisAtt.set(j, data.data[j][10]);
                    } else {
                      thisAtt.set(j,lowerBoundary);
                    }
@@ -87,7 +87,7 @@ class LineChart {
                    }
                    
                    if(data.data[j][11] > 0) {
-                     thisRelax.set(j, map(data.data[j][11], 0, maxVal, lowerBoundary, upperBoundary));
+                     thisRelax.set(j, data.data[j][11]);
                    } else {
                      thisRelax.set(j,lowerBoundary);
                    }
@@ -440,9 +440,9 @@ class LineChart {
         pushStyle();
         textAlign(LEFT);
         fill(attentionColor);
-        text("Attention " + thisAtt.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding);
+        text("Attention " + (int)thisAtt.get(i) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
-        text("Relaxatation " + thisRelax.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        text("Relaxatation " + (int)thisRelax.get(i) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
         popStyle();
         
   
@@ -466,22 +466,20 @@ class LineChart {
          previousX.get(i),
          previousAtt.get(i),
          thisX.get(i),
-         thisAtt.get(i)
+         map(thisAtt.get(i), 0, maxVal, lowerBoundary, upperBoundary)
     );
     stroke(relaxationColor);
     line(
          previousX.get(i),
          previousRelax.get(i),
          thisX.get(i),
-         thisRelax.get(i)
+         map(thisRelax.get(i), 0, maxVal, lowerBoundary, upperBoundary)
     );
     noStroke();
-    
     
     int step;
     
     if(_listSize <= 10000) {
-      println("<= 10000 " + _listSize);
       step = 100;
     } else if(_listSize <=100000) {
       println("<= 100000 " + _listSize);
