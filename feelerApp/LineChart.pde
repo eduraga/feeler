@@ -163,14 +163,16 @@ class LineChart {
     textAlign(RIGHT, CENTER);
     fill(textDarkColor);
     textSize(12);// added by Eva
-    text("100%", visX - padding*2, visX + 40);
+    text("100%", visX - padding*2, upperBoundary);
     //text("100%", visX - padding/2 - 15, visX);// old
     //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva 0
     //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva 0
-    text("50%", visX - padding*2, visX + visHeight/2 + dotSize/2 + 40);
-    text("0%", visX - padding*2, visX + visHeight + dotSize/2 + 40);
+    text("50%", visX - padding*2, lowerBoundary + (upperBoundary - lowerBoundary)/2);
+    text("0%", visX - padding*2, lowerBoundary);
     //text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);// old
     //text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);// old
+    
+    if(type == "values") text("seconds", visX - padding*2, visY + visHeight + padding*4 + 20);
     popStyle();
   }
   
