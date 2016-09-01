@@ -48,6 +48,9 @@ class LineChart {
          //if(sessionFolders[i].charAt(0) == '2'){
              if(data.data != null){
                _listSize = data.data.length;
+               grainSize = (int)data.data.length/100;
+               
+                String timeline = "";
                
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
@@ -93,12 +96,16 @@ class LineChart {
                    }
                    
 
-                 if (data.data[j][0] > 0) {
-                   if(data.data[j][0] != data.data[j-grainSize][0])
-                   thisTime.set(j, data.data[j][0]);
-                 } else {
-                   thisTime.set(j, 0);
-                 }
+                 //if (data.data[j][0] > 0) {
+                 //  if(data.data[j][0] != data.data[j-grainSize][0])
+                 //  thisTime.set(j, data.data[j][0]);
+                 //} else {
+                 //  thisTime.set(j, 0);
+                 //}
+                 
+                 thisTime.set(j, data.data[j][0]);
+                 
+                 timeline += data.data[j][12] + ": " + thisX.get(j) + ", " + data.data[j][0] + "\n";
                    
                    
                    /////////////////////////////// Image stuff
@@ -117,6 +124,10 @@ class LineChart {
                    }
                  }
                }
+               
+               println("Timeline: " + timeline);
+               
+               
              }
           //}
         
@@ -438,7 +449,6 @@ class LineChart {
         //imageMode(CENTER);
         currentImg = i;
         
-        
         fill(255);
         stroke (85,26,139);
         //stroke(textLightColor);
@@ -485,22 +495,21 @@ class LineChart {
     );
     noStroke();
     
-    int step;
+    //int step;
     
-    if(_listSize <= 10000) {
-      step = 100;
-    } else if(_listSize <=100000) {
-      println("<= 100000 " + _listSize);
-      step = 1000;
-    } else {
-      println("big");
-      step = 10000;
-    }
+    //if(_listSize <= 10000) {
+    //  step = 100;
+    //} else if(_listSize <=100000) {
+    //  step = 1000;
+    //} else {
+    //  step = 10000;
+    //}
     
     //if(i % step == 0 && thisTime.get(i) != 0) {
+    if(i % 5 == 0) {
       fill(textDarkColor);
       text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
-    //}
+    }
   }
      
 
