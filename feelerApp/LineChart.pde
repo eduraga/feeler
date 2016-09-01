@@ -50,8 +50,6 @@ class LineChart {
                _listSize = data.data.length;
                grainSize = (int)data.data.length/100;
                
-                String timeline = "";
-               
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
@@ -94,19 +92,16 @@ class LineChart {
                    } else {
                      thisRelax.set(j,lowerBoundary);
                    }
+                     
+  
+                   //if (data.data[j][0] > 0) {
+                   //  if(data.data[j][0] != data.data[j-grainSize][0])
+                   //  thisTime.set(j, data.data[j][0]);
+                   //} else {
+                   //  thisTime.set(j, 0);
+                   //}
                    
-
-                 //if (data.data[j][0] > 0) {
-                 //  if(data.data[j][0] != data.data[j-grainSize][0])
-                 //  thisTime.set(j, data.data[j][0]);
-                 //} else {
-                 //  thisTime.set(j, 0);
-                 //}
-                 
-                 thisTime.set(j, data.data[j][0]);
-                 
-                 timeline += data.data[j][12] + ": " + thisX.get(j) + ", " + data.data[j][0] + "\n";
-                   
+                   thisTime.set(j, data.data[j][0]);
                    
                    /////////////////////////////// Image stuff
                    //////////////////////////////////////////////
@@ -124,8 +119,6 @@ class LineChart {
                    }
                  }
                }
-               
-               println("Timeline: " + timeline);
                
                
              }
@@ -529,25 +522,28 @@ class LineChart {
       if(fileName != null){
         for(int i = 0; i < _listSize; i++){
           if(fileName[0].charAt(0) != '.'){
-            float thisX = i * stepSize + visX + stepSize/2;
-            if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-              if(type == "averages"){
-                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
-                  currentPage = "singleSession";
-                  cp5.getTab("singleSession").bringToFront();
-                  currentSession = sessionFolders[i];
-                  cp5.getController("overall").show();
-                  cp5.getController("session").setLabel("< "+ sessionFolders[i]);
-                  currentItem = i;
+            if(currentPage == "eegActivity"){
+              if(type == "values" && i == currentImg && mouseY <= lowerBoundary && mouseY >= upperBoundary){
+                if(mouseX >= thisX.get(i) - dotSize/2 && mouseX <= thisX.get(i) + dotSize/2){
+                  modal = true;
+                  openModal(screenshots.get(currentImg));
+                }
+              }
+            } else {
+              float thisX = i * stepSize + visX + stepSize/2;
+              if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+                if(type == "averages"){
+                  if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
+                    currentPage = "singleSession";
+                    cp5.getTab("singleSession").bringToFront();
+                    currentSession = sessionFolders[i];
+                    cp5.getController("overall").show();
+                    cp5.getController("session").setLabel("< "+ sessionFolders[i]);
+                    currentItem = i;
+                  }
                 }
               }
             }
-            
-            if(type == "values" && i == currentImg && mouseY >= visX && currentPage == "eegActivity"){
-              modal = true;
-              openModal(screenshots.get(currentImg));
-            }
-            
           }
         }
       }
