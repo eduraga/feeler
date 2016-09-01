@@ -245,7 +245,7 @@ public void setup() {
   //visY = headerHeight + padding + 60;// old
   visWidth = width - width/4;
   visHeight = 300;
-  lowerBoundary = visHeight + visY + padding*4;
+  lowerBoundary = visHeight + visY + padding*3;
   upperBoundary = visY + padding*3;
 
   json = loadJSONObject("config.json");

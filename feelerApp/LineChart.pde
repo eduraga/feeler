@@ -52,8 +52,8 @@ class LineChart {
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
-                   thisX.set(j, j * (visWidth - padding*2)/data.data.length + visX + padding);
-                   previousX.set(j, (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding);
+                   thisX.set(j, j * visWidth/data.data.length + visX);
+                   previousX.set(j, (j-grainSize) * visWidth/data.data.length + visX);
                    
                    if(data.data[j][12] == 1){
                      fill(250);
@@ -75,7 +75,7 @@ class LineChart {
                    }
                    
                    if(data.data[j][10] > 0) {
-                     thisAtt.set(j, data.data[j][10]);
+                     thisAtt.set(j, map(data.data[j][10], 0, maxVal, lowerBoundary, upperBoundary));
                    } else {
                      thisAtt.set(j,lowerBoundary);
                    }
@@ -87,7 +87,7 @@ class LineChart {
                    }
                    
                    if(data.data[j][11] > 0) {
-                     thisRelax.set(j, data.data[j][11]);
+                     thisRelax.set(j, map(data.data[j][11], 0, maxVal, lowerBoundary, upperBoundary));
                    } else {
                      thisRelax.set(j,lowerBoundary);
                    }
@@ -133,7 +133,7 @@ class LineChart {
   
   void display(){    
     fill(graphBgColor);
-    rect(visX - padding - 120, visX - padding + 40, visWidth - dotSize/2 + padding*2 + 120, visHeight + dotSize/2 + padding*2); // linechart background
+    rect(visX - padding, visY - padding + 40, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2); // linechart background
     //rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
     
     if(fileName != null && sessionFolders != null){
@@ -149,15 +149,15 @@ class LineChart {
     
     //Labels
     pushStyle();
-    textAlign(LEFT, CENTER);
+    textAlign(RIGHT, CENTER);
     fill(textDarkColor);
     textSize(12);// added by Eva
-    text("100%", visX - padding/2 - 15 - 100, visX + 40);
+    text("100%", visX - padding*2, visX + 40);
     //text("100%", visX - padding/2 - 15, visX);// old
     //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva 0
     //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva 0
-    text("50%", visX - padding/2 - 15 - 100, visX + visHeight/2 + dotSize/2 + 40);
-    text("0%", visX - padding/2 - 15 - 100, visX + visHeight + dotSize/2 + 40);
+    text("50%", visX - padding*2, visX + visHeight/2 + dotSize/2 + 40);
+    text("0%", visX - padding*2, visX + visHeight + dotSize/2 + 40);
     //text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);// old
     //text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);// old
     popStyle();
@@ -177,13 +177,19 @@ class LineChart {
         line(studyEnd, visY + padding*3, studyEnd, visY + padding*3 + visHeight);
         
         pushStyle();
+        noFill();
+        ////debug label boxes
+        //stroke(255,0,0);
+        //rect(visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        //rect(relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        //rect(studyEnd , visY + padding*3 - 20, playEnd - studyEnd, 20);
         fill(textDarkColor);
         textAlign(CENTER, CENTER);
-        text("MEDITATE", visX + padding - 100, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
         //text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);// old
-        text("STUDY", relaxEnd - 100, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        text("STUDY", relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
         //text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);// old
-        //text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
+        text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
@@ -468,14 +474,14 @@ class LineChart {
          previousX.get(i),
          previousAtt.get(i),
          thisX.get(i),
-         map(thisAtt.get(i), 0, maxVal, lowerBoundary, upperBoundary)
+         thisAtt.get(i)
     );
     stroke(relaxationColor);
     line(
          previousX.get(i),
          previousRelax.get(i),
          thisX.get(i),
-         map(thisRelax.get(i), 0, maxVal, lowerBoundary, upperBoundary)
+         thisRelax.get(i)
     );
     noStroke();
     
@@ -491,13 +497,10 @@ class LineChart {
       step = 10000;
     }
     
-    
-    
-    
-    if(i % step == 0 && thisTime.get(i) != 0) {
+    //if(i % step == 0 && thisTime.get(i) != 0) {
       fill(textDarkColor);
       text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
-    }
+    //}
   }
      
 
