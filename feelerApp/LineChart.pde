@@ -453,9 +453,9 @@ class LineChart {
         pushStyle();
         textAlign(LEFT);
         fill(attentionColor);
-        text("Attention " + (int)thisAtt.get(i) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
+        text("Attention " + (int)map(thisAtt.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
-        text("Relaxatation " + (int)thisRelax.get(i) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        text("Relaxatation " + (int)map(thisRelax.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
         popStyle();
         
   
