@@ -250,14 +250,14 @@ class LineChart {
             float prevAttAvg = 0;
             float prevRlxAvg = 0;
             
-            attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX + 95); // last value modifies the heigth of the ellipses
-            rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX + 100);
+            attAvg = map(attentionAverageList[i], 0, 100, lowerBoundary, upperBoundary); // last value modifies the heigth of the ellipses
+            rlxAvg = map(relaxationAverageList[i], 0, 100, lowerBoundary, upperBoundary);
             //attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX);// old
             //rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX);// old
             
             if(i>0){
-              prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
-              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
+              prevAttAvg = map(attentionAverageList[i-1], 0, 100, lowerBoundary, upperBoundary);
+              prevRlxAvg = map(relaxationAverageList[i-1], 0, 100, lowerBoundary, upperBoundary);
               //prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX);// old
               //prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX);// old
             }
@@ -267,9 +267,9 @@ class LineChart {
                 hoverUpLeft.set(thisX - dotSize/2, visX);
                 hoverDownRight.set(thisX + dotSize/2, visX + visHeight + dotSize/2);
                 
-                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
+                if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
                   fill(250);
-                  rect(thisX - dotSize/2, visX + 40, dotSize, visHeight + dotSize);
+                  rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
                   //rect(thisX - dotSize/2, visX, dotSize, visHeight + dotSize/2);//old
                   
                   pushStyle();
@@ -348,9 +348,9 @@ class LineChart {
           noStroke();
           
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            if(mouseY >= visX + dotSize && mouseY <= visX + dotSize + visHeight){
+            if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
               fill(250);
-              rect(thisX - dotSize/2, visX + dotSize + 30, dotSize, visHeight);
+              rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
               
               pushStyle();
               fill(255);
@@ -436,9 +436,9 @@ class LineChart {
         &&
         mouseX < thisX.get(i)
         &&
-        mouseY > visX
+        mouseY > upperBoundary
         &&
-        mouseY < visHeight + visX
+        mouseY < lowerBoundary
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
         //imageMode(CENTER);
@@ -457,8 +457,6 @@ class LineChart {
         fill(relaxationColor);
         text("Relaxatation " + (int)map(thisRelax.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
         popStyle();
-        
-  
       } else {
       }
     }
@@ -533,7 +531,7 @@ class LineChart {
               float thisX = i * stepSize + visX + stepSize/2;
               if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
                 if(type == "averages"){
-                  if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
+                  if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
                     currentPage = "singleSession";
                     cp5.getTab("singleSession").bringToFront();
                     currentSession = sessionFolders[i];

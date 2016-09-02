@@ -233,8 +233,6 @@ public void setup() {
 //double height = screenSize.getHeight();
   //println((int)screenSize.getWidth());
   
-  
-  
   noStroke();
   textSize(12);
 
