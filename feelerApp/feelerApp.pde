@@ -8,7 +8,7 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = true;
+boolean simulateMindSet = false;
 boolean simulateBoxes = true;
 
 float countDownStartMeditate = 1;
@@ -209,6 +209,7 @@ int mindSetId;
 
 public void setup() {
   font = createFont("GlacialIndifference-Regular-48", 12);
+  surface.setTitle("Feeler");
   smooth();
   
   homeImg = loadImage("home.png");
@@ -238,11 +239,13 @@ public void setup() {
 
   userTabsX = width/2;
   
-  visX = (width/3)/2;
-  visY = headerHeight + padding + 100;
+  visX = (width/3)/2; //change visualisation left position
+  visY = headerHeight + padding + 100; //change visualisation top position
   //visY = headerHeight + padding + 60;// old
-  visWidth = width - width/4;
-  visHeight = 300;
+  visWidth = width - width/4; //change visualisation width
+  visHeight = 300; //change visualisation width
+  
+  //don't change these unless you know what you're doing
   lowerBoundary = visHeight + visY + padding*3;
   upperBoundary = visY + padding*3;
 
@@ -731,6 +734,10 @@ public void draw() {
   background(255);
   fill(0);
   image(logo, 100, 20);// added by Eva, margin left was before 20
+  
+  //draw all the controllers in the beginning so that everything else will be drawn on top of them
+  //put this after something if that something should be below the controllers
+  cp5.draw();
   
   if ( millis() % 100 == 0) {
     //feelerS.sendValues();
@@ -1415,6 +1422,9 @@ public void addUserAreaControllers() {
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("export").moveTo("singleSession");
+  
+  //avoid that controllers are drawn at the end of draw()
+  cp5.setAutoDraw(false);
 }
 
 public void timer() {

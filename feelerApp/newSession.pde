@@ -8,6 +8,7 @@ int datetimestr =  0;
 
 int attention = 0;
 int meditation = 0;
+int thisFrame;
 
 long delta1 = 0;
 long theta1 = 0;
@@ -24,7 +25,7 @@ int timeline = 0;
 int triggerCounter = 0;
 int triggerLow = 20;
 int triggerMedium = 50;
-int triggerHight = 80;
+int triggerHigh = 80;
 
 void newSession(){
   
@@ -73,7 +74,6 @@ void newSession(){
     }
   }
   
-  
   //display status of boxes
   if(feelerS.checkConnection() || simulateBoxes){
     text("Boxes: ok", width/2, padding);
@@ -88,15 +88,26 @@ void newSession(){
     text("EEG headset: disconnected", width/2, padding*2);
   }
   
+  //println("frameCount: " + thisFrame + ", " + frameCount);
+
+  //if(frameCount % 200 == 0){
+  //  println(thisFrame != frameCount);
+  //  println("attention: " + attention);
+  //  if(thisFrame != frameCount){
+  //    mindSet.quit();
+  //    mindSetOK = false;
+  //    cp5.getController("startSession").hide();
+  //  }
+  //}
   
   switch(boxState){
     case 0:
       pageH1("New session");
       textSize(20); //added by Eva
       //fill(100);//added by Eva
-
+      
       if (!mindSetOK && !simulateMindSet) {
-         PImage one = loadImage("one.png");// Added by Eva
+        PImage one = loadImage("one.png");// Added by Eva
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
         text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
        
@@ -184,7 +195,8 @@ void newSession(){
       
       if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
         int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 0, 1, 20));
-        println("getElapsedTime: " + sw.getElapsedTime() + ", sw.countDownStart: " + sw.countDownStart);
+        //println("getElapsedTime: " + sw.getElapsedTime() + ", sw.countDownStart: " + sw.countDownStart);
+        println("ledState: " + ledState);
         // increase this from 0 to 20
         feelerS.setBox2LedState(ledState);
         
@@ -365,16 +377,18 @@ void counterDisplay(){
 }
 
 void screenshotThresholds(){
-    if(recording){
-      if(attention > triggerLow || meditation > triggerLow){
-        if (hasFinished) {
-          triggerScreenshots(10);
-        }
-        //if ((frameCount & 0xF) == 0)   print('.');
-      } else {
-        cancelScreenshots();
+  if(recording){
+    if(attention < triggerLow || meditation < triggerLow){
+      if (hasFinished) {
+        triggerScreenshots(30); //comment this line if you want to try without the screenshots
       }
+      //if ((frameCount & 0xF) == 0)   print('.');
+    } else if(attention > triggerHigh || meditation > triggerHigh){
+      triggerScreenshots(30); //comment this line if you want to try without the screenshots
+    } else {
+      cancelScreenshots(); //comment this line if you want to try without the screenshots
     }
+  }
 }
 
 
@@ -458,7 +472,25 @@ void simulate() {
 
 public void poorSignalEvent(int sig) {
   //signalWidget.add(200-sig);
+  
+  //println(sig);
 }
+
+void serialEvent(Serial p) { 
+  //inString = p.readString();
+  //thisSerialValue = p.read();
+  
+  //thisFrame = frameCount;
+  
+  //println(p.read());
+  //println(p.available());
+  //println(p.last());
+  //if(p.read() == -1){
+  //  println("morreu");
+  //}
+  
+  //mindSetOK = true;
+} 
 
 public void attentionEvent(int attentionLevel) {
   //attentionWidget.add(attentionLevel);
@@ -466,15 +498,21 @@ public void attentionEvent(int attentionLevel) {
   attention = attentionLevel;
 }
 
-
 public void meditationEvent(int meditationLevel) {
   //meditationWidget.add(meditationLevel);
   //println("meditationLevel: " + meditationLevel);
   meditation = meditationLevel;
 }
 
+public void blinkEvent(int strength){
+}
+
+public void rawEvent(int[] values){
+}
+
 public void eegEvent(int delta, int theta, int low_alpha, 
 int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
+  println(delta);
   
   delta1 = delta;
   theta1 = theta;
@@ -492,9 +530,4 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   //highBetaWidget.add(high_beta);
   //lowGammaWidget.add(low_gamma);
   //midGammaWidget.add(mid_gamma);
-} 
-
-public void rawEvent(int[] raw){
-  //data = raw;
-  println(raw);
 }
