@@ -1,19 +1,17 @@
 public void loadFiles(){
   File directory1 = new java.io.File(sketchPath(""));
-  absolutePath = directory1.getAbsolutePath();
-  
+  absolutePath = directory1.getAbsolutePath().replace("\\","/");
+  //guess: we chdir into the /user-data and create the folder to ensure it exists
   File tempUserDataFolder = new File(dataPath(absolutePath + "/user-data"));
   tempUserDataFolder.mkdir();
-  
+  //guess: we chdir into tue /user-data/currentUser and mkdir to ensure it exists. 
+  //in this folder we store the user's data.
   userFolder = absolutePath + "/user-data/" + currentUser;
-  
   File tempUserFolder = new File(dataPath(userFolder));
   tempUserFolder.mkdir();
-  
   //find files in current user folder
   File userFolderTemp = new File(userFolder);
   String[] directoryArray = userFolderTemp.list();
-
   if(tempUserFolder.list().length > 0){
     println("Directory is not empty!");
     
