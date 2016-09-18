@@ -1,4 +1,4 @@
-//function that will handle logging 
+//function that will handle logging. It should also be trheaded if we want precise timing
 class Logger {
   Logger() {
   }
@@ -6,4 +6,4 @@ class Logger {
     //function that is evaluated as much as possible
   }
 }
-Timer logger=new Logger();
+Logger logger=new Logger();
