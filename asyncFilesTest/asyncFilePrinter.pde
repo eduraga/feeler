@@ -1,14 +1,12 @@
-StringQueue lines=new StringQueue();
 
 class AsyncFilePrinter extends Thread {
-  PApplet parent;
-  public int life=9000;
+  
+  
   public boolean active=false;
   public boolean writing=false;
   public PrintWriter outputPrinter;
   String filename = "default.txt";
-  AsyncFilePrinter(PApplet p) {
-    parent=p;
+  AsyncFilePrinter() {
     active=false;
   }
   void start(String fn) {
@@ -17,6 +15,9 @@ class AsyncFilePrinter extends Thread {
     //start();
     super.start();
     //run();
+  }
+  void restart(){
+    active=true;
   }
   void startWriter(String fn) {
     filename=fn;
@@ -27,19 +28,35 @@ class AsyncFilePrinter extends Thread {
   void run() {
     while (active) {
       //otherwise the thread never stops and clogs processing window on exit. 
-      if(life<1){
-        active=false;
-        outputPrinter.flush();
-        outputPrinter.close();
-      }
-      life--;
       if (writing) {
         
-        //if (queue.has()){
+        if (has()){
           ran=true;
-          outputPrinter.println(queue.next());
-        //}
+          outputPrinter.println(next()+"-"+random(10));
+        }else{
+          active=false;
+        }
       }
     }
+  }
+  //here we store the queue of elements to be printed to the file;
+  String [] writerFIFO = new String[0];
+  String next() {
+    String ret="";
+    if (has()) {
+      //write the oldest line (0) in queue and remove it from the queue
+      ret=writerFIFO[0];
+      writerFIFO=subset(writerFIFO, 1);
+    }
+    return ret;
+  }
+  void add(String what) {
+    writerFIFO=append(writerFIFO, what);
+  }
+  boolean has() {
+    return(writerFIFO.length>0);
+  }
+  int length() {
+    return writerFIFO.length;
   }
 }

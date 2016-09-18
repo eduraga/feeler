@@ -1,15 +1,16 @@
 
 PFont f;
 boolean ran=false;
-AsyncFilePrinter writer= new AsyncFilePrinter(this);
-StringQueue queue=new StringQueue();
+//public StringQueue =new StringQueue();
+AsyncFilePrinter writer= new AsyncFilePrinter();
+
 void setup() {
+
   size(400, 160);
   f = createFont("SourceCodePro-Regular.ttf", 90);
   textFont(f);
   textAlign(CENTER, CENTER);
   writer.start("test.txt");
-
 }
 void draw() {
   background(255);
@@ -20,8 +21,8 @@ void draw() {
   }
   String tt="."+((int) longTimer.get());
   text(tt, width/2, height/2);
-  queue.add(tt);
-  writer.renew(90000);
+  writer.add(tt);
+  writer.restart();
   //println(queue.has());
-  //println(queue.length());
+  println(writer.length());
 }
