@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = 1;
-float countDownStartStudy = 1;
+float countDownStartMeditate = .1;
+float countDownStartStudy = .1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -961,6 +961,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
+    mil.restart();
     break;
   case "singleSession":
     println("singleSession page");

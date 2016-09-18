@@ -1,6 +1,6 @@
 public void loadFiles(){
   File directory1 = new java.io.File(sketchPath(""));
-  absolutePath = directory1.getAbsolutePath().replace("\\","/");
+  absolutePath = directory1.getAbsolutePath();
   //guess: we chdir into the /user-data and create the folder to ensure it exists
   File tempUserDataFolder = new File(dataPath(absolutePath + "/user-data"));
   tempUserDataFolder.mkdir();
