@@ -3,30 +3,36 @@ class Logger extends Thread {
   public boolean active=false;
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Timer timer=new Timer();
-  AsyncFilePrinter writer= new AsyncFilePrinter();
+  AsyncFilePrinter writer= new AsyncFilePrinter("test.txt");
   Logger(int in) {
     sampleInterval=in;
   }
   void start() {
-    writer.start("test.txt");
+    writer.start();
     timer.restart();
     active=true;
     super.start();
   }
+  void pause() {
+    active=false;
+  }
   void restart() {
-    timer.restart();
-    active=true;
-    run();
+    if (!active) {
+      active=true;
+      timer.restart();
+    }
   }
   void run() {
-    while (active) {
-      if (timer.get()>=sampleInterval) {
-        println("!got!");
-        logsThisDraw++;
-        timer.restart();
-        String tt="."+((int) longTimer.get());
-        writer.add(tt);
-        writer.refresh();
+    while (true) {
+      if (active) {
+        if (timer.get()>=sampleInterval) {
+          //println("!got!");
+          logsThisDraw++;
+          timer.restart();
+          String tt="."+((int) longTimer.get());
+          writer.add(tt);
+          //writer.refresh();
+        }
       }
     }
   }

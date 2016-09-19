@@ -1,51 +1,51 @@
-
-class AsyncFilePrinter extends Thread {
-  public boolean active=false;
-  public boolean writing=false;
+class AsyncFilePrinter extends Thread { //<>//
+  private boolean busy=false;
+  private boolean paused=false;
+  int measuredLength=0;
+  boolean active=true;
   public PrintWriter outputPrinter;
   String filename = "default.txt";
-  AsyncFilePrinter() {
-    active=false;
-  }
-  void start(String fn) {
+  AsyncFilePrinter(String fn) {
     startWriter(fn);
+    busy=false;
     active=true;
-    //start();
+  }
+  void start() {
+    busy=true;
     super.start();
-    //run();
   }
-  void refresh(){
-    if(!active){
-      active=true;
-      run();
-    }
-  }
-  void startWriter(String fn) {
+  //evaluate if it's currently working on the file, and run again if not.
+
+  private void startWriter(String fn) {
     filename=fn;
     outputPrinter = createWriter(filename);
-    //if we needed an exception handler, would go here.
-    writing=true;
   }
   void run() {
+    //The structure of this loop permits to loop according to the length of the FIFO array while not trying to access it too much
     while (active) {
-      //otherwise the thread never stops and clogs processing window on exit. 
-      if (writing) {
-        
-        if (has()){
-          ran=true;
-          String tst=next()+TAB+random(10);
-          outputPrinter.println(tst);
-          //println(tst);
-        }else{
-          active=false;
+      if (!paused) {
+        if (busy) {
+          println(length()+".-");
+          //otherwise the thread never stops and clogs processing window on exit. 
+          if (has()) {
+            String tst=next()+TAB+random(10);
+            outputPrinter.println(tst);
+            println(tst);
+          } else {
+            busy=false;
+          }
+        } else {
+          measuredLength=writerFIFO.length;
+          busy=measuredLength>0;
         }
+      } else {
+        busy=false;
       }
-
     }
   }
   //here we store the queue of elements to be printed to the file;
-  String [] writerFIFO = new String[0];
-  String next() {
+  private String [] writerFIFO = new String[0];
+  private String next() {
     String ret="";
     if (has()) {
       //write the oldest line (0) in queue and remove it from the queue
@@ -55,14 +55,23 @@ class AsyncFilePrinter extends Thread {
     return ret;
   }
   void add(String what) {
+    paused=true;
+    while (busy) {
+      //wait
+    }
     added++;
     writerFIFO=append(writerFIFO, what);
+    paused=false;
     //println(writerFIFO[writerFIFO.length-1]);
   }
   boolean has() {
     return(writerFIFO.length>0);
   }
   int length() {
-    return writerFIFO.length;
+    if (busy) {
+      return measuredLength;
+    } else {
+      return writerFIFO.length;
+    }
   }
 }

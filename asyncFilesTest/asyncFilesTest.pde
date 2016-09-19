@@ -4,33 +4,43 @@ PFont f;
 public boolean ran=false;
 //public StringQueue =new StringQueue();
 
-Logger logger=new Logger(30);
+Logger logger=new Logger(5);
 void setup() {
 
   size(400, 160);
   f = createFont("SourceCodePro-Regular.ttf", 90);
   textFont(f);
   textAlign(CENTER, CENTER);
-  
+
   logger.start();
   noStroke();
 }
+String tt="";
 void draw() {
   background(255);
-  if (!ran) {
-    fill(128);
-  } else {
-    fill(0);
+  fill(0);
+  if (logger.active) {
+    tt="."+((int) longTimer.get());
   }
-  String tt="."+((int) longTimer.get());
   text(tt, width/2, height/2);
-  //writer.add(tt);
-  //writer.restart();
-  rect(0,0,logsThisDraw,10);
-  fill(255,100,100);
-  rect(logsThisDraw,0,added,10);
+
+  rect(0, 0, logsThisDraw, 10);
+  fill(255, 100, 100);
+  rect(logsThisDraw, 0, added, 10);
+  fill(255, 30, 30);
+  rect(0, 10, logger.writer.length(), 10);
   logsThisDraw=0;
   added=0;
-  //println(writer.length()+".-");
   
+}
+void keyReleased() {
+  //if (key==32) {
+    
+    if (logger.active) {
+      logger.pause();
+    } else {
+      logger.restart();
+
+    }
+ // }
 }
