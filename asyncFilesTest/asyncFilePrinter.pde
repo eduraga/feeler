@@ -1,7 +1,5 @@
 
 class AsyncFilePrinter extends Thread {
-  
-  
   public boolean active=false;
   public boolean writing=false;
   public PrintWriter outputPrinter;
@@ -35,7 +33,7 @@ class AsyncFilePrinter extends Thread {
           ran=true;
           String tst=next()+TAB+random(10);
           outputPrinter.println(tst);
-          println(tst);
+          //println(tst);
         }else{
           active=false;
         }
@@ -55,8 +53,9 @@ class AsyncFilePrinter extends Thread {
     return ret;
   }
   void add(String what) {
+    added++;
     writerFIFO=append(writerFIFO, what);
-    println(writerFIFO[writerFIFO.length-1]);
+    //println(writerFIFO[writerFIFO.length-1]);
   }
   boolean has() {
     return(writerFIFO.length>0);
