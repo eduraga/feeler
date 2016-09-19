@@ -9,7 +9,8 @@ String[] fileLines;
 void setup() {
   size(800, 400);
   cp5 = new ControlP5(this);
-  fileLines=  loadStrings("brain-activity.tsv");
+  fileLines=  loadStrings("test.txt");
+  //fileLines=  loadStrings("brain-activity.tsv");
   myChart = cp5.addChart("dataflow")
     .setPosition(50, 50)
     .setSize(fileLines.length, 100)

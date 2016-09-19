@@ -18,6 +18,7 @@ class AsyncFilePrinter extends Thread {
   }
   void restart(){
     active=true;
+    run();
   }
   void startWriter(String fn) {
     filename=fn;
@@ -32,11 +33,14 @@ class AsyncFilePrinter extends Thread {
         
         if (has()){
           ran=true;
-          outputPrinter.println(next()+"-"+random(10));
+          String tst=next()+TAB+random(10);
+          outputPrinter.println(tst);
+          println(tst);
         }else{
           active=false;
         }
       }
+
     }
   }
   //here we store the queue of elements to be printed to the file;
@@ -52,6 +56,7 @@ class AsyncFilePrinter extends Thread {
   }
   void add(String what) {
     writerFIFO=append(writerFIFO, what);
+    println(writerFIFO[writerFIFO.length-1]);
   }
   boolean has() {
     return(writerFIFO.length>0);

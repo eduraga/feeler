@@ -1,6 +1,6 @@
 
 PFont f;
-boolean ran=false;
+public boolean ran=false;
 //public StringQueue =new StringQueue();
 AsyncFilePrinter writer= new AsyncFilePrinter();
 
@@ -24,5 +24,5 @@ void draw() {
   writer.add(tt);
   writer.restart();
   //println(queue.has());
-  println(writer.length());
+  
 }
