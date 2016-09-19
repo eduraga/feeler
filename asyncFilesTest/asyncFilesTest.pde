@@ -1,10 +1,11 @@
 int logsThisDraw=0;
 int added=0;
+public int cacheLength=0;
 PFont f;
 public boolean ran=false;
 //public StringQueue =new StringQueue();
 
-Logger logger=new Logger(5);
+Logger logger=new Logger(10);
 void setup() {
 
   size(400, 160);
@@ -28,7 +29,7 @@ void draw() {
   fill(255, 100, 100);
   rect(logsThisDraw, 0, added, 10);
   fill(255, 30, 30);
-  rect(0, 10, logger.writer.length(), 10);
+  rect(0, 10, cacheLength, 10);
   logsThisDraw=0;
   added=0;
   
