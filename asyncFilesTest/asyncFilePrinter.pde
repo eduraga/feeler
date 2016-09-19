@@ -14,9 +14,11 @@ class AsyncFilePrinter extends Thread {
     super.start();
     //run();
   }
-  void restart(){
-    active=true;
-    run();
+  void refresh(){
+    if(!active){
+      active=true;
+      run();
+    }
   }
   void startWriter(String fn) {
     filename=fn;
