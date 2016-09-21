@@ -499,16 +499,12 @@ public void attentionEvent(int attentionLevel) {
   //attentionWidget.add(attentionLevel);
   //println("attentionLevel: " + attentionLevel);
   attention = attentionLevel;
-
-  pAttention = attention;
 }
 
 public void meditationEvent(int meditationLevel) {
   //meditationWidget.add(meditationLevel);
   //println("meditationLevel: " + meditationLevel);
   meditation = meditationLevel;
-  
-  pMeditation = meditation;
 }
 
 public void blinkEvent(int strength){
