@@ -34,14 +34,11 @@ void draw() {
   added=0;
   
 }
-void keyReleased() {
-  //if (key==32) {
-    
-    if (logger.active) {
+void keyPressed() {
+   /* if (logger.active) {
       logger.pause();
     } else {
       logger.restart();
-
-    }
- // }
+    }*/
+    saveFrame("line-######.png");
 }

@@ -1,8 +1,9 @@
 //functions to get more easily millis from a point. 
 //Starting point is when startMillis(), and getrlMillis returns millis from that point 
-class Timer {
+class Clock {
   private long startMillis=0;
-  Timer() {
+  
+  Clock() {
     startMillis=System.currentTimeMillis();
   }
   void restart() {
@@ -16,4 +17,4 @@ class Timer {
   }
 }
 
-Timer longTimer=new Timer();
+Clock longTimer=new Clock();

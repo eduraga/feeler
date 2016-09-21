@@ -158,6 +158,7 @@ void newSession() {
     textSize(24); //added by Eva
     text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
     recording = true;
+    logger.restart();
     timerOn = true;
     timeline = 1;
     fill(textDarkColor);
@@ -216,7 +217,10 @@ void newSession() {
 
     break;
   case 300:
-    if (!recording) recording = true;
+    if (!recording){ 
+      recording = true;
+      logger.resumeInfra();
+    }
     pageH1("New session");
     PImage three = loadImage("three.png");// Added by Eva
     image(three, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
@@ -246,6 +250,7 @@ void newSession() {
     break;
   case 400:
     recording = false;
+    logger.stopInfra();
     timeline = 4;
 
     pageH1("Personal experience");
@@ -295,35 +300,9 @@ void newSession() {
     break;
   }
 
-  if (recording) {
-    int datetimestr1 = minute()*60+second();
-    datetimestr = datetimestr1 - datetimestr0;
-    output.print("."+(mil.get()));
-    output.print(TAB);
-    output.print(delta1);
-    output.print(TAB);
-    output.print(theta1);
-    output.print(TAB);
-    output.print(low_alpha1);
-    output.print(TAB);
-    output.print(high_alpha1);
-    output.print(TAB);
-    output.print(low_beta1);
-    output.print(TAB);
-    output.print(high_beta1);
-    output.print(TAB);
-    output.print(low_gamma1);
-    output.print(TAB);
-    output.print(mid_gamma1);
-    output.print(TAB);
-    output.print(blinkSt);
-    output.print(TAB);
-    output.print(attention);
-    output.print(TAB);
-    output.print(meditation);
-    output.print(TAB);
-    output.println(timeline);
-  }
+  //if (recording) {
+    //older place for logging
+  //}
 }
 
 void assess(int questionNo, String question) {

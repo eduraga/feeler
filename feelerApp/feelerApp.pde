@@ -207,6 +207,13 @@ boolean mindSetOK = false;
 Serial mindSetPort;
 int mindSetId;
 
+//threaded logging: logger with 100ms interval and a real time milliseconds measurement
+Logger logger=new Logger(0);
+Clock longTimer=new Clock();
+
+//for testing purposes. Remove these and all their usage:
+int logsThisDraw=0;
+
 public void setup() {
   font = createFont("GlacialIndifference-Regular-48", 12);
   surface.setTitle("Feeler");
@@ -723,14 +730,15 @@ public void setup() {
   cp5.getController("assess3Bt").hide();
   
   /////////////////////////////////
+  
 
 }
 
 public void draw() {
+  println("#"+logsThisDraw);
+  logsThisDraw=0;
   textFont(font);
   textAlign(LEFT);
-  
-  
   background(255);
   fill(0);
   image(logo, 100, 20);// added by Eva, margin left was before 20
@@ -961,7 +969,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
     datetimestr0 = minute()*60+second();   
-    mil.restart();
+    longTimer.restart();
     break;
   case "singleSession":
     println("singleSession page");

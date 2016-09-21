@@ -10,6 +10,7 @@ class asyncBufferedOutput extends Thread {
   public String fileName="undefined";
   //wether the thread is running
   private boolean active=false;
+  public boolean isWriting=false;
   //whether writing to the buffer is allowed
   private Object bufferLock = new Object();
 
@@ -33,8 +34,8 @@ class asyncBufferedOutput extends Thread {
 
       //String content = "This is the content to write into file";
 
-      File f = new File(sketchPath("")+"/"+fname);
-
+      File f = new File(fname);
+      println("Writing buffer output to: "+fname);
       // if file doesnt exists, then create it
       if (!f.exists()) {
         f.createNewFile();
@@ -44,9 +45,7 @@ class asyncBufferedOutput extends Thread {
       file = new BufferedWriter(fw);
       //bw.write(content);
       //bw.close();
-
-      System.out.println("start file");
-
+      isWriting=true;
       //file = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
     }
     catch(IOException e) {
@@ -60,27 +59,32 @@ class asyncBufferedOutput extends Thread {
   void run() {
 
     while (active) {
-      if (bufferLengthCache.get()>0) {
-        synchronized(bufferLock) {
-          //set ready flag to true (so isReady returns true)
-          //String n="\n";
-          outString=String.join("\n", buffer);
-          buffer=new String[0];
-          //ready=true;
-          //lockBuffer=false;
-          //buffer.notifyAll();
+      if (isWriting) {
+        if (bufferLengthCache.get()>0) {
+          synchronized(bufferLock) {
+            //set ready flag to true (so isReady returns true)
+            //String n="\n";
+            outString=String.join("\n", buffer);
+            buffer=new String[0];
+
+            //ready=true;
+            //lockBuffer=false;
+            //buffer.notifyAll();
+          }
+          try {
+            //file.write("us");
+            file.write("\n"+outString);
+            file.flush();
+          }
+          catch(IOException e) {
+            e.printStackTrace();
+          }
+          //exit();
+          bufferLengthCache.set(0);
+          outString="";
         }
-        try {
-          //file.write("us");
-          file.write("\n"+outString);
-          file.flush();
-        }
-        catch(IOException e) {
-          e.printStackTrace();
-        }
-        //exit();
-        bufferLengthCache.set(0);
-        outString="";
+      }else{
+        println("Warning! You are trying to write to a file, but I couldn't open it!");
       }
     }
   }

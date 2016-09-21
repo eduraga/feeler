@@ -2,16 +2,16 @@
 class Logger extends Thread {
   public boolean active=false;
   public int sampleInterval=1000;//milliseconds sampling interval.
-  private Timer timer=new Timer();
-  asyncBufferedOutput writer= new asyncBufferedOutput("asyncIOTestOutput.txt");
+  private Clock timer=new Clock();
+  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncIOTestOutput.txt"));
   Logger(int in) {
     sampleInterval=in;
-  }
-  void start() {
     writer.start();
-    timer.restart();
     active=true;
     super.start();
+  }
+  void start() {
+    
   }
   void pause() {
     active=false;
