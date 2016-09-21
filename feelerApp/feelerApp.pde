@@ -943,7 +943,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "startSession":
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
-    datetimestr0 = minute()*60+second();
+    datetimestr0 = millis() / 1000;
     println("startSession");
     sw.start(countDownStartMeditate);
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);

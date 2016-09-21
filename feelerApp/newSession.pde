@@ -113,7 +113,6 @@ void newSession(){
              println("port ok");
              mindSetPortOk = true;
              //mindSetOK = true;
-             datetimestr0 = minute()*60+second();
            } catch (Exception e) {
              println("port not ok");
              mindSetPortOk = false;
@@ -296,7 +295,7 @@ void newSession(){
   }
   
   if(recording){
-      int datetimestr1 = minute()*60+second();
+      int datetimestr1 = millis() / 1000;
       datetimestr = datetimestr1 - datetimestr0;
       
       output.print(datetimestr);
