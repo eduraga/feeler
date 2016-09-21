@@ -197,9 +197,9 @@ class LineChart {
         textAlign(CENTER, CENTER);
         text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
         //text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);// old
-        text("STUDY", relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        if(studyEnd > relaxEnd) text("STUDY", relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
         //text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);// old
-        text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
+        if(playEnd > studyEnd) text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
