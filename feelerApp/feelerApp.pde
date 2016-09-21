@@ -943,6 +943,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "startSession":
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
+    datetimestr0 = minute()*60+second();
     println("startSession");
     sw.start(countDownStartMeditate);
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
@@ -962,7 +963,6 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
-    datetimestr0 = minute()*60+second();
     break;
   case "singleSession":
     println("singleSession page");
