@@ -49,6 +49,8 @@ class LineChart {
              if(data.data != null){
                _listSize = data.data.length;
                grainSize = (int)data.data.length/100;
+               //grainSize = (int)data.data.length/500;
+               //grainSize = 10;
                
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
@@ -114,7 +116,9 @@ class LineChart {
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                       println("screenshotTimeId[0]: " + screenshotTimeId[0]);
                        screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
+                       println(k+ ": " + screenshots.get(j));
                      }
                    }
                  }
@@ -432,13 +436,13 @@ class LineChart {
   void displayThumbs(int i){
     if(screenshots.get(i) != "" && screenshots.get(i) != null){
       if(
-        mouseX > previousX.get(i)
+        mouseX >= previousX.get(i)
         &&
-        mouseX < thisX.get(i)
+        mouseX <= thisX.get(i)
         &&
-        mouseY > upperBoundary
+        mouseY >= upperBoundary
         &&
-        mouseY < lowerBoundary
+        mouseY <= lowerBoundary
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
         //imageMode(CENTER);

@@ -8,7 +8,6 @@ int datetimestr =  0;
 
 int attention = 0;
 int meditation = 0;
-int thisFrame;
 
 long delta1 = 0;
 long theta1 = 0;
@@ -55,7 +54,6 @@ void newSession(){
         }
       } else {
         fill(100,100,200);
-        cancelScreenshots();
       }
       
       ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
@@ -85,20 +83,17 @@ void newSession(){
   if(mindSetOK || simulateMindSet){
     text("EEG headset: ok", width/2, padding*2);
   } else {
-    text("EEG headset: disconnected", width/2, padding*2);
+    text("EEG headset: check connection", width/2, padding*2);
   }
   
-  //println("frameCount: " + thisFrame + ", " + frameCount);
-
-  //if(frameCount % 200 == 0){
-  //  println(thisFrame != frameCount);
-  //  println("attention: " + attention);
-  //  if(thisFrame != frameCount){
-  //    mindSet.quit();
-  //    mindSetOK = false;
-  //    cp5.getController("startSession").hide();
-  //  }
-  //}
+  if(frameCount % 200 == 0){
+    println("attention: " + attention);
+    if(attention == 0 && meditation == 0){
+      //mindSet.quit();
+      mindSetOK = false;
+      cp5.getController("startSession").hide();
+    }
+  }
   
   switch(boxState){
     case 0:
@@ -111,15 +106,20 @@ void newSession(){
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
         text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
        
-         try {
-           //mindSetPort = new Serial(this, Serial.list()[2]);
-           mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
-           println("port ok");
-           mindSetOK = true;
-         } catch (Exception e) {
-           println("port not ok");
-           mindSetOK = false;
+        if(!mindSetPortOk){
+           try {
+             //mindSetPort = new Serial(this, Serial.list()[2]);
+             mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+             println("port ok");
+             mindSetPortOk = true;
+             //mindSetOK = true;
+             datetimestr0 = minute()*60+second();
+           } catch (Exception e) {
+             println("port not ok");
+             mindSetPortOk = false;
+           }
          }
+         cp5.getController("startSession").hide();
       } else if(!feelerS.checkConnection() && !simulateBoxes) {
         PImage one = loadImage("one.png");// Added by Eva
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
@@ -380,13 +380,13 @@ void screenshotThresholds(){
   if(recording){
     if(attention < triggerLow || meditation < triggerLow){
       if (hasFinished) {
-        triggerScreenshots(30); //comment this line if you want to try without the screenshots
+        triggerScreenshots(60); //comment this line if you want to try without the screenshots
       }
       //if ((frameCount & 0xF) == 0)   print('.');
     } else if(attention > triggerHigh || meditation > triggerHigh){
-      triggerScreenshots(30); //comment this line if you want to try without the screenshots
+      triggerScreenshots(60); //comment this line if you want to try without the screenshots
     } else {
-      cancelScreenshots(); //comment this line if you want to try without the screenshots
+      cancelScreenshots(); //comment this line (plus the ones noted above) if you want to try without the screenshots
     }
   }
 }
@@ -421,8 +421,7 @@ void triggerScreenshots(final float sec) {
   //feelerS.get();
   //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
   
-  //println("\n\nScreenshot scheduled for "
-  //  + nf(10, 0, 2) + " secs.\n");
+  println("\n\nScreenshot scheduled for " + nf(10, 0, 2) + " secs.\n");
     
     //feelerS.sendValues();
     //feelerS.get();
@@ -453,16 +452,15 @@ void simulate() {
     
     //simulate with noise
     attoff = attoff + .02;
-    attentionEvent(int(noise(attoff) * 100));
     medoff = medoff + .01;
+    //comment the following two lines to simulate with mouse
+    attentionEvent(int(noise(attoff) * 100));
     meditationEvent(int(noise(medoff) * 100));
   
     //simulate with mouse
+    //uncomment the following two lines to simulate with mouse
     //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
-    //meditationEvent(int(map(mouseY, height/2, height, 0, 100)));
-    
-    //attentionEvent(int(random(-50,10)));  
-    //meditationEvent(int(random(-50,10)));
+    //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
     
     eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
     int(random(20000)), int(random(20000)), int(random(20000)), 
@@ -472,11 +470,16 @@ void simulate() {
 
 public void poorSignalEvent(int sig) {
   //signalWidget.add(200-sig);
+  //println("poorSignal: " + sig);
   
-  //println(sig);
+  if(sig == 200){
+    mindSetOK = false;
+  } else {
+    mindSetOK = true;
+  }
 }
 
-void serialEvent(Serial p) { 
+//void serialEvent(Serial p) { 
   //inString = p.readString();
   //thisSerialValue = p.read();
   
@@ -490,30 +493,34 @@ void serialEvent(Serial p) {
   //}
   
   //mindSetOK = true;
-} 
+//}
 
 public void attentionEvent(int attentionLevel) {
   //attentionWidget.add(attentionLevel);
   //println("attentionLevel: " + attentionLevel);
   attention = attentionLevel;
+
+  pAttention = attention;
 }
 
 public void meditationEvent(int meditationLevel) {
   //meditationWidget.add(meditationLevel);
   //println("meditationLevel: " + meditationLevel);
   meditation = meditationLevel;
+  
+  pMeditation = meditation;
 }
 
 public void blinkEvent(int strength){
+  println("blinkEvent: " + strength);
 }
 
 public void rawEvent(int[] values){
+  //println("rawEvent: " + values);
 }
 
 public void eegEvent(int delta, int theta, int low_alpha, 
-int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
-  println(delta);
-  
+int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {  
   delta1 = delta;
   theta1 = theta;
   low_alpha1 = low_alpha;
@@ -522,6 +529,9 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   high_beta1 = high_beta;
   low_gamma1 = low_gamma;
   mid_gamma1 = mid_gamma;
+  
+  println("delta1: " + delta1);
+  
   //deltaWidget.add(delta);
   //thetaWidget.add(theta);
   //lowAlphaWidget.add(low_alpha);

@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////
 // FEELER | how you feel affects how you learn
-// Developed by Régis Frias, http://www.regisfrias.com
+// Initiated by Niklas Pöllönen and Régis Frias, http://www.regisfrias.com
 // feelerSerial library by Niklas Pöllönen, http://www.pollonen.com
 ////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
 // Set up //////////////////////////////////////////////////////////
 
-boolean debug = true;
-boolean simulateMindSet = false;
+boolean debug = false;
+boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = 1;
-float countDownStartStudy = 1;
+float countDownStartMeditate = .1;
+float countDownStartStudy = .1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -204,7 +204,7 @@ int boxState = 0;
 //MindSet stuff
 MindSet mindSet;
 boolean mindSetOK = false;
-Serial mindSetPort;
+boolean mindSetPortOk = false;
 int mindSetId;
 
 public void setup() {
@@ -840,9 +840,7 @@ public void draw() {
     
     if (simulateMindSet) {
       text("generating simulated data", padding, height-130);
-      simulate();
     }
-
 
     if (currentPage == "newSession") {
       String s2 = "Box state: " + boxState +
@@ -856,6 +854,10 @@ public void draw() {
         ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
     }
+  }
+  
+  if (simulateMindSet) {
+    simulate();
   }
 
   textAlign(CENTER);
@@ -960,7 +962,7 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
-    datetimestr0 = minute()*60+second();   
+    datetimestr0 = minute()*60+second();
     break;
   case "singleSession":
     println("singleSession page");
