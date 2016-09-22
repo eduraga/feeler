@@ -9,6 +9,9 @@ class Logger extends Thread {
     writer.start();
     active=true;
     super.start();
+    //curiously, if this thread is started in pause mode, it won't make any log. 
+    
+    //pause();
   }
   void start() {
     
