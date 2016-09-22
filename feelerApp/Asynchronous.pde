@@ -11,7 +11,7 @@ class asyncBufferedOutput extends Thread {
   //wether the thread is running
   private boolean active=false;
   public boolean isWriting=false;
-  //whether writing to the buffer is allowed
+  //whether writing to the buffer is allowed. This is a miltithread lock
   private Object bufferLock = new Object();
 
   //the glued buffer that will be written. Buffer gets glued into outString in order to free up the buffer asap
@@ -57,7 +57,6 @@ class asyncBufferedOutput extends Thread {
     super.start();
   }
   void run() {
-
     while (active) {
       if (isWriting) {
         if (bufferLengthCache.get()>0) {
@@ -83,7 +82,7 @@ class asyncBufferedOutput extends Thread {
           bufferLengthCache.set(0);
           outString="";
         }
-      }else{
+      } else {
         println("Warning! You are trying to write to a file, but I couldn't open it!");
       }
     }
@@ -93,10 +92,10 @@ class asyncBufferedOutput extends Thread {
     synchronized(bufferLock) {
       buffer=append(buffer, what);
       bufferLengthCache.set(buffer.length);
-      clen=what+"@["+bufferLengthCache.get()+"]";
+      clen=what+"@["+bufferLengthCache.get()+"]rc"+recording;
     }
     println(clen);
-    cacheLength=bufferLengthCache.get();
+    //cacheLength=bufferLengthCache.get();
   }
 }
 //function that will handle logging. It should also be trheaded if we want precise timing
@@ -104,17 +103,21 @@ class Logger extends Thread {
   public boolean active=false;
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
-  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncIOTestOutput.txt"));
+  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncFeelerAppTest.txt"));
   Logger(int in) {
     sampleInterval=in;
     writer.start();
     active=true;
     super.start();
+    pause();
   }
   void start() {
-    
   }
   void pause() {
+    active=false;
+  }
+  void pause(String reason) {
+    println(reason);
     active=false;
   }
   void restart() {
@@ -123,11 +126,18 @@ class Logger extends Thread {
       timer.restart();
     }
   }
+  void resumeInfra() {
+    if (!active) {
+      active=true;
+      //timer.restart();
+    }
+  }
   void run() {
     while (true) {
       if (active) {
         if (timer.get()>=sampleInterval) {
-          logsThisDraw++;
+          //println("recording1");
+          //logsThisDraw++;
           timer.restart();
           String tt="."+((int) longTimer.get());
           writer.add(tt);
@@ -137,11 +147,11 @@ class Logger extends Thread {
     }
   }
 }
-//functions to get more easily millis from a point. 
+//functions to get more easily millis from a moment. 
 //Starting point is when startMillis(), and getrlMillis returns millis from that point 
 class Clock {
   private long startMillis=0;
-  
+
   Clock() {
     startMillis=System.currentTimeMillis();
   }
@@ -155,5 +165,3 @@ class Clock {
     return (int) (System.currentTimeMillis()-startMillis)%module;
   }
 }
-
-Clock longTimer=new Clock();

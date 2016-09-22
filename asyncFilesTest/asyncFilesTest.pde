@@ -35,10 +35,10 @@ void draw() {
   
 }
 void keyPressed() {
-   /* if (logger.active) {
+    if (logger.active) {
       logger.pause();
     } else {
       logger.restart();
-    }*/
+    }
     saveFrame("line-######.png");
 }

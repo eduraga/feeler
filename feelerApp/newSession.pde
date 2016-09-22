@@ -156,6 +156,8 @@ void newSession(){
       textSize(24); //added by Eva
       text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
       recording = true;
+      logger.restart();
+      
       timerOn = true;
       timeline = 1;
       fill(textDarkColor);
@@ -214,7 +216,7 @@ void newSession(){
         
       break;
     case 300:
-      if(!recording) recording = true;
+      if(!recording){ recording = true; logger.restart(); }
       pageH1("New session");
       PImage three = loadImage("three.png");// Added by Eva
       image(three, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
@@ -244,6 +246,7 @@ void newSession(){
       break;
     case 400:
       recording = false;
+      logger.pause("case400");
       timeline = 4;
       
       pageH1("Personal experience");

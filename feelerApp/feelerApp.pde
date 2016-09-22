@@ -206,8 +206,12 @@ MindSet mindSet;
 boolean mindSetOK = false;
 boolean mindSetPortOk = false;
 int mindSetId;
-
+//async log 
+Clock longTimer=new Clock();
+Logger logger;
+//logger.start();
 public void setup() {
+  logger=new Logger(10);
   font = createFont("GlacialIndifference-Regular-48", 12);
   surface.setTitle("Feeler");
   smooth();
