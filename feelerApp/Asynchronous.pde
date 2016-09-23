@@ -152,7 +152,7 @@ class Logger extends Thread {
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;
-          String tt="."+((int) longTimer.get());
+          String tt=""+(int) (longTimer.get());
           tt+=(TAB);
           tt+=(delta1);
           tt+=(TAB);
@@ -196,7 +196,7 @@ class Clock {
   void restart() {
     startMillis=System.currentTimeMillis();
   }
-  long get() {
+  synchronized public long get() {
     return System.currentTimeMillis()-startMillis;
   }
   int getInt(int module) {

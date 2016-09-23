@@ -431,7 +431,7 @@ void triggerScreenshots(final float sec) {
     newImage = screenshot.get();
     newImage.save(
           sessionPath + "/screenshots/" +
-          String.valueOf(datetimestr + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+          String.valueOf((int) (longTimer.get()) + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
           "-screenshot.png"
     );
 }
