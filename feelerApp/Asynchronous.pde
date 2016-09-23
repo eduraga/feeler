@@ -149,6 +149,10 @@ class Logger extends Thread {
   void run() {
     while (true) {
       if (active.get()) {
+        //you can go by two timing algorhythms:
+        //the current one is simpler, but may accumulate displacement from the real time, as the time reference is always
+        //the last time. The other option is to evaluate the timer in reference to a modulus of a non-restarting time, and if 
+        //a sample gets delayed, the next frame will be shorter in compensation
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;

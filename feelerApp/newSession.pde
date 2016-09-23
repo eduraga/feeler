@@ -426,14 +426,7 @@ void triggerScreenshots(final float sec) {
     //feelerS.get();
     //println(feelerS.checkConnection());
     
-    screenshot();
-    PImage newImage = createImage(100, 100, RGB);
-    newImage = screenshot.get();
-    newImage.save(
-          sessionPath + "/screenshots/" +
-          String.valueOf((int) (longTimer.get()) + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
-          "-screenshot.png"
-    );
+    thread("makeSaveScreenshot");
 }
 ///////////////////////////////
 void cancelScreenshots(){

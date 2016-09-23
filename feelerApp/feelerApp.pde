@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .1;
-float countDownStartStudy = .1;
+float countDownStartMeditate = 2.1;
+float countDownStartStudy = 2.1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -193,6 +193,8 @@ long state1start, state2start, state3start;
 int columnCount;
 int currentColumn = 0; 
 char[] filenameCharArray = new char[20];
+
+FileNameManager loggingDir=new FileNameManager();
 /////////////////////////
 
 // screen capture
@@ -965,7 +967,9 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     filename = sessionPath + "/brain-activity-old.tsv";
     output = createWriter(filename);
-    output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
+    String SLINE="time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline";
+    output.println(SLINE);
+    logger.writer.add(SLINE);
     logger.setPath(sessionPath + "/brain-activity.tsv");
     break;
   case "singleSession":
@@ -1507,19 +1511,30 @@ public void mousePressed() {
 void mouseWheel(MouseEvent event) {
   e = event.getCount();
 } 
+void makeSaveScreenshot(){
+  screenshot();
+    PImage newImage = createImage(100, 100, RGB);
+    newImage = screenshot.get();
+    newImage.save(
+          sessionPath + "/screenshots/" +
+          String.valueOf((int) (longTimer.get()) + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+          "-screenshot.png"
+    );
+  /*screenshot();
+  PImage newImage = createImage(100, 100, RGB);
+  newImage = screenshot.get();
+  newImage.save(
+    absolutePath + "/user-data/" + currentUser + "/" +
+    String.valueOf((int) (longTimer.get()) + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+    "-screenshot.png"
+    );*/
+}
 
 public void keyPressed() {
   if (debug) {
     switch(key) {
     case 'c':
-      screenshot();
-      PImage newImage = createImage(100, 100, RGB);
-      newImage = screenshot.get();
-      newImage.save(
-        absolutePath + "/user-data/" + currentUser + "/" +
-        String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
-        "-screenshot.png"
-        );
+      thread("makeSaveScreenshot");
       break;
     case 'l':
       thread("timer"); // from forum.processing.org/two/discussion/110/trigger-an-event
