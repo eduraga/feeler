@@ -2,15 +2,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 //function that will handle logging. It should also be trheaded if we want precise timing
 class Logger extends Thread {
-  public boolean active=false;
+  public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
   asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncIOTestOutput.txt"));
- 
+
   Logger(int in) {
     sampleInterval=in;
     writer.start();
-    active=true;
+    active.set(true);
     super.start();
     //curiously, if this thread is started in pause mode, it won't make any log. 
 
@@ -19,11 +19,11 @@ class Logger extends Thread {
   void start() {
   }
   void pause() {
-    active=false;
+    active.set(false);
   }
   void restart() {
-    if (!active) {
-      active=true;
+    if (!active.get()) {
+      active.set(true);
       timer.restart();
     }
   }
@@ -31,15 +31,15 @@ class Logger extends Thread {
   void run() {
 
     while (true) {
-      if (dof<=0) {
-        dof=20000;
-        println("active "+active);
-      } else {
-        dof--;
-      }
-      if (active) {
 
+      if (active.get()) {
 
+        if (dof<=0) {
+          dof=20000;
+          println("active "+active);
+        } else {
+          dof--;
+        }
         if (timer.get()>=sampleInterval) {
           logsThisDraw++;
           timer.restart();

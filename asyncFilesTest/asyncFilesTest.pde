@@ -20,7 +20,7 @@ String tt="";
 void draw() {
   background(255);
   fill(0);
-  if (logger.active) {
+  if (logger.active.get()) {
     tt="."+((int) longTimer.get());
   }
   text(tt, width/2, height/2);
@@ -35,7 +35,7 @@ void draw() {
   
 }
 void keyPressed() {
-    if (logger.active) {
+    if (logger.active.get()) {
       logger.pause();
     } else {
       logger.restart();
