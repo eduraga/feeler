@@ -11,7 +11,7 @@ class asyncBufferedOutput extends Thread {
   //wether the thread is running
   private boolean active=false;
   public boolean isWriting=false;
-  //whether writing to the buffer is allowed
+  //object that is used as lock for the buffer. I wanted to make buffer atomic, but didnt know how.
   private Object bufferLock = new Object();
 
   //the glued buffer that will be written. Buffer gets glued into outString in order to free up the buffer asap
