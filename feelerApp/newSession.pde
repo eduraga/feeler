@@ -100,12 +100,10 @@ void newSession(){
       pageH1("New session");
       textSize(20); //added by Eva
       //fill(100);//added by Eva
-      
       if (!mindSetOK && !simulateMindSet) {
         PImage one = loadImage("one.png");// Added by Eva
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
         text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-       
         if(!mindSetPortOk){
            try {
              //mindSetPort = new Serial(this, Serial.list()[2]);
@@ -157,7 +155,6 @@ void newSession(){
       text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
       recording = true;
       logger.restart();
-      
       timerOn = true;
       timeline = 1;
       fill(textDarkColor);
@@ -473,7 +470,6 @@ void simulate() {
 public void poorSignalEvent(int sig) {
   //signalWidget.add(200-sig);
   //println("poorSignal: " + sig);
-  
   if(sig == 200){
     mindSetOK = false;
   } else {

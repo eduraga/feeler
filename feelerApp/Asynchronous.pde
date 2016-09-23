@@ -54,6 +54,7 @@ class asyncBufferedOutput extends Thread {
     }
     active=true;
   }
+
   void start() {
     super.start();
   }
@@ -105,7 +106,7 @@ class Logger extends Thread {
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
-  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asnyncfeelerlogtest.txt"));
+  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("unnamedLog.tsv"));
   Logger(int in) {
     sampleInterval=in;
     writer.start();
@@ -113,6 +114,7 @@ class Logger extends Thread {
     super.start();
     pause();
   }
+
   void start() {
   }
   void pause() {
@@ -128,6 +130,16 @@ class Logger extends Thread {
       timer.restart();
     }
   }
+  void setPath(String filename) {
+    //get the current active value, pause my thread, stop and redo the writer, go back to the previous thread active value
+    boolean tempActive=active.get();
+    active.set(false);
+    writer.interrupt();
+    //writer.active=false;
+    writer=new asyncBufferedOutput(filename);
+    writer.start();
+    active.set(tempActive);
+  }
   void resumeInfra() {
     if (!active.get()) {
       active.set(true);
@@ -140,7 +152,6 @@ class Logger extends Thread {
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;
-          
           String tt="."+((int) longTimer.get());
           tt+=(TAB);
           tt+=(delta1);

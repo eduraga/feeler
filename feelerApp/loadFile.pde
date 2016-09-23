@@ -1,4 +1,4 @@
-public void loadFile(int n){   
+public void loadFile(int n){
     fileName = splitTokens(sessionFolders[n]);
   
     filenameString = sessionFolders[n];
