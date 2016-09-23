@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .1;
-float countDownStartStudy = .1;
+float countDownStartMeditate = 2;
+float countDownStartStudy = 2;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////

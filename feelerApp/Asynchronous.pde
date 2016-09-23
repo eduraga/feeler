@@ -84,7 +84,8 @@ class asyncBufferedOutput extends Thread {
           outString="";
         }
       } else {
-        println("Warning! You are trying to write to a file, but I couldn't open it!");
+        println("Sorry! You are trying to write to a file, but I couldn't open it.");
+        active=false;
       }
     }
   }
@@ -104,7 +105,7 @@ class Logger extends Thread {
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
-  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncFeelerAppTest.txt"));
+  asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asnyncfeelerlogtest.txt"));
   Logger(int in) {
     sampleInterval=in;
     writer.start();
@@ -139,10 +140,35 @@ class Logger extends Thread {
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;
-          timer.restart();
+          
           String tt="."+((int) longTimer.get());
+          tt+=(TAB);
+          tt+=(delta1);
+          tt+=(TAB);
+          tt+=(theta1);
+          tt+=(TAB);
+          tt+=(low_alpha1);
+          tt+=(TAB);
+          tt+=(high_alpha1);
+          tt+=(TAB);
+          tt+=(low_beta1);
+          tt+=(TAB);
+          tt+=(high_beta1);
+          tt+=(TAB);
+          tt+=(low_gamma1);
+          tt+=(TAB);
+          tt+=(mid_gamma1);
+          tt+=(TAB);
+          tt+=(blinkSt);
+          tt+=(TAB);
+          tt+=(attention);
+          tt+=(TAB);
+          tt+=(meditation);
+          tt+=(TAB);
+          tt+=(timeline);
           writer.add(tt);
           //writer.refresh();
+          timer.restart();
         }
       }
     }
