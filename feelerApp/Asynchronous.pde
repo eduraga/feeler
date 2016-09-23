@@ -1,5 +1,6 @@
+//atomics are variables that make sure not to be accessed twice at the same time, avoiding halts
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -100,41 +101,41 @@ class asyncBufferedOutput extends Thread {
 }
 //function that will handle logging. It should also be trheaded if we want precise timing
 class Logger extends Thread {
-  public boolean active=false;
+  public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
   asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("asyncFeelerAppTest.txt"));
   Logger(int in) {
     sampleInterval=in;
     writer.start();
-    active=true;
+    active.set(true);
     super.start();
     pause();
   }
   void start() {
   }
   void pause() {
-    active=false;
+    active.set(false);
   }
   void pause(String reason) {
     println(reason);
-    active=false;
+    active.set(false);
   }
   void restart() {
-    if (!active) {
-      active=true;
+    if (!active.get()) {
+      active.set(true);
       timer.restart();
     }
   }
   void resumeInfra() {
-    if (!active) {
-      active=true;
+    if (!active.get()) {
+      active.set(true);
       //timer.restart();
     }
   }
   void run() {
     while (true) {
-      if (active) {
+      if (active.get()) {
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;
