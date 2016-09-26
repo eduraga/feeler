@@ -107,6 +107,13 @@ class Logger extends Thread {
   public int sampleInterval=1000;//milliseconds sampling interval.
   private Clock timer=new Clock();
   asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("unnamedLog.tsv"));
+
+  //MindSet stuff
+  MindSet mindSet;
+  AtomicBoolean mindSetOK = new AtomicBoolean(false);
+  AtomicBoolean mindSetPortOk = new AtomicBoolean(false);
+  int mindSetId;
+
   Logger(int in) {
     sampleInterval=in;
     writer.start();
@@ -156,6 +163,7 @@ class Logger extends Thread {
         if (timer.get()>=sampleInterval) {
           //println("recording1");
           //logsThisDraw++;
+
           String tt=""+(int) (longTimer.get());
           tt+=(TAB);
           tt+=(delta1);
@@ -187,6 +195,110 @@ class Logger extends Thread {
         }
       }
     }
+  }
+  //MindSet functions
+
+  float attoff = 0.01;
+  float medoff = 0.0;
+
+  void simulate() {
+    if (recording) {
+      poorSignalEvent(int(random(200)));
+
+      //simulate with noise
+      attoff = attoff + .02;
+      medoff = medoff + .01;
+      //comment the following two lines to simulate with mouse
+      //attentionEvent(int(noise(attoff) * 100));
+      // meditationEvent(int(noise(medoff) * 100));
+
+      //simulate with mouse
+      //uncomment the following two lines to simulate with mouse
+      //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
+      //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
+
+      /*eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
+       int(random(20000)), int(random(20000)), int(random(20000)), 
+       int(random(20000)), int(random(20000)) );*/
+
+      //simulate with sine/cosine waves
+
+      int sine=int(sin(longTimer.get()/1000.00)*5000+5000);
+      int cosine=int(cos(longTimer.get()/1000.00)*5000+5000);
+      attentionEvent(sine / 100);
+      meditationEvent(cosine / 100);
+
+      eegEvent(sine, cosine, sine, cosine, sine, cosine, sine, cosine);
+    }
+  }
+
+  public void poorSignalEvent(int sig) {
+    //signalWidget.add(200-sig);
+    //println("poorSignal: " + sig);
+    if (sig == 200) {
+      mindSetOK.set(false);
+    } else {
+      mindSetOK.set(true);
+    }
+  }
+
+  //void serialEvent(Serial p) { 
+  //inString = p.readString();
+  //thisSerialValue = p.read();
+
+  //thisFrame = frameCount;
+
+  //println(p.read());
+  //println(p.available());
+  //println(p.last());
+  //if(p.read() == -1){
+  //  println("morreu");
+  //}
+
+  //mindSetOK = true;
+  //}
+
+  public void attentionEvent(int attentionLevel) {
+    //attentionWidget.add(attentionLevel);
+    //println("attentionLevel: " + attentionLevel);
+    attention = attentionLevel;
+  }
+
+  public void meditationEvent(int meditationLevel) {
+    //meditationWidget.add(meditationLevel);
+    //println("meditationLevel: " + meditationLevel);
+    meditation = meditationLevel;
+  }
+
+  public void blinkEvent(int strength) {
+    println("blinkEvent: " + strength);
+  }
+
+  public void rawEvent(int[] values) {
+    //println("rawEvent: " + values);
+  }
+
+  public void eegEvent(int delta, int theta, int low_alpha, 
+    int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {  
+    delta1 = delta;
+    theta1 = theta;
+    low_alpha1 = low_alpha;
+    high_alpha1 = high_alpha;
+    low_beta1 = low_beta;
+    high_beta1 = high_beta;
+    low_gamma1 = low_gamma;
+    mid_gamma1 = mid_gamma;
+
+    println("delta1: " + delta1);
+
+    //deltaWidget.add(delta);
+    //thetaWidget.add(theta);
+    //lowAlphaWidget.add(low_alpha);
+    //highAlphaWidget.add(high_alpha);
+    //lowBetaWidget.add(low_beta);
+    //highBetaWidget.add(high_beta);
+    //lowGammaWidget.add(low_gamma);
+    //midGammaWidget.add(mid_gamma);
   }
 }
 //functions to get more easily millis from a moment. 

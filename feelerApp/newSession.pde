@@ -80,7 +80,7 @@ void newSession(){
   }
   
   //display status of MindWave
-  if(mindSetOK || simulateMindSet){
+  if(logger.mindSetOK.get() || simulateMindSet){
     text("EEG headset: ok", width/2, padding*2);
   } else {
     text("EEG headset: check connection", width/2, padding*2);
@@ -90,7 +90,7 @@ void newSession(){
     println("attention: " + attention);
     if(attention == 0 && meditation == 0){
       //mindSet.quit();
-      mindSetOK = false;
+      logger.mindSetOK.set(false);
       cp5.getController("startSession").hide();
     }
   }
@@ -100,20 +100,22 @@ void newSession(){
       pageH1("New session");
       textSize(20); //added by Eva
       //fill(100);//added by Eva
-      if (!mindSetOK && !simulateMindSet) {
+      if (!logger.mindSetOK.get() && !simulateMindSet) {
         PImage one = loadImage("one.png");// Added by Eva
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
         text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-        if(!mindSetPortOk){
+        if(!logger.mindSetPortOk.get()){
            try {
              //mindSetPort = new Serial(this, Serial.list()[2]);
-             mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
+//other option is that we child the creation and checking of mindset inside the logging thread. 
+//I took this approach because is the least intrusive.
+             logger.mindSet = new MindSet(this, "/dev/cu.MindWaveMobile-DevA");
              println("port ok");
-             mindSetPortOk = true;
+             logger.mindSetPortOk.set(true);
              //mindSetOK = true;
            } catch (Exception e) {
              println("port not ok");
-             mindSetPortOk = false;
+             logger.mindSetPortOk.set(false);
            }
          }
          cp5.getController("startSession").hide();
@@ -431,100 +433,4 @@ void triggerScreenshots(final float sec) {
 ///////////////////////////////
 void cancelScreenshots(){
   hasFinished = true;
-}
-
-//MindSet functions
-
-float attoff = 0.01;
-float medoff = 0.0;
-
-void simulate() {
-  if(recording){
-    poorSignalEvent(int(random(200)));
-    
-    //simulate with noise
-    attoff = attoff + .02;
-    medoff = medoff + .01;
-    //comment the following two lines to simulate with mouse
-    attentionEvent(int(noise(attoff) * 100));
-    meditationEvent(int(noise(medoff) * 100));
-  
-    //simulate with mouse
-    //uncomment the following two lines to simulate with mouse
-    //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
-    //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
-    
-    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
-    int(random(20000)), int(random(20000)), int(random(20000)), 
-    int(random(20000)), int(random(20000)) );
-  }
-}
-
-public void poorSignalEvent(int sig) {
-  //signalWidget.add(200-sig);
-  //println("poorSignal: " + sig);
-  if(sig == 200){
-    mindSetOK = false;
-  } else {
-    mindSetOK = true;
-  }
-}
-
-//void serialEvent(Serial p) { 
-  //inString = p.readString();
-  //thisSerialValue = p.read();
-  
-  //thisFrame = frameCount;
-  
-  //println(p.read());
-  //println(p.available());
-  //println(p.last());
-  //if(p.read() == -1){
-  //  println("morreu");
-  //}
-  
-  //mindSetOK = true;
-//}
-
-public void attentionEvent(int attentionLevel) {
-  //attentionWidget.add(attentionLevel);
-  //println("attentionLevel: " + attentionLevel);
-  attention = attentionLevel;
-}
-
-public void meditationEvent(int meditationLevel) {
-  //meditationWidget.add(meditationLevel);
-  //println("meditationLevel: " + meditationLevel);
-  meditation = meditationLevel;
-}
-
-public void blinkEvent(int strength){
-  println("blinkEvent: " + strength);
-}
-
-public void rawEvent(int[] values){
-  //println("rawEvent: " + values);
-}
-
-public void eegEvent(int delta, int theta, int low_alpha, 
-int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {  
-  delta1 = delta;
-  theta1 = theta;
-  low_alpha1 = low_alpha;
-  high_alpha1 = high_alpha;
-  low_beta1 = low_beta;
-  high_beta1 = high_beta;
-  low_gamma1 = low_gamma;
-  mid_gamma1 = mid_gamma;
-  
-  println("delta1: " + delta1);
-  
-  //deltaWidget.add(delta);
-  //thetaWidget.add(theta);
-  //lowAlphaWidget.add(low_alpha);
-  //highAlphaWidget.add(high_alpha);
-  //lowBetaWidget.add(low_beta);
-  //highBetaWidget.add(high_beta);
-  //lowGammaWidget.add(low_gamma);
-  //midGammaWidget.add(mid_gamma);
 }
