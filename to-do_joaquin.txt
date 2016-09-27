@@ -1,0 +1,4 @@
+problema threading de lectura mindwave
+correspondencia screenshots/grafico
+parece que hay pantallas que se quedan pegadas.
+hacer una representacion fgrafica que pueda mostrar todo
