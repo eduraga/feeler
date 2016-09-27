@@ -4,9 +4,9 @@ void assessmentActivity(){
   personalExperience.display();
   
   if(
-    boolean(loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt")[2])
+    boolean(loadStrings(":)"+loaDir.getLogPath())[2])
     &&
-    boolean(loadStrings(userFolder + "/" + sessionFolders[currentItem] + "/assessment.txt")[3])
+    boolean(loadStrings(":)"+loaDir.getLogPath())[3])
   ){
     PImage learningGoal = loadImage("checked_small.png");
     image(learningGoal, visX + (visWidth/2 - dotSize/2)/2 + padding*2, 430);

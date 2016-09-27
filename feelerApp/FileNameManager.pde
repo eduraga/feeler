@@ -1,6 +1,8 @@
 class FileNameManager {
   //String path=sketchPath();
   HashMap<String, String> elements = new HashMap<String, String>();
+  int currentSessionElement=-1;
+  String sessionsFolders[]=new String[0];
   FileNameManager() {
     initElementsMap();
   }
@@ -9,8 +11,6 @@ class FileNameManager {
     initElementsMap();
   }
   private void initElementsMap() {
-
-
     //here you can define the folder & file structure for data storage. 
     //words that start with $ will be replaced for the homonimous hashmap indexes
     //the hashes in caps are the ones that need runtime update
@@ -51,18 +51,46 @@ class FileNameManager {
   void updateUserFolder() {
     elements.put("CURRENTUSER", currentUser);
   }
+  //update a list of the sessions folder
+  void updateLogFolders(){
+    sessionFolders=getFileListAt("user-dataPath");
+  }
+  //get an array of sessions filename in current user directory
+  String [] getLogFolders(boolean doUpdate){
+    if(doUpdate)
+      updateLogFolders();
+    return sessionFolders;
+  }
+  String [] getLogFolders(){
+    //default to true
+    return getLogFolders(true);
+  }
+  String changeCurrentLogFolder(int to){
+    currentSessionElement=to;
+    elements.put("LOGFOLDERNAME", sessionFolders[currentSessionElement]);
+    return parsePath("currentLogPath");
+  }
+  String changeGurrentLogFolder(String to){
+    boolean success=false;
+    for(int a=0; a<sessionFolders.length;a++){
+      if(to.equals(sessionFolders[a])){
+        success=true;
+        changeCurrentLogFolder(a);
+      }
+    }
+    if(!success){
+      println("error: couldn't locate "+to+" in my array of session folders. I'm returning the previous value ["+currentSessionElement+"] "+sessionFolders[currentSessionElement]);
+    }
+    return parsePath("currentLogPath");
+  }
+  
+  
   //change the folder to which we are logging
-
-  //update the LOGFOLDERNAME var
+  
+  //create a new session folder name
   String newLogFolder() {
-
-
-
     String newFolderName= nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
-
-
     elements.put("LOGFOLDERNAME", newFolderName);
-
     return elements.get("sessionDataFolder");
   }
 
