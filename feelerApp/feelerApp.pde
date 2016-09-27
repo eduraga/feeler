@@ -163,20 +163,22 @@ float assessmentAttAvgs = 0;
 float assessmentRlxAvgs = 0;
 
 boolean loading = false;
-String[] fileName;
+//became part of filenamemanager
+/**/String[] fileName;
 String[] fileNames;
 String filePath;
 String sessionPath;
 String[] sessionFolders;
-String userFolder;
+String userFolder;/**/
 float attentionAverage = 0;
 float relaxationAverage = 0;
 String[] assessmentData;
 File assessmentFolder;
-String[] screenshotsArray;
+//became part of filenamemanager
+/**/String[] screenshotsArray;
 
 String userDataFolder = "user-data";
-String absolutePath;
+String absolutePath;/**/
 FloatTable data;
 String filenameString;
 String[] fileArray;
@@ -194,7 +196,8 @@ int columnCount;
 int currentColumn = 0; 
 char[] filenameCharArray = new char[20];
 
-FileNameManager loggingDir=new FileNameManager();
+FileNameManager savDir;
+FileNameManager loaDir;
 /////////////////////////
 
 // screen capture
@@ -722,8 +725,10 @@ public void setup() {
     ;
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
-
+  
   /////////////////////////////////
+  savDir=new FileNameManager();
+  loaDir=new FileNameManager();
 }
 
 public void draw() {
@@ -945,7 +950,8 @@ public void controlEvent(ControlEvent theControlEvent) {
     datetimestr0 = millis() / 1000;
     println("startSession");
     sw.start(countDownStartMeditate);
-    sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
+    sessionPath = savDir.newLogFolder();
+    //sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
     File sessionFolder = new File(dataPath(sessionPath));

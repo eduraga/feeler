@@ -29,15 +29,14 @@ class FileNameManager {
     //here you can define the folder & file structure for data storage. 
     //words that start with $ will be replaced for the homonimous hashmap indexes
     //the hashes in caps are the ones that need runtime update
-
-
     elements.put("LOGFOLDERNAME", "undefined");
     elements.put("CURRENTUSER", "undefined");
-
+    //variables in caps are updated in runtime
     //variables ending in path are for full absolute paths to a folder
     //variables ending in folder are for folder names and not absolute paths
     //variables ending in filename are for filenames without the path
     //variables ending in file are for filenames with path
+
 
     //folder:
     //screenshots
@@ -105,7 +104,7 @@ class FileNameManager {
     File where=new File(parsePath(which));
     String[]l=where.list();
     if(l==null){
-      println(which+" contained no files, for it resolves to "+parsePath(which));
+      println("'"+which+"' contained no files, for it resolves to '"+parsePath(which)+"'");
       l=new String[0];
     }
     return l;
@@ -134,19 +133,7 @@ class FileNameManager {
         break;
       }
     }
-    //println(str);        
-
-
     updateUserFolder();
     return str;
   }
-
-  /*private String slashPath(String in) {
-   in.replace("\\", "/");
-   if (in.charAt(in.length()-1)=='/') {
-   return in;
-   } else {
-   return in+"/";
-   }
-   }*/
 }
