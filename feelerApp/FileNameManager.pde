@@ -52,41 +52,44 @@ class FileNameManager {
     elements.put("CURRENTUSER", currentUser);
   }
   //update a list of the sessions folder
-  void updateLogFolders(){
-    sessionFolders=getFileListAt("user-dataPath");
+  void updateLogFolders() {
+    sessionsFolders=getFileListAt("user-dataPath");
   }
   //get an array of sessions filename in current user directory
-  String [] getLogFolders(boolean doUpdate){
-    if(doUpdate)
+  String [] getLogFolders(boolean doUpdate) {
+    if (doUpdate)
       updateLogFolders();
-    return sessionFolders;
+    return sessionsFolders;
   }
-  String [] getLogFolders(){
+  String [] getLogFolders() {
     //default to true
     return getLogFolders(true);
   }
-  String changeCurrentLogFolder(int to){
+  String changeCurrentLogFolder(int to) {
     currentSessionElement=to;
-    elements.put("LOGFOLDERNAME", sessionFolders[currentSessionElement]);
+    elements.put("LOGFOLDERNAME", sessionsFolders[currentSessionElement]);
     return parsePath("currentLogPath");
   }
-  String changeGurrentLogFolder(String to){
+  String changeGurrentLogFolder(String to) {
     boolean success=false;
-    for(int a=0; a<sessionFolders.length;a++){
-      if(to.equals(sessionFolders[a])){
+    for (int a=0; a<sessionsFolders.length; a++) {
+      if (to.equals(sessionsFolders[a])) {
         success=true;
         changeCurrentLogFolder(a);
       }
     }
-    if(!success){
+    if (!success) {
       println("error: couldn't locate "+to+" in my array of session folders. I'm returning the previous value ["+currentSessionElement+"] "+sessionFolders[currentSessionElement]);
     }
     return parsePath("currentLogPath");
   }
-  
-  
+  String getCurrentLogFolder(){
+    return parsePath("currentLogPath");
+  }
+
+
   //change the folder to which we are logging
-  
+
   //create a new session folder name
   String newLogFolder() {
     String newFolderName= nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
@@ -133,7 +136,7 @@ class FileNameManager {
   String parsePath(String which) {
     //so actually the updateUserFolder should happen on login/logout. But here is more traceable.
     updateUserFolder();
-    
+
     String str=elements.get(which);
     //fall back to the raw which string
     if (str==null)
@@ -148,7 +151,7 @@ class FileNameManager {
     //map.put("myKey2", "day $myKey1");
     while (str.contains("$")) {
       for (HashMap.Entry<String, String> entry : elements.entrySet()) {
-        
+
         str = str.replace("$" + entry.getKey() + "", entry.getValue());
       }
       recursion++;
@@ -157,7 +160,7 @@ class FileNameManager {
         break;
       }
     }
-    
+
     return str;
   }
 }

@@ -36,7 +36,7 @@ class asyncBufferedOutput extends Thread {
       //String content = "This is the content to write into file";
 
       File f = new File(fname);
-      println("Writing buffer output to: "+fname);
+      //println("Writing buffer output to: "+fname);
       // if file doesnt exists, then create it
       if (!f.exists()) {
         f.createNewFile();
@@ -44,12 +44,13 @@ class asyncBufferedOutput extends Thread {
 
       FileWriter fw = new FileWriter(f.getAbsoluteFile());
       file = new BufferedWriter(fw);
-      //bw.write(content);
-      //bw.close();
+      
+      println("asyncbufferedoutput pointing to "+f.getAbsoluteFile());
       isWriting=true;
       //file = new PrintWriter(new BufferedWriter(new FileWriter(fname)));
     }
     catch(IOException e) {
+      println("exeption when creating a file writer in asyncbufferedoutput");
       e.printStackTrace();
     }
     active=true;

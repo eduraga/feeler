@@ -11,8 +11,8 @@ boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = .30;
-float countDownStartStudy = .30;
+float countDownStartMeditate = .03;
+float countDownStartStudy = .03;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -164,18 +164,18 @@ float assessmentRlxAvgs = 0;
 
 boolean loading = false;
 //became part of filenamemanager
-/**/String[] fileName;
+/*String[] fileName;
 String[] fileNames;
 String filePath;
 String sessionPath;
 String[] sessionFolders;
-String userFolder;/**/
+String userFolder;*/
 float attentionAverage = 0;
 float relaxationAverage = 0;
 String[] assessmentData;
 File assessmentFolder;
 //became part of filenamemanager
-/**/String[] screenshotsArray;
+/*String[] screenshotsArray;
 
 String userDataFolder = "user-data";
 String absolutePath;/**/
@@ -839,8 +839,8 @@ public void draw() {
     fill(50);
     text(s, padding, height-90, width/3, height-90);
 
-    if (userFolder != null) {
-      text(userFolder, padding, height-110);
+    if (savDir.getCurrentUserPath() != null) {
+      text(savDir.getCurrentUserPath(), padding, height-110);
     }
 
     if (simulateMindSet) {
@@ -950,27 +950,45 @@ public void controlEvent(ControlEvent theControlEvent) {
     datetimestr0 = millis() / 1000;
     println("startSession");
     sw.start(countDownStartMeditate);
-    sessionPath = savDir.newLogFolder();
+        
+
+    String sessionPath = savDir.newLogFolder();
+    
     //sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
 
     //create user folder
-    File sessionFolder = new File(dataPath(sessionPath));
-    sessionFolder.mkdir();
+    File sessionFolder;
+    try{
+      sessionFolder = new File(dataPath(sessionPath));
+      sessionFolder.mkdir();
+    }
+    catch(Exception e){
+      println("error while trying to write to "+dataPath(sessionPath)+"");
+      println(e);
+      exit();
+    }
+    
+    //sessionFolder.mkdir();
     File sessionImgFolder = new File(dataPath(sessionPath + "/screenshots"));
     sessionImgFolder.mkdir();
+    
     String[] tempAssessment = {"", "", "", "50", "50", "50"};
+    
     saveStrings(sessionPath + "/assessment.txt", tempAssessment);
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
-  
-    filename = savDir.getLogPath() + "/brain-activity-old.tsv";
+    
+    filename = savDir.getBrainActivityFile();
+    logger.setPath(filename);
+    
     println(filename);
     output = createWriter(filename);
     String SLINE="time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline";
     output.println(SLINE);
     logger.writer.add(SLINE);
-    logger.setPath(sessionPath + "/brain-activity.tsv");
+    
+    exit();
     break;
   case "singleSession":
     println("singleSession page");
@@ -1073,7 +1091,7 @@ public void newSession(int theValue) {
 
   String lastLogin = String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) + ".txt";
   String[] userLoglist = split(lastLogin, ' ');
-  saveStrings(userDataFolder + "/" +currentUser + "/last-login.txt", userLoglist);
+  saveStrings(savDir.getCurrentUserPath() + "/last-login.txt", userLoglist);
 }
 
 public void overall(int theValue) {
@@ -1088,13 +1106,13 @@ public void overall(int theValue) {
 
 
 public void session(int theValue) {
-  println("this session: " + currentSession);
+  println("this session: " + savDir.getCurrentLogFolder());
   cp5.getController("session").hide();
 
   if (currentSession != "") {
     currentPage = "singleSession";
     cp5.getTab("singleSession").bringToFront();
-    currentSession = sessionFolders[currentItem];
+    currentSession = savDir.getCurrentLogFolder();
   }
   //currentItem = i;
   //trends.onClick();
@@ -1250,7 +1268,7 @@ public void assess3Bt(int theValue) {
 void saveAssessmentTxt() {
   String[] assessment = {feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay, str(assessRelaxationMeditation), str(assessRelaxationStudy), str(assessRelaxationPlay), str(assessAttentionMeditation), str(assessAttentionStudy), str(assessAttentionPlay)};
   // Writes the strings to a file, each on a separate line
-  saveStrings(sessionPath + "/assessment.txt", assessment);
+  saveStrings(savDir.getCurrentLogFolder() + "/assessment.txt", assessment);
 }
 
 

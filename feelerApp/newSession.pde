@@ -297,7 +297,8 @@ void newSession(){
   }
   
   if(recording){
-      int datetimestr1 = millis() / 1000;
+      /*
+    int datetimestr1 = millis() / 1000;
       datetimestr = datetimestr1 - datetimestr0;
       
       output.print(datetimestr);
@@ -324,7 +325,7 @@ void newSession(){
       output.print(TAB);
       output.print(meditation);
       output.print(TAB);
-      output.println(timeline);
+      output.println(timeline);*/
   }
 }
 
