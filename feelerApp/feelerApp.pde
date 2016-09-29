@@ -1,18 +1,18 @@
 ////////////////////////////////////////////////////////////////////
 // FEELER | how you feel affects how you learn
-// Developed by Régis Frias, http://www.regisfrias.com
+// Initiated by Niklas Pöllönen and Régis Frias, http://www.regisfrias.com
 // feelerSerial library by Niklas Pöllönen, http://www.pollonen.com
 ////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////
 // Set up //////////////////////////////////////////////////////////
 
-boolean debug = false;
+boolean debug = true;
 boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
-float countDownStartMeditate = 1;
-float countDownStartStudy = 1;
+float countDownStartMeditate = .1;
+float countDownStartStudy = .1;
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -72,14 +72,15 @@ String newUserAddress;
 
 boolean isLoggedIn = false;
 boolean isWrongPassword = false;
+boolean registered = false;
+boolean isNewUser = false;
+boolean serverAvailable = true;
 String currentUser = "";
 String currentSession = "";
 int currentItem;
 String currentPassword = "";
 Textfield username;
 Textfield password;
-
-boolean isNewUser = false;
 
 final static int TIMER = 100;
 static boolean isEnabled = true;
@@ -203,11 +204,12 @@ int boxState = 0;
 //MindSet stuff
 MindSet mindSet;
 boolean mindSetOK = false;
-Serial mindSetPort;
+boolean mindSetPortOk = false;
 int mindSetId;
 
 public void setup() {
   font = createFont("GlacialIndifference-Regular-48", 12);
+  surface.setTitle("Feeler");
   smooth();
   
   homeImg = loadImage("home.png");
@@ -232,19 +234,19 @@ public void setup() {
 //double height = screenSize.getHeight();
   //println((int)screenSize.getWidth());
   
-  
-  
   noStroke();
   textSize(12);
 
   userTabsX = width/2;
   
-  visX = (width/3)/2;
-  visY = headerHeight + padding + 100;
+  visX = (width/3)/2; //change visualisation left position
+  visY = headerHeight + padding + 100; //change visualisation top position
   //visY = headerHeight + padding + 60;// old
-  visWidth = width - width/4;
-  visHeight = 300;
-  lowerBoundary = visHeight + visY + padding*4;
+  visWidth = width - width/4; //change visualisation width
+  visHeight = 300; //change visualisation width
+  
+  //don't change these unless you know what you're doing
+  lowerBoundary = visHeight + visY + padding*3;
   upperBoundary = visY + padding*3;
 
   json = loadJSONObject("config.json");
@@ -733,6 +735,10 @@ public void draw() {
   fill(0);
   image(logo, 100, 20);// added by Eva, margin left was before 20
   
+  //draw all the controllers in the beginning so that everything else will be drawn on top of them
+  //put this after something if that something should be below the controllers
+  cp5.draw();
+  
   if ( millis() % 100 == 0) {
     //feelerS.sendValues();
     try {
@@ -765,7 +771,21 @@ public void draw() {
   if (isWrongPassword) {
     pushStyle();
     textAlign(CENTER);
-    text("Wrong username or password", width/2, height/2 - 60);
+    text("Wrong username or password", width/2, height/2 - 270);
+    popStyle();
+  }
+  
+  if (registered) {
+    pushStyle();
+    textAlign(CENTER);
+    text("New user successfully registered!\nPlease log in.", width/2, height/2 - 270);
+    popStyle();
+  }
+  
+  if(!serverAvailable){
+    pushStyle();
+    textAlign(CENTER);
+    text("Server not available", width/2, height/2 - 270);
     popStyle();
   }
 
@@ -820,9 +840,7 @@ public void draw() {
     
     if (simulateMindSet) {
       text("generating simulated data", padding, height-130);
-      simulate();
     }
-
 
     if (currentPage == "newSession") {
       String s2 = "Box state: " + boxState +
@@ -836,6 +854,10 @@ public void draw() {
         ;
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
     }
+  }
+  
+  if (simulateMindSet) {
+    simulate();
   }
 
   textAlign(CENTER);
@@ -921,6 +943,7 @@ public void controlEvent(ControlEvent theControlEvent) {
   case "startSession":
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
+    datetimestr0 = millis() / 1000;
     println("startSession");
     sw.start(countDownStartMeditate);
     sessionPath = userFolder + "/" + nf(year(), 4)+"-"+nf(month(), 2)+"-"+nf(day(), 2)+"-"+nf(hour(), 2)+"-"+nf(minute(), 2)+"-"+nf(second(), 2);
@@ -940,7 +963,6 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     output = createWriter(filename);
     output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
-    datetimestr0 = minute()*60+second();   
     break;
   case "singleSession":
     println("singleSession page");
@@ -1267,8 +1289,13 @@ public void loginCheck() {
     cp5.getController("logoutBt").show();
 
     addUserAreaControllers();
+    
+    currentPage = "overall";
+    loadFiles();
+    loading = false;
   } else {
     if (client.available() > 0) {
+      serverAvailable = true;
       loginData = client.readString();
       println(loginData);
       String[] m = match(loginData, "<logintest>(.*?)</logintest>");
@@ -1276,21 +1303,27 @@ public void loginCheck() {
         cp5.getTab("overall").bringToFront();
         isLoggedIn = true;
         isWrongPassword = false;
+        registered = false;
         cp5.getController("logoutBt").show();
         addUserAreaControllers();
+
+        currentPage = "overall";
+        loadFiles();
+        loading = false;
       } else if (m[1].equals("registered")) {
+        registered = true;
+        isWrongPassword = false;
         cp5.getTab("login").bringToFront();
       } else {
         println("wrong password");
         isLoggedIn = false;
         isWrongPassword = true;
       }
+    } else {
+      println("Server not available.");
+      serverAvailable = false;
     }
   }
-
-  currentPage = "overall";
-  loadFiles();
-  loading = false;
 }
 
 public void addUserAreaControllers() {
@@ -1391,6 +1424,9 @@ public void addUserAreaControllers() {
     .getCaptionLabel().align(CENTER, CENTER)
     ;
   cp5.getController("export").moveTo("singleSession");
+  
+  //avoid that controllers are drawn at the end of draw()
+  cp5.setAutoDraw(false);
 }
 
 public void timer() {
@@ -1595,9 +1631,11 @@ void openModal(String img){
 }
 
 
+long updateBoxDataTimer = millis();
 void updateBoxData(){
   while(true){
-    if ( millis() % 500 == 0) {
+      if ( millis() - updateBoxDataTimer > 300) {
+      updateBoxDataTimer = millis();
       
       try{
         feelerS.sendValues();

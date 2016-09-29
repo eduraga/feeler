@@ -48,12 +48,15 @@ class LineChart {
          //if(sessionFolders[i].charAt(0) == '2'){
              if(data.data != null){
                _listSize = data.data.length;
+               grainSize = (int)data.data.length/100;
+               //grainSize = (int)data.data.length/500;
+               //grainSize = 10;
                
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
-                   thisX.set(j, j * (visWidth - padding*2)/data.data.length + visX + padding);
-                   previousX.set(j, (j-grainSize) * (visWidth - padding*2)/data.data.length + visX + padding);
+                   thisX.set(j, j * visWidth/data.data.length + visX);
+                   previousX.set(j, (j-grainSize) * visWidth/data.data.length + visX);
                    
                    if(data.data[j][12] == 1){
                      fill(250);
@@ -91,15 +94,16 @@ class LineChart {
                    } else {
                      thisRelax.set(j,lowerBoundary);
                    }
+                     
+  
+                   //if (data.data[j][0] > 0) {
+                   //  if(data.data[j][0] != data.data[j-grainSize][0])
+                   //  thisTime.set(j, data.data[j][0]);
+                   //} else {
+                   //  thisTime.set(j, 0);
+                   //}
                    
-
-                 if (data.data[j][0] > 0) {
-                   if(data.data[j][0] != data.data[j-grainSize][0])
                    thisTime.set(j, data.data[j][0]);
-                 } else {
-                   thisTime.set(j, 0);
-                 }
-                   
                    
                    /////////////////////////////// Image stuff
                    //////////////////////////////////////////////
@@ -112,11 +116,15 @@ class LineChart {
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
                      if(int(screenshotTimeId[0]) == int(data.data[j][0])){
+                       println("screenshotTimeId[0]: " + screenshotTimeId[0]);
                        screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
+                       println(k+ ": " + screenshots.get(j));
                      }
                    }
                  }
                }
+               
+               
              }
           //}
         
@@ -133,7 +141,7 @@ class LineChart {
   
   void display(){    
     fill(graphBgColor);
-    rect(visX - padding - 120, visX - padding + 40, visWidth - dotSize/2 + padding*2 + 120, visHeight + dotSize/2 + padding*2); // linechart background
+    rect(visX - padding, visY - padding + 40, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2); // linechart background
     //rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
     
     if(fileName != null && sessionFolders != null){
@@ -149,17 +157,19 @@ class LineChart {
     
     //Labels
     pushStyle();
-    textAlign(LEFT, CENTER);
+    textAlign(RIGHT, CENTER);
     fill(textDarkColor);
     textSize(12);// added by Eva
-    text("100%", visX - padding/2 - 15 - 100, visX + 40);
+    text("100%", visX - padding*2, upperBoundary);
     //text("100%", visX - padding/2 - 15, visX);// old
     //text("50%", 200, visX + visHeight/2 + dotSize/2);// added by Eva 0
     //text("0%", 200, visX + visHeight + dotSize/2);// added by Eva 0
-    text("50%", visX - padding/2 - 15 - 100, visX + visHeight/2 + dotSize/2 + 40);
-    text("0%", visX - padding/2 - 15 - 100, visX + visHeight + dotSize/2 + 40);
+    text("50%", visX - padding*2, lowerBoundary + (upperBoundary - lowerBoundary)/2);
+    text("0%", visX - padding*2, lowerBoundary);
     //text("50%", visX - padding/2 - 15, visX + visHeight/2 + dotSize/2);// old
     //text("0%", visX - padding/2 - 15, visX + visHeight + dotSize/2);// old
+    
+    if(type == "values") text("seconds", visX - padding*2, visY + visHeight + padding*4 + 20);
     popStyle();
   }
   
@@ -177,13 +187,19 @@ class LineChart {
         line(studyEnd, visY + padding*3, studyEnd, visY + padding*3 + visHeight);
         
         pushStyle();
+        noFill();
+        ////debug label boxes
+        //stroke(255,0,0);
+        //rect(visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        //rect(relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        //rect(studyEnd , visY + padding*3 - 20, playEnd - studyEnd, 20);
         fill(textDarkColor);
         textAlign(CENTER, CENTER);
-        text("MEDITATE", visX + padding - 100, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
+        text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);
         //text("MEDITATE", visX + padding, visY + padding*3 - 20, relaxEnd - (visX + padding), 20);// old
-        text("STUDY", relaxEnd - 100, visY + padding*3 - 20, studyEnd - relaxEnd, 20);
+        if(studyEnd > relaxEnd) text("STUDY", relaxEnd , visY + padding*3 - 20, studyEnd - relaxEnd, 20);
         //text("STUDY", relaxEnd, visY + padding*3 - 20, studyEnd - relaxEnd, 20);// old
-        //text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
+        if(playEnd > studyEnd) text("PLAY", studyEnd, visY + padding*3 - 20, playEnd - studyEnd, 20);
         popStyle();
       } else if(type == "personal"){
         pushStyle();
@@ -238,14 +254,14 @@ class LineChart {
             float prevAttAvg = 0;
             float prevRlxAvg = 0;
             
-            attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX + 95); // last value modifies the heigth of the ellipses
-            rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX + 100);
+            attAvg = map(attentionAverageList[i], 0, 100, lowerBoundary, upperBoundary); // last value modifies the heigth of the ellipses
+            rlxAvg = map(relaxationAverageList[i], 0, 100, lowerBoundary, upperBoundary);
             //attAvg = map(attentionAverageList[i], 100, 0, visX, visHeight + visX);// old
             //rlxAvg = map(relaxationAverageList[i], 100, 0, visX, visHeight + visX);// old
             
             if(i>0){
-              prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
-              prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX + 100);
+              prevAttAvg = map(attentionAverageList[i-1], 0, 100, lowerBoundary, upperBoundary);
+              prevRlxAvg = map(relaxationAverageList[i-1], 0, 100, lowerBoundary, upperBoundary);
               //prevAttAvg = map(attentionAverageList[i-1], 100, 0, visX, visHeight + visX);// old
               //prevRlxAvg = map(relaxationAverageList[i-1], 100, 0, visX, visHeight + visX);// old
             }
@@ -255,9 +271,9 @@ class LineChart {
                 hoverUpLeft.set(thisX - dotSize/2, visX);
                 hoverDownRight.set(thisX + dotSize/2, visX + visHeight + dotSize/2);
                 
-                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
+                if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
                   fill(250);
-                  rect(thisX - dotSize/2, visX + 40, dotSize, visHeight + dotSize);
+                  rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
                   //rect(thisX - dotSize/2, visX, dotSize, visHeight + dotSize/2);//old
                   
                   pushStyle();
@@ -267,9 +283,9 @@ class LineChart {
                   
                   fill(attentionColor);
                   textSize(12);// added by Eva
-                  text("Attention: " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
+                  text("Attention " + round(attentionAverageList[i]), mouseX + padding, mouseY + padding);
                   fill(relaxationColor);
-                  text("Relaxation: " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
+                  text("Relaxation " + round(relaxationAverageList[i]), mouseX + padding, mouseY + padding * 2);
                   popStyle();
                 }
               }
@@ -336,18 +352,20 @@ class LineChart {
           noStroke();
           
           if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-            if(mouseY >= visX + dotSize && mouseY <= visX + dotSize + visHeight){
+            if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
               fill(250);
-              rect(thisX - dotSize/2, visX + dotSize + 30, dotSize, visHeight);
+              rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
               
               pushStyle();
               fill(255);
               stroke(textLightColor);
-              rect(mouseX, mouseY, 120, 60);
+              rect(mouseX, mouseY, 160, padding*4);
               fill(attentionColor);
-              text("Attention: " + assessmentData[i+6], mouseX + padding, mouseY + padding);
+              text("Attention " + assessmentData[i+6], mouseX + padding, mouseY + padding);
               fill(relaxationColor);
-              text("Relaxation: " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
+              text("Relaxation " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
+              fill(textDarkColor);
+              text("Feeling " + assessmentData[i], mouseX + padding, mouseY + padding * 3);
               popStyle();
             }
           }
@@ -418,18 +436,17 @@ class LineChart {
   void displayThumbs(int i){
     if(screenshots.get(i) != "" && screenshots.get(i) != null){
       if(
-        mouseX > previousX.get(i)
+        mouseX >= previousX.get(i)
         &&
-        mouseX < thisX.get(i)
+        mouseX <= thisX.get(i)
         &&
-        mouseY > visX
+        mouseY >= upperBoundary
         &&
-        mouseY < visHeight + visX
+        mouseY <= lowerBoundary
       ){
         PImage screenshotImg = loadImage(screenshots.get(i));
         //imageMode(CENTER);
         currentImg = i;
-        
         
         fill(255);
         stroke (85,26,139);
@@ -440,12 +457,10 @@ class LineChart {
         pushStyle();
         textAlign(LEFT);
         fill(attentionColor);
-        text("Attention " + thisAtt.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding);
+        text("Attention " + (int)map(thisAtt.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
-        text("Relaxatation " + thisRelax.get(i), thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        text("Relaxatation " + (int)map(thisRelax.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
         popStyle();
-        
-  
       } else {
       }
     }
@@ -477,24 +492,18 @@ class LineChart {
     );
     noStroke();
     
+    //int step;
     
-    int step;
+    //if(_listSize <= 10000) {
+    //  step = 100;
+    //} else if(_listSize <=100000) {
+    //  step = 1000;
+    //} else {
+    //  step = 10000;
+    //}
     
-    if(_listSize <= 10000) {
-      println("<= 10000 " + _listSize);
-      step = 100;
-    } else if(_listSize <=100000) {
-      println("<= 100000 " + _listSize);
-      step = 1000;
-    } else {
-      println("big");
-      step = 10000;
-    }
-    
-    
-    
-    
-    if(i % step == 0 && thisTime.get(i) != 0) {
+    //if(i % step == 0 && thisTime.get(i) != 0) {
+    if(i % 5 == 0) {
       fill(textDarkColor);
       text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
     }
@@ -515,25 +524,28 @@ class LineChart {
       if(fileName != null){
         for(int i = 0; i < _listSize; i++){
           if(fileName[0].charAt(0) != '.'){
-            float thisX = i * stepSize + visX + stepSize/2;
-            if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
-              if(type == "averages"){
-                if(mouseY >= visX && mouseY <= visX + visHeight + dotSize/2){
-                  currentPage = "singleSession";
-                  cp5.getTab("singleSession").bringToFront();
-                  currentSession = sessionFolders[i];
-                  cp5.getController("overall").show();
-                  cp5.getController("session").setLabel("< "+ sessionFolders[i]);
-                  currentItem = i;
+            if(currentPage == "eegActivity"){
+              if(type == "values" && i == currentImg && mouseY <= lowerBoundary && mouseY >= upperBoundary){
+                if(mouseX >= thisX.get(i) - dotSize/2 && mouseX <= thisX.get(i) + dotSize/2){
+                  modal = true;
+                  openModal(screenshots.get(currentImg));
+                }
+              }
+            } else {
+              float thisX = i * stepSize + visX + stepSize/2;
+              if(mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2){
+                if(type == "averages"){
+                  if(mouseY >= upperBoundary && mouseY <= lowerBoundary){
+                    currentPage = "singleSession";
+                    cp5.getTab("singleSession").bringToFront();
+                    currentSession = sessionFolders[i];
+                    cp5.getController("overall").show();
+                    cp5.getController("session").setLabel("< "+ sessionFolders[i]);
+                    currentItem = i;
+                  }
                 }
               }
             }
-            
-            if(type == "values" && i == currentImg && mouseY >= visX && currentPage == "eegActivity"){
-              modal = true;
-              openModal(screenshots.get(currentImg));
-            }
-            
           }
         }
       }
