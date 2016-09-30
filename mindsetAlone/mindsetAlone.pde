@@ -31,7 +31,7 @@ void setup() {
 }
 void draw() {
   for (int  a=0; a<graph.length; a++) {
-    line(a, height, height-graph[a]*height/100, a);
+    line(a, 0, a, height-graph[a]*height/100);
   }
 }
 
