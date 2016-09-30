@@ -6,11 +6,11 @@ int attention;
 int meditation;
 int signalQuality;
 PrintWriter writer=createWriter("isolated-mindset-test.txt");
-int [] graph;
+graphBuffer grap0, grap1;
 void setup() {
   boolean connected=false;
   longTimer=new Clock();
-  frameRate(30);
+  frameRate(90);
   writer.println("data=[");
   thread("miniThreadLog");
   println("waiting for mindset to be connected");
@@ -26,19 +26,25 @@ void setup() {
       delay(600);
     }
   }
-  size(300, 200);
-  graph=new int[width];
+  size(700, 200);
+  
+  grap0=new graphBuffer(width);
+  grap1=new graphBuffer(width);
+  
 }
 void draw() {
   background(255);
-  for (int  a=0; a<graph.length; a++) {
-    line(a, height, a, height-graph[a]*height/100);
-  }
-  float clog=0;
-  while((clog)<0.99999){
+  stroke(0,0,0);
+  grap0.draw();
+  stroke(255,0,0);
+  
+  grap1.draw();
+  //here I am trying to simulate a very busy process
+  /*float clog=0;
+  /*while ((clog)<0.99999997) {
     clog=random(1);
-  }
-  println(longTimer.get()+"att"+attention);
+  }*/
+  //println(longTimer.get()+"att"+attention);
 }
 
 public void poorSignalEvent(int sig) {
@@ -47,10 +53,6 @@ public void poorSignalEvent(int sig) {
 
 void attentionEvent(int attentionLevel) {
   attention = attentionLevel;
-  for (int  a=graph.length-1; a>0; a--) {
-    graph[a]=graph[a-1];
-  }
-  graph[0]=attention;
 }
 
 void meditationEvent(int meditationLevel) {
@@ -73,11 +75,19 @@ void blinkEvent(int strength) {
 }
 
 void rawEvent(int[] values) {
+  //so this works pretty much like an audio buffer.
+  //the sampling fq is 512 and the buffer size aswell, and is dumped here each second.
+  for(int a=0; a<values.length; a++){
+    grap1.add(values[a]);
+  }
+  //println(values.length); 
   //println("rawEvent: " + values);
 }
 
+
 void eegEvent(int delta, int theta, int low_alpha, 
   int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
+    grap0.add(mid_gamma/100);
 }
 //functions to get more easily millis from a moment. 
 //Starting point is when startMillis(), and getrlMillis returns millis from that point 
@@ -101,4 +111,22 @@ void exit() {
   writer.println("]");
   writer.flush(); // Write the remaining data
   writer.close(); // Finish the file
+}
+class graphBuffer {
+  int [] graph;
+  graphBuffer(int len) {
+    graph=new int[len];
+  }
+  void add(int val) {
+    for (int  a=graph.length-1; a>0; a--) {
+      graph[a]=graph[a-1];
+    }
+    graph[0]=val;
+  }
+
+  void draw() {
+    for (int  a=0; a<graph.length; a++) {
+      line(a, height, a, height-graph[a]*height/100);
+    }
+  }
 }
