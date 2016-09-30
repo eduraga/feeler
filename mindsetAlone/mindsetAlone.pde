@@ -34,7 +34,11 @@ void draw() {
   for (int  a=0; a<graph.length; a++) {
     line(a, height, a, height-graph[a]*height/100);
   }
-  //println(longTimer.get()+"att"+attention);
+  float clog=0;
+  while((clog)<0.99999){
+    clog=random(1);
+  }
+  println(longTimer.get()+"att"+attention);
 }
 
 public void poorSignalEvent(int sig) {
