@@ -1,6 +1,7 @@
 //atomics are variables that make sure not to be accessed twice at the same time, avoiding halts
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -236,36 +237,36 @@ class Logger extends Thread {
     //if it doesnt belong, means that we are writing a new timestamp
     //should we also reset all the data to zero in this case?
     if(!timestampBelongs){
-      currentLogTimestamp=longTimer.get();
+      currentLogTimestamp.set(longTimer.get());
     }
     return (timestampBelongs);
   }
 
   //events that may not be included in each line
-  public void _poorSignalEvent(int sig, long timestamp) {
+  public void _poorSignalEvent(int a, long timestamp) {
   }
-  public void _blinkEvent(int strength, long timestamp){
+  public void _blinkEvent(int a, long timestamp){
     //this one is not required to be updated
     //make the data ready for the log
     varsToLog[8].set(a)/*blinkSt*/;
   }
-  public void _rawEvent(int[] values, long timestamp){
+  public void _rawEvent(int[] a, long timestamp){
   }
 
   //events that we require to be logged on each line
-  public void _attentionEvent(int attentionLevel, long timestamp) {
+  public void _attentionEvent(int a, long timestamp) {
     //set the flag of addconcentration happened to true
     requiredAdds[1].set(true);
     //check if this event timestampBelongs to the current sample
-    timestampBelongs(long timestamp);
+    timestampBelongs(timestamp);
     //make the data ready for the log
     varsToLog[9].set(a)/*attention*/;
   }
-  public void _meditationEvent(int meditationLevel, long timestamp) {
+  public void _meditationEvent(int a, long timestamp) {
     //set the flag of addmeditation happened to true
     requiredAdds[2].set(true);
     //check if this event timestampBelongs to the current sample
-    timestampBelongs(long timestamp);
+    timestampBelongs( timestamp);
     //make the data ready for the log
     varsToLog[10].set(a);/*meditation*/
   }
@@ -273,7 +274,7 @@ class Logger extends Thread {
     //set the flag of addeeg happened to true
     requiredAdds[0].set(true);
     //check if this event timestampBelongs to the current sample
-    timestampBelongs(long timestamp);
+    timestampBelongs( timestamp);
     //make the data ready for the log
     varsToLog[0].set(a)/*delta1*/;
     varsToLog[1].set(b)/*theta1*/;
