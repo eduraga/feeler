@@ -10,7 +10,7 @@ int [] graph;
 void setup() {
   boolean connected=false;
   longTimer=new Clock();
-  frameRate(1);
+  frameRate(30);
   writer.println("data=[");
   thread("miniThreadLog");
   println("waiting for mindset to be connected");
@@ -30,9 +30,11 @@ void setup() {
   graph=new int[width];
 }
 void draw() {
+  background(255);
   for (int  a=0; a<graph.length; a++) {
-    line(a, 0, a, height-graph[a]*height/100);
+    line(a, height, a, height-graph[a]*height/100);
   }
+  //println(longTimer.get()+"att"+attention);
 }
 
 public void poorSignalEvent(int sig) {
@@ -41,7 +43,7 @@ public void poorSignalEvent(int sig) {
 
 void attentionEvent(int attentionLevel) {
   attention = attentionLevel;
-  for (int  a=1; a<graph.length; a++) {
+  for (int  a=graph.length-1; a>0; a--) {
     graph[a]=graph[a-1];
   }
   graph[0]=attention;
