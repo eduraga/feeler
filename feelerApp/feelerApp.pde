@@ -209,7 +209,7 @@ Clock longTimer=new Clock();
 Logger logger;
 //logger.start();
 public void setup() {
-  logger=new Logger(50);
+  logger=new Logger();
   font = createFont("GlacialIndifference-Regular-48", 12);
   surface.setTitle("Feeler");
   smooth();
@@ -857,7 +857,7 @@ public void draw() {
   }
 
   if (simulateMindSet) {
-    logger.simulate();
+    simulate();
   }
 
   textAlign(CENTER);
@@ -1667,7 +1667,7 @@ void updateBoxData() {
 void exit() {
   println("exiting");
   if (!simulateMindSet) {
-    logger.mindSet.quit();
+    mindSet.quit();
   }
 
   println("closeWindow");
