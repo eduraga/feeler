@@ -468,6 +468,7 @@ void simulate() {
 }
 
 public void poorSignalEvent(int sig) {
+  logger.poorSignalEvent(sig, longTimer.get());
   //signalWidget.add(200-sig);
   //println("poorSignal: " + sig);
   
@@ -476,6 +477,7 @@ public void poorSignalEvent(int sig) {
   } else {
     mindSetOK = true;
   }
+  
 }
 
 //void serialEvent(Serial p) { 
@@ -495,27 +497,32 @@ public void poorSignalEvent(int sig) {
 //}
 
 public void attentionEvent(int attentionLevel) {
+  logger.attentionEvent(attentionLevel, longTimer.get());
   //attentionWidget.add(attentionLevel);
   //println("attentionLevel: " + attentionLevel);
   attention = attentionLevel;
 }
 
 public void meditationEvent(int meditationLevel) {
+  logger.meditationEvent(meditationLevel, longTimer.get());
   //meditationWidget.add(meditationLevel);
   //println("meditationLevel: " + meditationLevel);
   meditation = meditationLevel;
 }
 
 public void blinkEvent(int strength){
+  logger.meditationEvent(strength, longTimer.get());
   println("blinkEvent: " + strength);
 }
 
 public void rawEvent(int[] values){
+  logger.rawEvent(values, longTimer.get());
   //println("rawEvent: " + values);
 }
 
 public void eegEvent(int delta, int theta, int low_alpha, 
-int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {  
+int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
+  logger.rawEvent(delta,theta,low_alpha,high_alpha,low_beta,high_beta,low_gamma,mid_gamma,longTimer.get());
   delta1 = delta;
   theta1 = theta;
   low_alpha1 = low_alpha;
@@ -524,15 +531,5 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   high_beta1 = high_beta;
   low_gamma1 = low_gamma;
   mid_gamma1 = mid_gamma;
-  
   println("delta1: " + delta1);
-  
-  //deltaWidget.add(delta);
-  //thetaWidget.add(theta);
-  //lowAlphaWidget.add(low_alpha);
-  //highAlphaWidget.add(high_alpha);
-  //lowBetaWidget.add(low_beta);
-  //highBetaWidget.add(high_beta);
-  //lowGammaWidget.add(low_gamma);
-  //midGammaWidget.add(mid_gamma);
 }

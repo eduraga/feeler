@@ -106,6 +106,7 @@ class Logger extends Thread {
   //contains all the items to be written to the log. More in the body of this class.
   private AtomicInteger [] varsToLog = new AtomicInteger[11];
   private AtomicBoolean [] requiredAdds = new AtomicBoolean[3];
+  private AtomicLong currentLogTimestamp = new AtomicLong(-1);
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=990;//milliseconds sampling interval.
   private Clock timer=new Clock();
@@ -162,36 +163,7 @@ class Logger extends Thread {
     }
   }
 
-  synchronized void addeeg(int a, int b, int c, int d, int e, int f, int g, int h) {
-    //set the flag of addeeg happened to true
-    requiredAdds[0].set(true);
-    //make the data ready for the log
-    varsToLog[0].set(a)/*delta1*/;
-    varsToLog[1].set(b)/*theta1*/;
-    varsToLog[2].set(c)/*low_alpha1*/;
-    varsToLog[3].set(d)/*high_alpha1*/;
-    varsToLog[4].set(e)/*low_beta1*/;
-    varsToLog[5].set(f)/*high_beta1*/;
-    varsToLog[6].set(g)/*low_gamma1*/;
-    varsToLog[7].set(h)/*mid_gamma1*/;
-  };
-  synchronized void addattention(int a) {
-    //set the flag of addconcentration happened to true
-    requiredAdds[1].set(true);
-    //make the data ready for the log
-    varsToLog[9].set(a)/*attention*/;
-  }
-  synchronized void addmeditation(int a) {
-    //set the flag of addmeditation happened to true
-    requiredAdds[2].set(true);
-    //make the data ready for the log
-    varsToLog[10].set(a);/*meditation*/
-  }
-  synchronized void addBlink(int a) {
-    //this one is not required to be updated
-    //make the data ready for the log
-    varsToLog[8].set(a)/*blinkSt*/;
-  }
+
   //sets the required adds to false, to indicate that they have been written already, and we need to receive them again in order to write them again
   void resetRequiredVars() {
     for (int a =0; a<varsToLog.length; a++) {
@@ -215,59 +187,108 @@ class Logger extends Thread {
       if (active.get()) {
         //you can go by two timing algorhythms:
         //the current one is simpler, but may accumulate displacement from the real time, as the time reference is always
-        //the last time. The other option is to evaluate the timer in reference to a modulus of a non-restarting time, and if 
+        //the last time. The other option is to evaluate the timer in reference to a modulus of a non-restarting time, and if
         //a sample gets delayed, the next frame will be shorter in compensation
         if (timer.get()>=sampleInterval) {
           //here we wait to receive all the pieces of data in the current loop, and then enqueue the string to the file writing thread.
-          //if too much time passes, then we just ignore the lacking data. This will result in -1's on the log
-          while (!allRequiredVarsHaveBeenReceived()&&timer.get()<1200) {
-            
-            try {
-              Thread.sleep(1);
-            } 
-            catch (InterruptedException e) {
-              println("exception in thread sleep at logger class");
-              println(e);
-            }
+          //if too much time passes, then we just ignore the lack of data. This will result in -1's on the log
+          if (allRequiredVarsHaveBeenReceived()|| !timestampBelongs(timer.get())) {//timer.get()<1090
+            String tt=""+(int) (currentLogTimestamp.get());
+            tt+=(TAB);
+            tt+=(varsToLog[0].get()/*delta1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[1].get()/*theta1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[2].get()/*low_alpha1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[3].get()/*high_alpha1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[4].get()/*low_beta1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[5].get()/*high_beta1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[6].get()/*low_gamma1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[7].get()/*mid_gamma1*/);
+            tt+=(TAB);
+            tt+=(varsToLog[8].get()/*blinkSt*/);
+            tt+=(TAB);
+            tt+=(varsToLog[9].get()/*attention*/);
+            tt+=(TAB);
+            tt+=(varsToLog[10].get()/*meditation*/);
+            tt+=(TAB);
+            tt+=(timeline);
+            writer.add(tt);
+            //writer.refresh();
+            resetRequiredVars();
+            timer.restart();
+            currentLogTimestamp.set(-1);
           }
-          String tt=""+(int) (longTimer.get());
-          tt+=(TAB);
-          tt+=(varsToLog[0].get()/*delta1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[1].get()/*theta1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[2].get()/*low_alpha1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[3].get()/*high_alpha1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[4].get()/*low_beta1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[5].get()/*high_beta1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[6].get()/*low_gamma1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[7].get()/*mid_gamma1*/);
-          tt+=(TAB);
-          tt+=(varsToLog[8].get()/*blinkSt*/);
-          tt+=(TAB);
-          tt+=(varsToLog[9].get()/*attention*/);
-          tt+=(TAB);
-          tt+=(varsToLog[10].get()/*meditation*/);
-          tt+=(TAB);
-          tt+=(timeline);
-          writer.add(tt);
-          //writer.refresh();
-          resetRequiredVars();
-          timer.restart();
         }
       }
     }
   }
+  private boolean timestampBelongs(long timestamp){
+    //cache the value of the currentLogTimestamp
+    long ctst=currentLogTimestamp.get();
+    //if the currentLogTimestamp is not -1 and the distance of the event is shorter than 90 ms, timestampBelongs is true. otherwise false
+    boolean timestampBelongs=(ctst!=-1)&&(timestamp-ctst<90);
+    //if it doesnt belong, means that we are writing a new timestamp
+    //should we also reset all the data to zero in this case?
+    if(!timestampBelongs){
+      currentLogTimestamp=longTimer.get();
+    }
+    return (timestampBelongs);
+  }
+
+  //events that may not be included in each line
+  public void _poorSignalEvent(int sig, long timestamp) {
+  }
+  public void _blinkEvent(int strength, long timestamp){
+    //this one is not required to be updated
+    //make the data ready for the log
+    varsToLog[8].set(a)/*blinkSt*/;
+  }
+  public void _rawEvent(int[] values, long timestamp){
+  }
+
+  //events that we require to be logged on each line
+  public void _attentionEvent(int attentionLevel, long timestamp) {
+    //set the flag of addconcentration happened to true
+    requiredAdds[1].set(true);
+    //check if this event timestampBelongs to the current sample
+    timestampBelongs(long timestamp);
+    //make the data ready for the log
+    varsToLog[9].set(a)/*attention*/;
+  }
+  public void _meditationEvent(int meditationLevel, long timestamp) {
+    //set the flag of addmeditation happened to true
+    requiredAdds[2].set(true);
+    //check if this event timestampBelongs to the current sample
+    timestampBelongs(long timestamp);
+    //make the data ready for the log
+    varsToLog[10].set(a);/*meditation*/
+  }
+  public void _eegEvent(int a, int b, int c, int d, int e, int f, int g, int h, long timestamp) {
+    //set the flag of addeeg happened to true
+    requiredAdds[0].set(true);
+    //check if this event timestampBelongs to the current sample
+    timestampBelongs(long timestamp);
+    //make the data ready for the log
+    varsToLog[0].set(a)/*delta1*/;
+    varsToLog[1].set(b)/*theta1*/;
+    varsToLog[2].set(c)/*low_alpha1*/;
+    varsToLog[3].set(d)/*high_alpha1*/;
+    varsToLog[4].set(e)/*low_beta1*/;
+    varsToLog[5].set(f)/*high_beta1*/;
+    varsToLog[6].set(g)/*low_gamma1*/;
+    varsToLog[7].set(h)/*mid_gamma1*/;
+  }
 }
 
 
-//functions to get more easily millis from a moment. 
-//Starting point is when startMillis(), and getrlMillis returns millis from that point 
+//functions to get more easily millis from a moment.
+//Starting point is when startMillis(), and getrlMillis returns millis from that point
 class Clock {
   private long startMillis=0;
 
