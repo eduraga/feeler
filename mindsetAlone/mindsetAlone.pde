@@ -49,14 +49,17 @@ void draw() {
 
 public void poorSignalEvent(int sig) {
   signalQuality=sig;
+  println("poorsignalev"+longTimer.get());
 }
 
 void attentionEvent(int attentionLevel) {
   attention = attentionLevel;
+  println("attentionev"+longTimer.get());
 }
 
 void meditationEvent(int meditationLevel) {
   meditation = meditationLevel;
+  println("meditationev"+longTimer.get());
 }
 
 void miniThreadLog() {
@@ -71,7 +74,8 @@ void miniThreadLog() {
 }
 
 void blinkEvent(int strength) {
-  println("blinkEvent: " + strength);
+  //println("blinkEvent: " + strength);
+  println("blinkev"+longTimer.get());
 }
 
 void rawEvent(int[] values) {
@@ -82,12 +86,14 @@ void rawEvent(int[] values) {
   }
   //println(values.length); 
   //println("rawEvent: " + values);
+  println("rawdata"+longTimer.get());
 }
 
 
 void eegEvent(int delta, int theta, int low_alpha, 
   int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
     grap0.add(mid_gamma/100);
+    println("eegev"+longTimer.get());
 }
 //functions to get more easily millis from a moment. 
 //Starting point is when startMillis(), and getrlMillis returns millis from that point 

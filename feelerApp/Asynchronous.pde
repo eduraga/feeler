@@ -104,7 +104,7 @@ class asyncBufferedOutput extends Thread {
 //function that will handle logging.
 class Logger extends Thread {
   //contains all the items to be written to the log. More in the body of this class.
-  private AtomicInteger [] varsToLog = new AtomicInteger[10];
+  private AtomicInteger [] varsToLog = new AtomicInteger[11];
   private AtomicBoolean [] requiredAdds = new AtomicBoolean[3];
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=990;//milliseconds sampling interval.
@@ -219,7 +219,9 @@ class Logger extends Thread {
         //a sample gets delayed, the next frame will be shorter in compensation
         if (timer.get()>=sampleInterval) {
           //here we wait to receive all the pieces of data in the current loop, and then enqueue the string to the file writing thread.
-          while (!allRequiredVarsHaveBeenReceived()) {
+          //if too much time passes, then we just ignore the lacking data. This will result in -1's on the log
+          while (!allRequiredVarsHaveBeenReceived()&&timer.get()<1200) {
+            
             try {
               Thread.sleep(1);
             } 
@@ -323,16 +325,19 @@ public void attentionEvent(int attentionLevel) {
   //attentionWidget.add(attentionLevel);
   //println("attentionLevel: " + attentionLevel);
   attention = attentionLevel;
+  logger.addattention(attentionLevel);
 }
 
 public void meditationEvent(int meditationLevel) {
   //meditationWidget.add(meditationLevel);
   //println("meditationLevel: " + meditationLevel);
   meditation = meditationLevel;
+  logger.addmeditation(meditationLevel);
 }
 
 public void blinkEvent(int strength) {
   println("blinkEvent: " + strength);
+  logger.addBlink(strength);
 }
 
 public void rawEvent(int[] values) {
@@ -348,7 +353,8 @@ public void eegEvent(int delta, int theta, int low_alpha, int high_alpha, int lo
   high_beta1 = high_beta;
   low_gamma1 = low_gamma;
   mid_gamma1 = mid_gamma;
-  println("delta1: " + delta1);
+  logger.addeeg(delta,theta,low_alpha,high_alpha,low_beta,high_beta,low_gamma,mid_gamma);
+  //println("delta1: " + delta1);
 }
 
 //functions to get more easily millis from a moment. 
