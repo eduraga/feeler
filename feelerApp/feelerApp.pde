@@ -959,11 +959,13 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
-
+    String SLINE="time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline";
     filename = sessionPath + "/brain-activity.tsv";
 
     output = createWriter(filename);
-    output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
+    logger.setPath(sessionPath+"/brain-activity-new.tsv");
+    logger.writer.add(SLINE);
+    output.println(SLINE);
     break;
   case "singleSession":
     println("singleSession page");
@@ -1656,7 +1658,12 @@ void updateBoxData() {
 void exit() {
   println("exiting");
   if (!simulateMindSet) {
-    mindSet.quit();
+    try {
+      mindSet.quit();
+    }
+    catch(Exception e) {
+      println("didnt exit mindset because was not yet initialized");
+    }
   }
 
   println("closeWindow");

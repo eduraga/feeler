@@ -92,13 +92,13 @@ class asyncBufferedOutput extends Thread {
     }
   }
   public synchronized void add(String what) {
-    String clen="0";
+    //String clen="0";
     synchronized(bufferLock) {
       buffer=append(buffer, what);
       bufferLengthCache.set(buffer.length);
-      clen=what+"@["+bufferLengthCache.get()+"]rc"+recording;
+      //clen=what+"@["+bufferLengthCache.get()+"]rc"+recording;
     }
-    println(clen);
+    //println(clen);
     //cacheLength=bufferLengthCache.get();
   }
 }
@@ -108,6 +108,8 @@ class Logger extends Thread {
   private AtomicInteger [] varsToLog = new AtomicInteger[11];
   private AtomicBoolean [] requiredAdds = new AtomicBoolean[3];
   private AtomicLong currentLogTimestamp = new AtomicLong(-1);
+  // integer that logging vars will contain if they are not filled and too much time passes.
+  int fallbackInt=0;//-1 would be ideal, but need an adaptation in behalf of graphing the files
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=990;//milliseconds sampling interval.
   private Clock timer=new Clock();
@@ -119,7 +121,7 @@ class Logger extends Thread {
     //d1 =th1 =la1 =ha1 =lb1 =hb1 =lg1 =mg1 =bl= att= med= tline=-1;
     //init vars to log and requireds. As atomicIntegers, they need individual treatment
     for (int a =0; a<varsToLog.length; a++) {
-      varsToLog[a]=new AtomicInteger(-1);
+      varsToLog[a]=new AtomicInteger(fallbackInt);
     }
     for (int a =0; a<requiredAdds.length; a++) {
       requiredAdds[a]=new AtomicBoolean(false);
@@ -168,7 +170,7 @@ class Logger extends Thread {
   //sets the required adds to false, to indicate that they have been written already, and we need to receive them again in order to write them again
   void resetRequiredVars() {
     for (int a =0; a<varsToLog.length; a++) {
-      varsToLog[a].set(-1);
+      varsToLog[a].set(fallbackInt);
     }
     for (int a =0; a<requiredAdds.length; a++) {
       requiredAdds[a].set(false);
@@ -186,95 +188,84 @@ class Logger extends Thread {
   void run() {
     while (true) {
       if (active.get()) {
-        //you can go by two timing algorhythms:
-        //the current one is simpler, but may accumulate displacement from the real time, as the time reference is always
-        //the last time. The other option is to evaluate the timer in reference to a modulus of a non-restarting time, and if
-        //a sample gets delayed, the next frame will be shorter in compensation
-        if (timer.get()>=sampleInterval) {
-          //here we wait to receive all the pieces of data in the current loop, and then enqueue the string to the file writing thread.
-          //if too much time passes, then we just ignore the lack of data. This will result in -1's on the log
-          if (allRequiredVarsHaveBeenReceived()|| !timestampBelongs(timer.get())) {//timer.get()<1090
-            String tt=""+(int) (currentLogTimestamp.get());
-            tt+=(TAB);
-            tt+=(varsToLog[0].get()/*delta1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[1].get()/*theta1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[2].get()/*low_alpha1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[3].get()/*high_alpha1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[4].get()/*low_beta1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[5].get()/*high_beta1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[6].get()/*low_gamma1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[7].get()/*mid_gamma1*/);
-            tt+=(TAB);
-            tt+=(varsToLog[8].get()/*blinkSt*/);
-            tt+=(TAB);
-            tt+=(varsToLog[9].get()/*attention*/);
-            tt+=(TAB);
-            tt+=(varsToLog[10].get()/*meditation*/);
-            tt+=(TAB);
-            tt+=(timeline);
-            writer.add(tt);
-            //writer.refresh();
-            resetRequiredVars();
-            timer.restart();
-            currentLogTimestamp.set(-1);
-          }
+        
+        long CLTS=currentLogTimestamp.get();
+        //if the first data timestamp is older than 300 ms, we probably will not receive any more data for this sample.
+        if (CLTS!=-1&&longTimer.get()-CLTS>=300) {
+        
+          String tt=""+((int) timer.get()/1000);
+          tt+=(TAB);
+          tt+=(varsToLog[0].get()/*delta1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[1].get()/*theta1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[2].get()/*low_alpha1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[3].get()/*high_alpha1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[4].get()/*low_beta1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[5].get()/*high_beta1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[6].get()/*low_gamma1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[7].get()/*mid_gamma1*/);
+          tt+=(TAB);
+          tt+=(varsToLog[8].get()/*blinkSt*/);
+          tt+=(TAB);
+          tt+=(varsToLog[9].get()/*attention*/);
+          tt+=(TAB);
+          tt+=(varsToLog[10].get()/*meditation*/);
+          tt+=(TAB);
+          tt+=(timeline);
+          //if(!test){
+          //  tt+=("incomplete");
+          //}
+          writer.add(tt);
+          //writer.refresh();
+          resetRequiredVars();
+       
+          currentLogTimestamp.set(-1);
         }
       }
+      //}
     }
-  }
-  private boolean timestampBelongs(long timestamp){
-    //cache the value of the currentLogTimestamp
-    long ctst=currentLogTimestamp.get();
-    //if the currentLogTimestamp is not -1 and the distance of the event is shorter than 90 ms, timestampBelongs is true. otherwise false
-    boolean timestampBelongs=(ctst!=-1)&&(timestamp-ctst<90);
-    //if it doesnt belong, means that we are writing a new timestamp
-    //should we also reset all the data to zero in this case?
-    if(!timestampBelongs){
-      currentLogTimestamp.set(longTimer.get());
-    }
-    return (timestampBelongs);
   }
 
-  //events that may not be included in each line
-  public void _poorSignalEvent(int a, long timestamp) {
+  private synchronized void incomingTimeStamp(long eventTime){
+    //set the currentTimestamp to the provided if the current timestamp is set to -1
+    //currentTimestamp will be -1 if all the data has been written, or the log is starting.
+    //this indigates that the incoming set of data is the first, and the log timestamp will belong 
+    //to the time that data came.
+    if(currentLogTimestamp.get()==-1){
+      currentLogTimestamp.set(eventTime);
+    }
   }
-  public void _blinkEvent(int a, long timestamp){
-    //this one is not required to be updated
+  //events that may not be included in each line and dont use regular timestamp
+  //public void _poorSignalEvent(int a, long timestamp) {
+  //}
+  //public void _blinkEvent(int a, long timestamp) {
+    //this one is timestamp independent.
     //make the data ready for the log
-    varsToLog[8].set(a)/*blinkSt*/;
-  }
-  public void _rawEvent(int[] a, long timestamp){
+    //varsToLog[8].set(a)/*blinkSt*/;
+  //}
+  public void _rawEvent(int[] a, long timestamp) {
+    //incomingTimeStamp(timestamp);
   }
 
   //events that we require to be logged on each line
   public void _attentionEvent(int a, long timestamp) {
-    //set the flag of addconcentration happened to true
-    requiredAdds[1].set(true);
-    //check if this event timestampBelongs to the current sample
-    timestampBelongs(timestamp);
-    //make the data ready for the log
+    incomingTimeStamp(timestamp);
     varsToLog[9].set(a)/*attention*/;
   }
   public void _meditationEvent(int a, long timestamp) {
-    //set the flag of addmeditation happened to true
-    requiredAdds[2].set(true);
-    //check if this event timestampBelongs to the current sample
-    timestampBelongs( timestamp);
+    incomingTimeStamp(timestamp);
     //make the data ready for the log
     varsToLog[10].set(a);/*meditation*/
+    println("_meditationevent");
   }
   public void _eegEvent(int a, int b, int c, int d, int e, int f, int g, int h, long timestamp) {
-    //set the flag of addeeg happened to true
-    requiredAdds[0].set(true);
-    //check if this event timestampBelongs to the current sample
-    timestampBelongs( timestamp);
+    incomingTimeStamp(timestamp);
     //make the data ready for the log
     varsToLog[0].set(a)/*delta1*/;
     varsToLog[1].set(b)/*theta1*/;

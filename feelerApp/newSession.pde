@@ -156,6 +156,7 @@ void newSession(){
       textSize(24); //added by Eva
       text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
       recording = true;
+      logger.restart();
       timerOn = true;
       timeline = 1;
       fill(textDarkColor);
@@ -468,7 +469,7 @@ void simulate() {
 }
 
 public void poorSignalEvent(int sig) {
-  logger._poorSignalEvent(sig, longTimer.get());
+  //logger._poorSignalEvent(sig, longTimer.get());
   //signalWidget.add(200-sig);
   //println("poorSignal: " + sig);
   
@@ -531,5 +532,5 @@ int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   high_beta1 = high_beta;
   low_gamma1 = low_gamma;
   mid_gamma1 = mid_gamma;
-  println("delta1: " + delta1);
+  //println("delta1: " + delta1);
 }
