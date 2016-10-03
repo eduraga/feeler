@@ -56,7 +56,7 @@ class LineChart {
                //variable that helps displaying all screenshot, but not repeating them.
                int lastScreenshotInDisplay=0;
                for (int j = 0; j < _listSize; j+=grainSize) {
-                 
+                 println("graph-grain-"+j);
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
                    thisX.set(j, j * visWidth/data.data.length + visX);
@@ -122,7 +122,7 @@ class LineChart {
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
                      //if(int(screenshotTimeId[0])>=int(data.data[j][0])){
-                     if(abs(int(screenshotTimeId[0])-int(data.data[j][0]))<1000){
+                     if(abs(int(screenshotTimeId[0])-int(data.data[j][0]))<2){
                        if(k>lastScreenshotInDisplay){
                          lastScreenshotInDisplay=k;
                          println("screenshotTimeId[0]: " + screenshotTimeId[0]);

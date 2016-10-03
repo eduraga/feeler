@@ -745,7 +745,7 @@ public void draw() {
     //feelerS.sendValues();
     try {
       feelerS.get();
-    } 
+    }
     catch (NullPointerException e) {
     }
   }
@@ -933,7 +933,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     if (!simulateBoxes) {
       try {
         feelerS.init("/dev/tty.Feeler-RNI-SPP");
-      } 
+      }
       catch (NullPointerException e) {
       }
     }
@@ -1561,6 +1561,9 @@ public void keyPressed() {
 }
 
 public void screenshot() {
+  thread('_screenshot()');
+}
+public void _screenshot(){
   try {
     Robot robot_Screenshot = new Robot();
     screenshot = new PImage(robot_Screenshot.createScreenCapture
@@ -1571,7 +1574,6 @@ public void screenshot() {
   }
   frame.setLocation(0, 0);
 }
-
 
 void folderSelected(File selection) {
   if (selection == null) {
@@ -1594,11 +1596,11 @@ void folderSelected(File selection) {
       }
       fis.close();
       fos.close();
-    } 
+    }
     catch (Exception e) {
       println( "Error occured at ... " );
       e.printStackTrace();
-    } 
+    }
     finally {
       // what to do when finished trying and catching ...
     }
@@ -1618,11 +1620,11 @@ void folderSelected(File selection) {
       }
       fis.close();
       fos.close();
-    } 
+    }
     catch (Exception e) {
       println( "Error occured at ... " );
       e.printStackTrace();
-    } 
+    }
     finally {
       // what to do when finished trying and catching ...
     }
@@ -1642,13 +1644,13 @@ void updateBoxData() {
 
       try {
         feelerS.sendValues();
-      } 
+      }
       catch (Exception e) {
       }
 
       try {
         feelerS.get();
-      } 
+      }
       catch (Exception e) {
       }
     }
