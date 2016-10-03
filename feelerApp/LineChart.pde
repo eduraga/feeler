@@ -50,11 +50,12 @@ class LineChart {
           _listSize = data.data.length;
           //max is to avoid grainsize to be zero if the file is shorter than 100 lines
           grainSize = max((int)data.data.length/100, 1);
-          //grainSize = (int)data.data.length/500;
-          //grainSize = 10;
 
-          //variable that helps displaying all screenshot, but not repeating them.
-          int lastScreenshotInDisplay=0;
+
+          //variables for screenshots display
+          File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
+          screenshotsArray = imgTempFolder.list();
+
           for (int j = 0; j < _listSize; j+=grainSize) {
             println("graph-grain-"+j);
             if (data.data[j][12] > 0 && j > grainSize) {
@@ -113,21 +114,19 @@ class LineChart {
               //////////////////////////////////////////////
 
               screenshots.set(j, "");
-
-              File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
-              screenshotsArray = imgTempFolder.list();
-
-
-              for (int k = 0; k < screenshotsArray.length; k++) {      
-                String screenshot = screenshotsArray[k]; 
-                String[] screenshotTimeId = splitTokens(screenshot, "-");
-                if(int(screenshotTimeId[0])>=int(data.data[j][0])){
-                //if (abs(int(screenshotTimeId[0])-int(data.data[j][0]))<2) {
-                  if (k>lastScreenshotInDisplay) {
-                    lastScreenshotInDisplay=k;
-                    println("screenshotTimeId[0]: " + screenshotTimeId[0]);
+              int thisTime=int(data.data[j][0]);
+              println(" for time "+thisTime+"["+j+"]");
+              for (int k = 0; k < screenshotsArray.length; k++) {
+                if (screenshotsArray[k]!=null) {
+                  String screenshot = screenshotsArray[k]; 
+                  println("   for scrnshot "+screenshot+"["+k+"]");
+                  int screenshotTimeId = int(splitTokens(screenshot, "-")[0]);
+                  if (screenshotTimeId<=thisTime) {
+                    println("   goes");
                     screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
-                    println(k+ ": " + screenshots.get(j));
+                    screenshotsArray[k]=null;
+                  }else{
+                    println("   doesnt go");
                   }
                 }
               }
@@ -464,6 +463,11 @@ class LineChart {
         text("Attention " + (int)map(thisAtt.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
         text("Relaxatation " + (int)map(thisRelax.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
+        if(debug){
+          fill(99);
+          String [] FNAME=screenshots.get(i).split("/");
+          text("  //img:" + FNAME[FNAME.length-1], thisX.get(i) - screenshotImg.height/6, mouseY+padding*1.5);
+        }
         popStyle();
       } else {
       }
