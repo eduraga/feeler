@@ -52,6 +52,8 @@ class LineChart {
                //grainSize = (int)data.data.length/500;
                //grainSize = 10;
                
+               //variable that helps displaying all screenshot, but not repeating them.
+               int lastScreenshotInDisplay=0;
                for (int j = 0; j < _listSize; j+=grainSize) {
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
@@ -112,13 +114,19 @@ class LineChart {
                    
                    File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
                    screenshotsArray = imgTempFolder.list();
-                   for(int k = 0; k < screenshotsArray.length; k++){
+                   
+                   
+                   for(int k = 0; k < screenshotsArray.length; k++){                     
                      String screenshot = screenshotsArray[k]; 
                      String[] screenshotTimeId = splitTokens(screenshot, "-");
-                     if(int(screenshotTimeId[0]) == int(data.data[j][0])){
-                       println("screenshotTimeId[0]: " + screenshotTimeId[0]);
-                       screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
-                       println(k+ ": " + screenshots.get(j));
+                     //if(int(screenshotTimeId[0])>=int(data.data[j][0])){
+                     if(abs(int(screenshotTimeId[0])-int(data.data[j][0]))<1000){
+                       if(k>lastScreenshotInDisplay){
+                         lastScreenshotInDisplay=k;
+                         println("screenshotTimeId[0]: " + screenshotTimeId[0]);
+                         screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
+                         println(k+ ": " + screenshots.get(j));
+                       }
                      }
                    }
                  }
