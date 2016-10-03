@@ -1560,10 +1560,8 @@ public void keyPressed() {
   }
 }
 
-public void screenshot() {
-  thread('_screenshot()');
-}
-public void _screenshot(){
+
+public void screenshot(){
   try {
     Robot robot_Screenshot = new Robot();
     screenshot = new PImage(robot_Screenshot.createScreenCapture
