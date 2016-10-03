@@ -48,13 +48,15 @@ class LineChart {
          //if(sessionFolders[i].charAt(0) == '2'){
              if(data.data != null){
                _listSize = data.data.length;
-               grainSize = (int)data.data.length/100;
+               //max is to avoid grainsize to be zero if the file is shorter than 100 lines
+               grainSize = max((int)data.data.length/100,1);
                //grainSize = (int)data.data.length/500;
                //grainSize = 10;
                
                //variable that helps displaying all screenshot, but not repeating them.
                int lastScreenshotInDisplay=0;
                for (int j = 0; j < _listSize; j+=grainSize) {
+                 
                  if (data.data[j][12] > 0 && j > grainSize) {
                    
                    thisX.set(j, j * visWidth/data.data.length + visX);
