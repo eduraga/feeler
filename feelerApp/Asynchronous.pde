@@ -140,8 +140,10 @@ class Logger extends Thread {
     active.set(false);
   }
   void pause(String reason) {
-    println(reason);
-    active.set(false);
+    if(active.get()){
+      println(reason);
+      active.set(false);
+    }
   }
   void restart() {
     if (!active.get()) {

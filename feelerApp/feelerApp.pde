@@ -1561,7 +1561,7 @@ public void keyPressed() {
 }
 
 
-public void screenshot(){
+public void screenshot() {
   try {
     Robot robot_Screenshot = new Robot();
     screenshot = new PImage(robot_Screenshot.createScreenCapture
