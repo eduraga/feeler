@@ -27,11 +27,11 @@ int triggerMedium = 50;
 int triggerHigh = 80;
 
 void newSession(){
-  
+
   if(boxState == 200){
     screenshotThresholds();
   }
-  
+
   if(debug || simulateMindSet || simulateBoxes){
     if(boxState >= 100){
       stroke(200);
@@ -44,7 +44,7 @@ void newSession(){
       line(0, height/2 + height/4 - height/8, width, height/2 + height/4 - height/8);
       stroke(200);
       line(0, height/2 + height/4, width, height/2 + height/4);
-      
+
       pushStyle();
       if(attention > triggerLow){
         if(attention < 75){
@@ -55,9 +55,9 @@ void newSession(){
       } else {
         fill(100,100,200);
       }
-      
+
       ellipse(width/2, map(attention, 0, 100, height/2 + height/4, height/4), 20, 20);
-  
+
       if(meditation > triggerLow){
         if(meditation < 75){
           fill(100,200,200);
@@ -71,21 +71,21 @@ void newSession(){
       popStyle();
     }
   }
-  
+
   //display status of boxes
   if(feelerS.checkConnection() || simulateBoxes){
     text("Boxes: ok", width/2, padding);
   } else {
     text("Boxes: disconnected", width/2, padding);
   }
-  
+
   //display status of MindWave
   if(mindSetOK || simulateMindSet){
     text("EEG headset: ok", width/2, padding*2);
   } else {
     text("EEG headset: check connection", width/2, padding*2);
   }
-  
+
   if(frameCount % 200 == 0){
     println("attention: " + attention);
     if(attention == 0 && meditation == 0){
@@ -94,18 +94,18 @@ void newSession(){
       cp5.getController("startSession").hide();
     }
   }
-  
+
   switch(boxState){
     case 0:
       pageH1("New session");
       textSize(20); //added by Eva
       //fill(100);//added by Eva
-      
+
       if (!mindSetOK && !simulateMindSet) {
         PImage one = loadImage("one.png");// Added by Eva
         image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
         text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-       
+
         if(!mindSetPortOk){
            try {
              //mindSetPort = new Serial(this, Serial.list()[2]);
@@ -144,7 +144,7 @@ void newSession(){
         image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
         PImage three = loadImage("three.png");// Added by Eva
         image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
-        
+
         cp5.getController("startSession").show();
       }
       break;
@@ -165,10 +165,10 @@ void newSession(){
       PImage meditatebox = loadImage("meditate_box.png");// Added by Eva
       image(meditatebox, padding + 80 + 80, headerHeight + padding + 120 + 30,270,386);// Added by Eva
       counterDisplay();
-      
+
       feelerS.setBoxState(1);
       feelerS.setBox2LedState(0);
-      
+
       if(sw.minute() == 0 && sw.second() == 0){
         println("End meditation");
         feelerS.setBoxState(3);
@@ -190,16 +190,16 @@ void newSession(){
       image(studybox, padding + 80 + 80, headerHeight + padding + 120 + 30,270,386);// Added by Eva
       timeline = 2;
       counterDisplay();
-      
+
       feelerS.setBoxState(3);
-      
+
       if(feelerS.getBoxesConnected() == 1 || simulateBoxes){
         int ledState = int(map(sw.getElapsedTime(), sw.countDownStart, 0, 1, 20));
         //println("getElapsedTime: " + sw.getElapsedTime() + ", sw.countDownStart: " + sw.countDownStart);
         println("ledState: " + ledState);
         // increase this from 0 to 20
         feelerS.setBox2LedState(ledState);
-        
+
         if(!timerOn){
           sw.start(countDownStartStudy);
           timerOn = true;
@@ -212,7 +212,7 @@ void newSession(){
           boxState = 300;
         }
       }
-        
+
       break;
     case 300:
       if(!recording) recording = true;
@@ -228,10 +228,10 @@ void newSession(){
       image(playbox, padding + 80 + 80, headerHeight + padding + 120 + 30,270,386);// Added by Eva
       timeline = 3;
       counterDisplay();
-      
+
       feelerS.setBoxState(4);
       feelerS.setBox2LedState(0);
-      
+
       if(!timerOn){
         cu.start();
         timerOn = true;
@@ -244,18 +244,17 @@ void newSession(){
       }
       break;
     case 400:
+      logger.pause("end of log");
       recording = false;
       timeline = 4;
-      
       pageH1("Personal experience");
       if(assessQuestion == 1){
         textSize(20);// added by Eva
         assess(assessQuestion, "/3 Select how you felt during:");
-        
         feelingRadioMeditation.draw();
         feelingRadioStudy.draw();
         feelingRadioPlay.draw();
-        
+
       } else if(assessQuestion == 2){
         textSize(20);// added by Eva
         assess(assessQuestion, "/3 Select how your level of relaxation during:");
@@ -272,7 +271,7 @@ void newSession(){
       } else if(assessQuestion == 4){
         textSize(20);// added by Eva
         textAlign(LEFT);
-        assess(assessQuestion, "Answers saved!\nYour data is being loaded");   
+        assess(assessQuestion, "Answers saved!\nYour data is being loaded");
         if(!timerOn){
           timerOn = true;
           //cp5.getController("stopBt").hide();
@@ -294,11 +293,11 @@ void newSession(){
       pageH1("Start a session");
       break;
   }
-  
+
   if(recording){
       int datetimestr1 = millis() / 1000;
       datetimestr = datetimestr1 - datetimestr0;
-      
+
       output.print(datetimestr);
       output.print(TAB);
       output.print(delta1);
@@ -330,7 +329,7 @@ void newSession(){
 void assess(int questionNo, String question){
   text(question, padding + 15 + 80, headerHeight + padding + 60 + 30);//added by Eva
   //text(question, padding*2, headerHeight + padding*2);
-  
+
   if(questionNo != 4){
     text(questionNo, padding + 80, headerHeight + padding + 60 + 30);//added by Eva
     //text(questionNo, padding, headerHeight + padding*2);
@@ -357,11 +356,11 @@ void counterDisplay(){
   textSize(100);
   textAlign(CENTER);
   //textAlign(10,10);
- 
-  
+
+
   String second;
   String minute;
-  
+
   if( boxState != 300){
     second = new DecimalFormat("00").format(sw.second());
     minute = new DecimalFormat("00").format(sw.minute());
@@ -392,10 +391,10 @@ void screenshotThresholds(){
 }
 
 
-/** 
+/**
  * TimerTask (v1.3)
  * by GoToLoop (2013/Dec)
- * 
+ *
  * forum.processing.org/two/discussion/1725/millis-and-timer
  */
 final Timer t = new Timer();
@@ -403,7 +402,7 @@ boolean hasFinished = true;
 
 void triggerScreenshots(final float sec) {
   hasFinished = false;
- 
+
   t.schedule(new TimerTask() {
     public void run() {
       //print(" " + nf(sec, 0, 2));
@@ -415,24 +414,25 @@ void triggerScreenshots(final float sec) {
       //println(feelerS.checkConnection());
     }
   }, (long) (sec*1e3));
-  
+
 
   //feelerS.sendValues();
   //feelerS.get();
   //println(", getBoxesConnected: " + feelerS.getBoxesConnected());
-  
+
   println("\n\nScreenshot scheduled for " + nf(10, 0, 2) + " secs.\n");
-    
+
     //feelerS.sendValues();
     //feelerS.get();
     //println(feelerS.checkConnection());
-    
+
     screenshot();
     PImage newImage = createImage(100, 100, RGB);
     newImage = screenshot.get();
+    //instead of datetimestr we may want to use logger's int(time.get()/1000)
     newImage.save(
           sessionPath + "/screenshots/" +
-          String.valueOf(datetimestr + "-" + year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
+          datetimestr+"-"+String.valueOf(year()) + "-" + String.valueOf(month()) + "-" + String.valueOf(day()) + "-" + String.valueOf(hour()) + "-" + String.valueOf(minute()) + "-" + String.valueOf(second()) +
           "-screenshot.png"
     );
 }
@@ -449,21 +449,21 @@ float medoff = 0.0;
 void simulate() {
   if(recording){
     poorSignalEvent(int(random(200)));
-    
+
     //simulate with noise
     attoff = attoff + .02;
     medoff = medoff + .01;
     //comment the following two lines to simulate with mouse
     attentionEvent(int(noise(attoff) * 100));
     meditationEvent(int(noise(medoff) * 100));
-  
+
     //simulate with mouse
     //uncomment the following two lines to simulate with mouse
     //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
     //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
-    
-    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
-    int(random(20000)), int(random(20000)), int(random(20000)), 
+
+    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)),
+    int(random(20000)), int(random(20000)), int(random(20000)),
     int(random(20000)), int(random(20000)) );
   }
 }
@@ -472,28 +472,28 @@ public void poorSignalEvent(int sig) {
   //logger._poorSignalEvent(sig, longTimer.get());
   //signalWidget.add(200-sig);
   //println("poorSignal: " + sig);
-  
+
   if(sig == 200){
     mindSetOK = false;
   } else {
     mindSetOK = true;
   }
-  
+
 }
 
-//void serialEvent(Serial p) { 
+//void serialEvent(Serial p) {
   //inString = p.readString();
   //thisSerialValue = p.read();
-  
+
   //thisFrame = frameCount;
-  
+
   //println(p.read());
   //println(p.available());
   //println(p.last());
   //if(p.read() == -1){
   //  println("morreu");
   //}
-  
+
   //mindSetOK = true;
 //}
 
@@ -521,7 +521,7 @@ public void rawEvent(int[] values){
   //println("rawEvent: " + values);
 }
 
-public void eegEvent(int delta, int theta, int low_alpha, 
+public void eegEvent(int delta, int theta, int low_alpha,
 int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   logger._eegEvent(delta,theta,low_alpha,high_alpha,low_beta,high_beta,low_gamma,mid_gamma,longTimer.get());
   delta1 = delta;

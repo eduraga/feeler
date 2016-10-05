@@ -187,7 +187,9 @@ class Logger extends Thread {
 
   void run() {
     while (true) {
+      //if(timeline!=4) this would be a messy place to put this, albeit it would stop the log in a more precise place
       if (active.get()) {
+        
         
         long CLTS=currentLogTimestamp.get();
         //if the first data timestamp is older than 300 ms, we probably will not receive any more data for this sample.
