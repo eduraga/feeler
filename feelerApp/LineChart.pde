@@ -49,9 +49,7 @@ class LineChart {
         if (data.data != null) {
           _listSize = data.data.length;
           //max is to avoid grainsize to be zero if the file is shorter than 100 lines
-          grainSize = max((int)data.data.length/100, 1);
-
-
+          grainSize = 1;//grainSize = max((int)data.data.length/100, 1);
           //variables for screenshots display
           File imgTempFolder = new File(userFolder + "/" + sessionFolders[currentItem] + "/screenshots");
           screenshotsArray = imgTempFolder.list();
@@ -115,18 +113,18 @@ class LineChart {
 
               screenshots.set(j, "");
               int thisTime=int(data.data[j][0]);
-              println(" for time "+thisTime+"["+j+"]");
+              //println(" for time "+thisTime+"["+j+"]");
               for (int k = 0; k < screenshotsArray.length; k++) {
                 if (screenshotsArray[k]!=null) {
-                  String screenshot = screenshotsArray[k]; 
-                  println("   for scrnshot "+screenshot+"["+k+"]");
+                  String screenshot = screenshotsArray[k];
+                  //println("   for scrnshot "+screenshot+"["+k+"]");
                   int screenshotTimeId = int(splitTokens(screenshot, "-")[0]);
                   if (screenshotTimeId<=thisTime) {
-                    println("   goes");
+                   // println("   goes");
                     screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
                     screenshotsArray[k]=null;
                   }else{
-                    println("   doesnt go");
+                   // println("   doesnt go");
                   }
                 }
               }
@@ -145,7 +143,7 @@ class LineChart {
     }
   }
 
-  void display() {    
+  void display() {
     fill(graphBgColor);
     rect(visX - padding, visY - padding + 40, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2); // linechart background
     //rect(visX - padding - 15, visX - padding - 5, visWidth - dotSize/2 + padding*2, visHeight + dotSize/2 + padding*2 + 5); // linechart background
@@ -339,17 +337,17 @@ class LineChart {
 
           stroke(relaxationColor);
           line(
-            previousX, 
-            prevMeditate, 
-            thisX, 
+            previousX,
+            prevMeditate,
+            thisX,
             thisMeditate
             );
 
           stroke(attentionColor);
           line(
-            previousX, 
-            prevStudy, 
-            thisX, 
+            previousX,
+            prevStudy,
+            thisX,
             thisStudy
             );
         }
@@ -411,7 +409,7 @@ class LineChart {
     } else {
       for (int i = 0; i < _listSize; i+=grainSize) {
         if (i >= grainSize) {
-          displayGeneral(i);
+          displayGeneral(i,_listSize);
         }
       }
 
@@ -474,7 +472,7 @@ class LineChart {
     }
   }
 
-  void displayGeneral(int i) {
+  void displayGeneral(int i, int len) {
 
     if (screenshots.get(i) != "" && screenshots.get(i) != null) {
       fill(255, 100);
@@ -486,16 +484,16 @@ class LineChart {
 
     stroke(attentionColor);
     line(
-      previousX.get(i), 
-      previousAtt.get(i), 
-      thisX.get(i), 
+      previousX.get(i),
+      previousAtt.get(i),
+      thisX.get(i),
       thisAtt.get(i)
       );
     stroke(relaxationColor);
     line(
-      previousX.get(i), 
-      previousRelax.get(i), 
-      thisX.get(i), 
+      previousX.get(i),
+      previousRelax.get(i),
+      thisX.get(i),
       thisRelax.get(i)
       );
     noStroke();
@@ -509,9 +507,9 @@ class LineChart {
     //} else {
     //  step = 10000;
     //}
-
-    //if(i % step == 0 && thisTime.get(i) != 0) {
-    if (i % 5 == 0) {
+    //define how many labels to put in the graph x axis
+    int amountOfLabels=20;
+    if (i%((len-1)/amountOfLabels) == 0) {
       fill(textDarkColor);
       text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
     }
