@@ -479,7 +479,7 @@ class LineChart {
       rect(previousX.get(i), visX + padding + 20, thisX.get(i) - previousX.get(i) - 1, visHeight);
     }
 
-    String currentScreenshot = "";
+    //String currentScreenshot = "";
     noFill();
 
     stroke(attentionColor);
@@ -498,15 +498,6 @@ class LineChart {
       );
     noStroke();
 
-    //int step;
-
-    //if(_listSize <= 10000) {
-    //  step = 100;
-    //} else if(_listSize <=100000) {
-    //  step = 1000;
-    //} else {
-    //  step = 10000;
-    //}
     //define how many labels to put in the graph x axis
     int amountOfLabels=20;
     if (i%((len-1)/amountOfLabels) == 0) {

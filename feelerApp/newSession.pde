@@ -157,7 +157,8 @@ void newSession() {
     textSize(24); //added by Eva
     text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
     recording = true;
-    logger.restart();
+    //start logger and force the timer to restart
+    logger.restart(true);
     timerOn = true;
     timeline = 1;
     fill(textDarkColor);

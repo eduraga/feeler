@@ -1,14 +1,4 @@
-/**
- * Listing files in directories and subdirectories
- * by Daniel Shiffman.  
- * 
- * This example has three functions:<br />
- * 1) List the names of files in a directory<br />
- * 2) List the names along with metadata (size, lastModified)<br /> 
- *    of files in a directory<br />
- * 3) List the names along with metadata (size, lastModified)<br />
- *    of files in a directory and all subdirectories (using recursion) 
- */
+
 miniGraph[] graph;
 import java.util.Date;
 File[] files;
@@ -27,8 +17,10 @@ void setup() {
   for (int i = 0; i < files.length; i++) {
     File f = files[i];    
     println("Name: " + f.getName());
-    if (!f.isDirectory()) {
-      graph[i]=new miniGraph(loadStrings(f.getAbsolutePath()));
+    if (!files[i].isDirectory()) {
+      graph[i]=new miniGraph(loadStrings(files[i].getAbsolutePath()));
+      graph[i].name=files[i].getName();
+      graph[i].mypos=i;
     }
     println("Size: " + f.length());
     String lastModified = new Date(f.lastModified()).toString();
@@ -38,10 +30,13 @@ void setup() {
 }
 class miniGraph {
   //one buffer allows duplicate time indexes, the associative one will not.
-  String[]buffer;
-  HashMap<String, String>BufferAssoc=new HashMap<String, String>();
+  private String[]buffer;
+  String name="unnamed";
+  int mypos=0;
+  private color myColor=color(random(1)*127, random(1)*127, random(1)*127);
+  private HashMap<String, String>BufferAssoc=new HashMap<String, String>();
   public int displace=0;
-  boolean hasinit=false;
+  private boolean hasinit=false;
   miniGraph(String[]buf) {
     hasinit=true;
     println("initializing a buffer");
@@ -64,6 +59,9 @@ class miniGraph {
     buffer=buf;
   }
   void plot(int zoom, int selectValue) {
+    boolean valuePerLine=true;
+    int mousePosX=-1;
+    int valueUnderMouseX=-1;
     if (hasinit) {
       //int h=height/portion;
       //int top=num*height;
@@ -71,26 +69,37 @@ class miniGraph {
       int x=0;
       int y=1;
       int[]prevCs={0, 0};
-      for (int a=displace; a<buffer.length&&currentx<width; a++) {
-        //absolute buffer
-        //String[]lineParts=splitTokens(buffer[a], TAB+"\n\t");
-        //assoc buffer
-        String[]lineParts={};
-        try{
+      for (int a=min(displace, buffer.length); a<buffer.length&&currentx<width; a++) {
+        int tvux=-1;
+        String[]lineParts;
+        if (valuePerLine) {
+          //absolute buffer
+          lineParts=splitTokens(buffer[a], TAB+"\n\t");
+        } else {
+          //assoc buffer
+          lineParts=new String[] {};
+        }
+
+        try {
           lineParts=splitTokens(BufferAssoc.get(""+a), TAB+"\n\t");
-        }catch(Exception e){}
+        }
+        catch(Exception e) {
+        }
+
+
         int selectedValue;
         try {
-          stroke(0);
+          stroke(myColor);
           selectedValue=Integer.parseInt(lineParts[selectValue]);
           if (a!=0) {
             currentx+=zoom;
             line(prevCs[x], prevCs[y], currentx, height-selectedValue);
           }
+          tvux=selectedValue;
           prevCs[y]=height-selectedValue;
           prevCs[x]=currentx;
         }
-        catch(ArrayIndexOutOfBoundsException e){
+        catch(ArrayIndexOutOfBoundsException e) {
           stroke(255, 0, 0);
 
           prevCs[y]=0;
@@ -104,8 +113,17 @@ class miniGraph {
           prevCs[y]=0;
           prevCs[x]=currentx;
         }
+        if (mousePosX==-1) {
+          if (mouseX<=currentx) {
+            mousePosX=a;
+            valueUnderMouseX=tvux;
+          }
+        }
       }
     }
+
+    fill(myColor);
+    text(name+" column "+selectValue+" pointer@"+mousePosX+"="+valueUnderMouseX, 0, (mypos+1)*18);
   }
 }
 int zoom=1;
@@ -113,7 +131,7 @@ int hdisplace=0;
 // Nothing is drawn in this program and the draw() doesn't loop because
 // of the noLoop() in setup()
 void draw() {
-  background(110);
+  background(250);
   stroke(9);
   for (int a=0; a<graph.length; a++) {
     graph[a].displace=hdisplace;
@@ -140,14 +158,15 @@ public void keyPressed(KeyEvent e) {
     hdisplace+=40;
     break;
   case 37:
-    hdisplace-=40;
+    hdisplace=max(hdisplace-40, 0);
     break;
   }
- // println("k"+keyCode);
+  // println("k"+keyCode);
 } 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  zoom+=e;
+  zoom=max(min(zoom-int(e), 10), 1);
+  println(e);
 }
 
 // This function returns all the files in a directory as an array of Strings  

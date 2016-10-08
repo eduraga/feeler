@@ -151,6 +151,13 @@ class Logger extends Thread {
       timer.restart();
     }
   }
+  void restart(boolean forceRestartTimer){
+    if (!active.get()) {
+      active.set(true);
+      
+    }
+    timer.restart();
+  }
   void setPath(String filename) {
     //get the current active value, pause my thread, stop and redo the writer, go back to the previous thread active value
     boolean tempActive=active.get();
