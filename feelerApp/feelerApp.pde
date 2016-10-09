@@ -914,9 +914,9 @@ public void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isTab()) {
     println("got an event from tab : "+theControlEvent.getTab().getName()+" with id "+theControlEvent.getTab().getId());
   }
-
-  switch(theControlEvent.getName()) {
-  case "overall":
+  String controlEventStr=theControlEvent.getName();
+  if (controlEventStr.equals("overall")) {
+    // case "overall":
     println("overall page");
     currentPage = "overall";
 
@@ -925,8 +925,9 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     personalAssSesion.setup(visWidth, visHeight);
     personalAvg.setup(visWidth, visHeight);
-    break;
-  case "newSession":
+    // break;
+  } else if (controlEventStr.equals("newSession")) {
+    //case "newSession":
     boxState = 0;
     sw.stop();
 
@@ -940,8 +941,9 @@ public void controlEvent(ControlEvent theControlEvent) {
     println("newSession page");
     currentPage = "newSession";
     boxState = 0;
-    break;
-  case "startSession":
+    //break;
+  } else if (controlEventStr.equals("startSession")) {
+    //case "startSession":
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
     datetimestr0 = millis() / 1000;
@@ -960,22 +962,25 @@ public void controlEvent(ControlEvent theControlEvent) {
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
     String SLINE="time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline";
-    filename = sessionPath + "/brain-activity.tsv";
+    filename = sessionPath + "/brain-activity-old.tsv";
 
     output = createWriter(filename);
-    logger.setPath(sessionPath+"/brain-activity-new.tsv");
+    logger.setPath(sessionPath+"/brain-activity.tsv");
     logger.writer.add(SLINE);
     output.println(SLINE);
-    break;
-  case "singleSession":
+    //break;
+  } else if (controlEventStr.equals("singleSession")) {
+    //case "singleSession":
     println("singleSession page");
     currentPage = "singleSession";
-    break;
-  case "eegActivity":
+    //break;
+  } else if (controlEventStr.equals("eegActivity")) {
+    //case "eegActivity":
     println("eegActivity page");
     currentPage = "eegActivity";
-    break;
+    //break;
   }
+
 
   //clean up interface on logout
   if (theControlEvent.getLabel() == "Logout") {
@@ -1327,108 +1332,111 @@ public void loginCheck() {
     }
   }
 }
-
+boolean userAreaControllersAdded=false;
 public void addUserAreaControllers() {
+  if (!userAreaControllersAdded) {
 
-  cp5.addTab("newSession");
-  cp5.getTab("newSession")
-    .activateEvent(true)
-    .setId(3)
-    ;
+    cp5.addTab("newSession");
+    cp5.getTab("newSession")
+      .activateEvent(true)
+      .setId(3)
+      ;
 
-  cp5.addTab("overall");
-  cp5.getTab("overall")
-    .activateEvent(true)
-    .setId(4)
-    ;
+    cp5.addTab("overall");
+    cp5.getTab("overall")
+      .activateEvent(true)
+      .setId(4)
+      ;
 
-  cp5.addTab("singleSession");
-  cp5.getTab("singleSession")
-    .activateEvent(true)
-    .setId(5)
-    ;
+    cp5.addTab("singleSession");
+    cp5.getTab("singleSession")
+      .activateEvent(true)
+      .setId(5)
+      ;
 
-  cp5.addTab("eegActivity");
-  cp5.getTab("eegActivity")
-    .activateEvent(true)
-    .setId(6)
-    ;
+    cp5.addTab("eegActivity");
+    cp5.getTab("eegActivity")
+      .activateEvent(true)
+      .setId(6)
+      ;
 
-  //other controllers
-  cp5.addButton("newSession")
-    .setBroadcast(false)
-    .setLabel("New session")
-    .setColorForeground(color(145, 44, 238))//Added by Eva
-    .setColorBackground(color(85, 26, 139))//Added by Eva
-    .setColorActive(color(85, 26, 139))//Added by Eva
-    .setFont(createFont("", 12))//Added by Eva
-    .setPosition(width - 180 - 110, padding)
-    .setSize(100, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
+    //other controllers
+    cp5.addButton("newSession")
+      .setBroadcast(false)
+      .setLabel("New session")
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setFont(createFont("", 12))//Added by Eva
+      .setPosition(width - 180 - 110, padding)
+      .setSize(100, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
 
-    ;
-  cp5.getController("newSession").moveTo("global");
+      ;
+    cp5.getController("newSession").moveTo("global");
 
-  cp5.addButton("overall")
-    .setLabel("< Your activity")// before "review"
-    .setFont(createFont("font", 12))//Added by Eva
-    //.setColorBackground(color(255))
-    //.setColorForeground(color(255))
-    //.setColorLabel(textDarkColor)
-    .setColorForeground(color(145, 44, 238))//Added by Eva
-    .setColorBackground(color(85, 26, 139))//Added by Eva
-    .setColorActive(color(85, 26, 139))//Added by Eva
-    .setPosition(100, headerHeight + padding + 90)
-    //.setPosition(width/2 - buttonWidth/2 - 1, padding)
-    //.setPosition(visX - padding, visY - padding*2)
-    //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
-    .setSize(120, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("overall").moveTo("global");
-  cp5.getController("overall").hide();
+    cp5.addButton("overall")
+      .setLabel("< Your activity")// before "review"
+      .setFont(createFont("font", 12))//Added by Eva
+      //.setColorBackground(color(255))
+      //.setColorForeground(color(255))
+      //.setColorLabel(textDarkColor)
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setPosition(100, headerHeight + padding + 90)
+      //.setPosition(width/2 - buttonWidth/2 - 1, padding)
+      //.setPosition(visX - padding, visY - padding*2)
+      //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
+      .setSize(120, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("overall").moveTo("global");
+    cp5.getController("overall").hide();
 
-  cp5.addButton("session")
-    .setBroadcast(false)
-    .setLabel("< current session")
-    .setFont(createFont("font", 12))//Added by Eva
-    .setColorForeground(color(145, 44, 238))//Added by Eva
-    .setColorBackground(color(85, 26, 139))//Added by Eva
-    .setColorActive(color(85, 26, 139))//Added by Eva
-    .setPosition(100 + 130, headerHeight + padding + 90)
-    //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
-    //.setPosition(visX + 85, visY - padding*2 - 15)
-    //.setFont(font)
-    .setSize(170, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("session").moveTo("global");
-  cp5.getController("session").hide();
+    cp5.addButton("session")
+      .setBroadcast(false)
+      .setLabel("< current session")
+      .setFont(createFont("font", 12))//Added by Eva
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setPosition(100 + 130, headerHeight + padding + 90)
+      //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
+      //.setPosition(visX + 85, visY - padding*2 - 15)
+      //.setFont(font)
+      .setSize(170, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("session").moveTo("global");
+    cp5.getController("session").hide();
 
-  cp5.addButton("export")
-    .setBroadcast(false)
-    .setLabel("export data")
-    .setFont(createFont("font", 12))//Added by Eva
-    .setColorForeground(color(145, 44, 238))//Added by Eva
-    .setColorBackground(color(85, 26, 139))//Added by Eva
-    .setColorActive(color(85, 26, 139))//Added by Eva
-    .setPosition(width - 120 - 110, headerHeight + padding + 90)
-    //.setPosition(width - padding - buttonWidth, padding*4)// old
-    .setSize(120, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("export").moveTo("singleSession");
+    cp5.addButton("export")
+      .setBroadcast(false)
+      .setLabel("export data")
+      .setFont(createFont("font", 12))//Added by Eva
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setPosition(width - 120 - 110, headerHeight + padding + 90)
+      //.setPosition(width - padding - buttonWidth, padding*4)// old
+      .setSize(120, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("export").moveTo("singleSession");
 
-  //avoid that controllers are drawn at the end of draw()
-  cp5.setAutoDraw(false);
+    //avoid that controllers are drawn at the end of draw()
+    cp5.setAutoDraw(false);
+    userAreaControllersAdded=true;
+  }
 }
 
 public void timer() {

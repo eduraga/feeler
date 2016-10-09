@@ -112,7 +112,7 @@ class Logger extends Thread {
   int fallbackInt=0;//-1 would be ideal, but need an adaptation in behalf of graphing the files
   public AtomicBoolean active=new AtomicBoolean(false);
   public int sampleInterval=990;//milliseconds sampling interval.
-  private Clock timer=new Clock();
+  private Clock pTimer=new Clock();
   asyncBufferedOutput writer= new asyncBufferedOutput(sketchPath("unnamedLog.tsv"));
 
 
@@ -140,7 +140,7 @@ class Logger extends Thread {
     active.set(false);
   }
   void pause(String reason) {
-    if(active.get()){
+    if (active.get()) {
       println(reason);
       active.set(false);
     }
@@ -148,16 +148,10 @@ class Logger extends Thread {
   void restart() {
     if (!active.get()) {
       active.set(true);
-      timer.restart();
+      pTimer.restart();
     }
   }
-  void restart(boolean forceRestartTimer){
-    if (!active.get()) {
-      active.set(true);
-      
-    }
-    timer.restart();
-  }
+
   void setPath(String filename) {
     //get the current active value, pause my thread, stop and redo the writer, go back to the previous thread active value
     boolean tempActive=active.get();
@@ -171,7 +165,7 @@ class Logger extends Thread {
   void resumeInfra() {
     if (!active.get()) {
       active.set(true);
-      //timer.restart();
+      //pTimer.restart();
     }
   }
 
@@ -198,13 +192,13 @@ class Logger extends Thread {
     while (true) {
       //if(timeline!=4) this would be a messy place to put this, albeit it would stop the log in a more precise place
       if (active.get()) {
-        
-        
+
+
         long CLTS=currentLogTimestamp.get();
         //if the first data timestamp is older than 300 ms, we probably will not receive any more data for this sample.
         if (CLTS!=-1&&longTimer.get()-CLTS>=300) {
-        
-          String tt=""+((int) timer.get()/1000);
+          int tTimer=pTimer.getInt(1000000000);
+          String tt=(tTimer/1000+"."+(tTimer%1000)/100);
           tt+=(TAB);
           tt+=(varsToLog[0].get()/*delta1*/);
           tt+=(TAB);
@@ -235,7 +229,7 @@ class Logger extends Thread {
           writer.add(tt);
           //writer.refresh();
           resetRequiredVars();
-       
+
           currentLogTimestamp.set(-1);
         }
       }
@@ -243,12 +237,12 @@ class Logger extends Thread {
     }
   }
 
-  private synchronized void incomingTimeStamp(long eventTime){
+  private synchronized void incomingTimeStamp(long eventTime) {
     //set the currentTimestamp to the provided if the current timestamp is set to -1
     //currentTimestamp will be -1 if all the data has been written, or the log is starting.
     //this indigates that the incoming set of data is the first, and the log timestamp will belong 
     //to the time that data came.
-    if(currentLogTimestamp.get()==-1){
+    if (currentLogTimestamp.get()==-1) {
       currentLogTimestamp.set(eventTime);
     }
   }
@@ -256,9 +250,9 @@ class Logger extends Thread {
   //public void _poorSignalEvent(int a, long timestamp) {
   //}
   //public void _blinkEvent(int a, long timestamp) {
-    //this one is timestamp independent.
-    //make the data ready for the log
-    //varsToLog[8].set(a)/*blinkSt*/;
+  //this one is timestamp independent.
+  //make the data ready for the log
+  //varsToLog[8].set(a)/*blinkSt*/;
   //}
   public void _rawEvent(int[] a, long timestamp) {
     //incomingTimeStamp(timestamp);
