@@ -20,3 +20,6 @@
 - Set ```simulateMindSet``` to true to test without MindWave.
 - Set ```simulateBoxes``` to true to test without the boxes.
 - Change ```countDownStartMeditate``` and ```countDownStartStudy``` (in minutes, accepts fractions) to the appropriate values.
+
+## License
+Feeler is licensed under GPL3 license, see COPYING
