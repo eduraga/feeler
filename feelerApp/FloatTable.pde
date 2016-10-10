@@ -92,8 +92,8 @@ class FloatTable {
      */
 
     for (int o = 0; o < rowCount; o++) {
-      if (data[o][11] == 1) rowCount1++; 
-      else if (data[o][11] == 2) rowCount2++;          
+      if (data[o][11] == 1) rowCount1++;
+      else if (data[o][11] == 2) rowCount2++;
       else if (data[o][11] == 3) rowCount3++;
     }
 
@@ -119,7 +119,7 @@ class FloatTable {
   }
 
 
-  // Find a row by its name, returns -1 if no row found. 
+  // Find a row by its name, returns -1 if no row found.
   // This will return the index of the first row with this name.
   // A more efficient version of this function would put row names
   // into a Hashtable (or HashMap) that would map to an integer for the row.
@@ -134,7 +134,7 @@ class FloatTable {
   }
 
 
-  // technically, this only returns the number of columns 
+  // technically, this only returns the number of columns
   // in the very first row (which will be most accurate)
   int getColumnCount() {
     return columnCount;
@@ -211,7 +211,7 @@ class FloatTable {
           boolend = false;
         }
       }
-    } 
+    }
     return startState;
   }
 
@@ -233,7 +233,7 @@ class FloatTable {
           boolend = false;
         }
       }
-    } 
+    }
     return endState;
   }
 
@@ -262,7 +262,7 @@ class FloatTable {
       }
     }
     return m;
-  } 
+  }
 
 
   float getRowMax(int row) {

@@ -46,7 +46,7 @@ class CountDown {
 
     stopTime = millis();
     recording = false;
-    logger.pause("stop");
+   // logger.pause("stop");
     cp5.getController("playPauseBt").hide();
     cp5.getController("stopBt").hide();
   }

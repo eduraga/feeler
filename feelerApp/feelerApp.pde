@@ -1124,6 +1124,7 @@ public void playPauseBt(int theValue) {
 
 public void stopBt(int theValue) {
   boxState = 0;
+  logger.pause("stopBtnPressed");
   sw.stop();
 }
 

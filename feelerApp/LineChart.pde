@@ -501,7 +501,7 @@ class LineChart {
     //define how many labels to put in the graph x axis
     int amountOfLabels=20;
     int _portion=((len-1)/amountOfLabels);
-    if (portion>0)
+    if (_portion>0)
       if (i%_portion == 0) {
         fill(textDarkColor);
         text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
