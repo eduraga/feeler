@@ -55,7 +55,7 @@ class LineChart {
           screenshotsArray = imgTempFolder.list();
 
           for (int j = 0; j < _listSize; j+=grainSize) {
-            println("graph-grain-"+j);
+            //println("graph-grain-"+j);
             if (data.data[j][12] > 0 && j > grainSize) {
 
               thisX.set(j, j * visWidth/data.data.length + visX);
@@ -120,11 +120,11 @@ class LineChart {
                   //println("   for scrnshot "+screenshot+"["+k+"]");
                   int screenshotTimeId = int(splitTokens(screenshot, "-")[0]);
                   if (screenshotTimeId<=thisTime) {
-                   // println("   goes");
+                    // println("   goes");
                     screenshots.set(j, imgTempFolder + "/" +screenshotsArray[k]);
                     screenshotsArray[k]=null;
-                  }else{
-                   // println("   doesnt go");
+                  } else {
+                    // println("   doesnt go");
                   }
                 }
               }
@@ -337,17 +337,17 @@ class LineChart {
 
           stroke(relaxationColor);
           line(
-            previousX,
-            prevMeditate,
-            thisX,
+            previousX, 
+            prevMeditate, 
+            thisX, 
             thisMeditate
             );
 
           stroke(attentionColor);
           line(
-            previousX,
-            prevStudy,
-            thisX,
+            previousX, 
+            prevStudy, 
+            thisX, 
             thisStudy
             );
         }
@@ -409,7 +409,7 @@ class LineChart {
     } else {
       for (int i = 0; i < _listSize; i+=grainSize) {
         if (i >= grainSize) {
-          displayGeneral(i,_listSize);
+          displayGeneral(i, _listSize);
         }
       }
 
@@ -461,7 +461,7 @@ class LineChart {
         text("Attention " + (int)map(thisAtt.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding);
         fill(relaxationColor);
         text("Relaxatation " + (int)map(thisRelax.get(i), lowerBoundary, upperBoundary, 0, maxVal) + "%", thisX.get(i) - screenshotImg.height/6, mouseY+padding*2);
-        if(debug){
+        if (debug) {
           fill(99);
           String [] FNAME=screenshots.get(i).split("/");
           text("  //img:" + FNAME[FNAME.length-1], thisX.get(i) - screenshotImg.height/6, mouseY+padding*1.5);
@@ -484,26 +484,28 @@ class LineChart {
 
     stroke(attentionColor);
     line(
-      previousX.get(i),
-      previousAtt.get(i),
-      thisX.get(i),
+      previousX.get(i), 
+      previousAtt.get(i), 
+      thisX.get(i), 
       thisAtt.get(i)
       );
     stroke(relaxationColor);
     line(
-      previousX.get(i),
-      previousRelax.get(i),
-      thisX.get(i),
+      previousX.get(i), 
+      previousRelax.get(i), 
+      thisX.get(i), 
       thisRelax.get(i)
       );
     noStroke();
 
     //define how many labels to put in the graph x axis
     int amountOfLabels=20;
-    if (i%((len-1)/amountOfLabels) == 0) {
-      fill(textDarkColor);
-      text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
-    }
+    int _portion=((len-1)/amountOfLabels);
+    if (portion>0)
+      if (i%_portion == 0) {
+        fill(textDarkColor);
+        text(int(thisTime.get(i)), thisX.get(i), visY + visHeight + padding*4 + 30);//modifies the linechart x legend (time)
+      }
   }
 
 
