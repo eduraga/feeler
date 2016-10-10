@@ -94,6 +94,7 @@ PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct, personalExperience;
 int headerHeight = 100;
+int textHeight = 16;
 int padding = 20;
 int userTabsX;
 int buttonWidth = 70;

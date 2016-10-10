@@ -80,7 +80,7 @@ void newSession() {
   }
 
   //display status of MindWave
-  if (mindSetOK || simulateMindSet) {
+  if (mindSetOK || simulateMindSet) {//mindSetOK
     text("EEG headset: ok", width/2, padding*2);
   } else {
     text("EEG headset: check connection", width/2, padding*2);
@@ -101,7 +101,7 @@ void newSession() {
     textSize(20); //added by Eva
     //fill(100);//added by Eva
 
-    if (!mindSetOK && !simulateMindSet) {
+    if (!mindSetPortOk && !simulateMindSet) {
       PImage one = loadImage("one.png");// Added by Eva
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
       text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
@@ -113,12 +113,19 @@ void newSession() {
           println("port ok");
           mindSetPortOk = true;
           //mindSetOK = true;
-        } 
+        }
         catch (Exception e) {
           println("port not ok");
           mindSetPortOk = false;
         }
       }
+      cp5.getController("startSession").hide();
+    } else if (!mindSetOK && !simulateMindSet) {
+      PImage one = loadImage("one.png");// Added by Eva
+      image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
+      text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
+      text("Checking that I get some EEG data...", padding + 80 + 80 + 80, headerHeight + padding + 75 + 30);
+      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, textHeight + padding + 75 + 30);
       cp5.getController("startSession").hide();
     } else if (!feelerS.checkConnection() && !simulateBoxes) {
       PImage one = loadImage("one.png");// Added by Eva
@@ -466,8 +473,8 @@ void simulate() {
     //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
     //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
 
-    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
-      int(random(20000)), int(random(20000)), int(random(20000)), 
+    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)),
+      int(random(20000)), int(random(20000)), int(random(20000)),
       int(random(20000)), int(random(20000)) );
   }
 }
@@ -524,7 +531,7 @@ public void rawEvent(int[] values) {
   //println("rawEvent: " + values);
 }
 
-public void eegEvent(int delta, int theta, int low_alpha, 
+public void eegEvent(int delta, int theta, int low_alpha,
   int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   logger._eegEvent(delta, theta, low_alpha, high_alpha, low_beta, high_beta, low_gamma, mid_gamma, longTimer.get());
   delta1 = delta;
