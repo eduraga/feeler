@@ -8,7 +8,7 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = true;
+boolean simulateMindSet = false;
 boolean simulateBoxes = true;
 
 float countDownStartMeditate = .1;
@@ -94,7 +94,6 @@ PImage logo;
 OverallAvgs eegAvg, personalAssSesion, personalAvg;
 LineChart trends, eegAct, personalExperience;
 int headerHeight = 100;
-int textHeight = 16;
 int padding = 20;
 int userTabsX;
 int buttonWidth = 70;

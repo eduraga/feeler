@@ -124,9 +124,12 @@ void newSession() {
       PImage one = loadImage("one.png");// Added by Eva
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
       text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-      text("Checking that I get some EEG data...", padding + 80 + 80 + 80, headerHeight + padding + 75 + 30);
-
-      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, textHeight + padding + 75 + 30);
+      pushStyle();
+      fill(textLightColor);
+      text("Checking that I get some EEG data...", padding + 80 + 80, headerHeight + padding + 75 + 30 + 80);
+      textSize(16);
+      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20,headerHeight + padding + 75 +30 + 80 + 20);
+      popStyle();
       cp5.getController("startSession").hide();
     } else if (!feelerS.checkConnection() && !simulateBoxes) {
       PImage one = loadImage("one.png");// Added by Eva
