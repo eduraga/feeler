@@ -19,6 +19,8 @@ class FeelingRadio {
   PImage neutralImg;
   PImage badImg;
 
+  Boolean active=false;
+
   FeelingRadio (int x, int y, String label) {  
     _x = x;
     _y = y; 
@@ -27,6 +29,7 @@ class FeelingRadio {
   }
 
   void draw() {
+    active=true;
     pushStyle();
     textAlign(LEFT);
     text(_label, _x, _y);
@@ -54,36 +57,50 @@ class FeelingRadio {
     }
     image(badImg, _x + imgSz*2, imgY);
   }
+  void clear() {
+    if (active) {
+      active=false;
+      this.checked="";
+    }
+  }
 
   void click() {
-    println("."+feelingAssessMeditation+"."+feelingAssessStudy+"."+feelingAssessPlay);
-    if (this.over(_x, imgY, imgSz, imgSz)) {
-      this.checked = feelings[0];
-    } else if (this.over(_x + imgSz, imgY, imgSz, imgSz)) {
-      this.checked = feelings[1];
-    } else if (this.over(_x + imgSz*2, imgY, imgSz, imgSz)) {
-      this.checked = feelings[2];
-    }
-    //the whole strings where meditation,study, play. Processing was telling that you can't switch on Strings,
-    switch(_label.charAt(0)) {
-    case 'M':
-      feelingAssessMeditation = this.checked;
-      break;
-    case 'S':
-      feelingAssessStudy = this.checked;
-      break;
-    case 'P':
-      feelingAssessPlay = this.checked;
-      break;
-    default:
-      break;
+    if (active) {
+      println("."+feelingAssessMeditation+"."+feelingAssessStudy+"."+feelingAssessPlay);
+      if (this.over(_x, imgY, imgSz, imgSz)) {
+        this.checked = feelings[0];
+      } else if (this.over(_x + imgSz, imgY, imgSz, imgSz)) {
+        this.checked = feelings[1];
+      } else if (this.over(_x + imgSz*2, imgY, imgSz, imgSz)) {
+        this.checked = feelings[2];
+      }
+
+      if (_label.equals("Meditation")) {
+        //case 'M':
+        feelingAssessMeditation = this.checked;
+        //break;
+      } else if (_label.equals("Study")) {
+        //case 'S':
+        feelingAssessStudy = this.checked;
+        //break;
+      } else if (_label.equals("Play")) {
+        //case 'P':
+        feelingAssessPlay = this.checked;
+        //break;
+        //default:
+        //break;
+      }
     }
   }
 
   boolean over(int x, int y, int width, int height) {
-    if (mouseX >= x && mouseX <= x+width && 
-      mouseY >= y && mouseY <= y+height) {
-      return true;
+    if (active) {
+      if (mouseX >= x && mouseX <= x+width && 
+        mouseY >= y && mouseY <= y+height) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }

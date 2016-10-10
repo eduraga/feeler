@@ -256,6 +256,9 @@ void newSession() {
       feelingRadioStudy.draw();
       feelingRadioPlay.draw();
     } else if (assessQuestion == 2) {
+      feelingRadioMeditation.clear();
+      feelingRadioStudy.clear();
+      feelingRadioPlay.clear();
       textSize(20);// added by Eva
       assess(assessQuestion, "/3 Select how your level of relaxation during:");
       text("Meditation", padding + 80, 250 + 10); //added by Evad
