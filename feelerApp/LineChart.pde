@@ -4,6 +4,8 @@ class LineChart {
   int grainSize;
   int maxVal = 100;
   float stepSize;
+  
+  int minimumScreenshotWidth=7;
   //int visX;
 
   float relaxEnd = 0;
@@ -451,6 +453,7 @@ class LineChart {
 
         fill(255);
         stroke (85, 26, 139);
+        //stroke(255,0,0);
         //stroke(textLightColor);
         rect(thisX.get(i) - screenshotImg.height/6 - padding, mouseY - padding, screenshotImg.width/4 + padding*2, screenshotImg.height/4 + padding*5);
         noStroke();
@@ -476,7 +479,8 @@ class LineChart {
 
     if (screenshots.get(i) != "" && screenshots.get(i) != null) {
       fill(255, 100);
-      rect(previousX.get(i), visX + padding + 20, thisX.get(i) - previousX.get(i) - 1, visHeight);
+     // stroke(255,0,0);
+      rect(previousX.get(i), visX + padding/* + 20*/, max(minimumScreenshotWidth,thisX.get(i) - previousX.get(i) - 1), visHeight);
     }
 
     //String currentScreenshot = "";
