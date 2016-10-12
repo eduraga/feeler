@@ -240,7 +240,7 @@ class Logger extends Thread {
   private synchronized void incomingTimeStamp(long eventTime) {
     //set the currentTimestamp to the provided if the current timestamp is set to -1
     //currentTimestamp will be -1 if all the data has been written, or the log is starting.
-    //this indigates that the incoming set of data is the first, and the log timestamp will belong 
+    //this indigates that the incoming set of data is the first, and the log timestamp will belong
     //to the time that data came.
     if (currentLogTimestamp.get()==-1) {
       currentLogTimestamp.set(eventTime);
@@ -267,7 +267,7 @@ class Logger extends Thread {
     incomingTimeStamp(timestamp);
     //make the data ready for the log
     varsToLog[10].set(a);/*meditation*/
-    println("_meditationevent");
+    // println("_meditationevent");
   }
   public void _eegEvent(int a, int b, int c, int d, int e, int f, int g, int h, long timestamp) {
     incomingTimeStamp(timestamp);

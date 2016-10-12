@@ -4,7 +4,7 @@ class LineChart {
   int grainSize;
   int maxVal = 100;
   float stepSize;
-  
+
   int minimumScreenshotWidth=7;
   //int visX;
 
@@ -339,17 +339,17 @@ class LineChart {
 
           stroke(relaxationColor);
           line(
-            previousX, 
-            prevMeditate, 
-            thisX, 
+            previousX,
+            prevMeditate,
+            thisX,
             thisMeditate
             );
 
           stroke(attentionColor);
           line(
-            previousX, 
-            prevStudy, 
-            thisX, 
+            previousX,
+            prevStudy,
+            thisX,
             thisStudy
             );
         }
@@ -488,16 +488,16 @@ class LineChart {
 
     stroke(attentionColor);
     line(
-      previousX.get(i), 
-      previousAtt.get(i), 
-      thisX.get(i), 
+      previousX.get(i),
+      previousAtt.get(i),
+      thisX.get(i),
       thisAtt.get(i)
       );
     stroke(relaxationColor);
     line(
-      previousX.get(i), 
-      previousRelax.get(i), 
-      thisX.get(i), 
+      previousX.get(i),
+      previousRelax.get(i),
+      thisX.get(i),
       thisRelax.get(i)
       );
     noStroke();

@@ -100,7 +100,6 @@ void newSession() {
     pageH1("New session");
     textSize(20); //added by Eva
     //fill(100);//added by Eva
-
     if (!mindSetPortOk && !simulateMindSet) {
       PImage one = loadImage("one.png");// Added by Eva
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
@@ -297,6 +296,7 @@ void newSession() {
         currentPage = "overall";
         cp5.getController("overall").hide();
         cp5.getController("newSession").show();
+        cp5.getController("overallTopRight").hide();
         println("loadFiles");
         loadFiles();
       }

@@ -8,7 +8,7 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = false;
+boolean simulateMindSet = true;
 boolean simulateBoxes = true;
 
 float countDownStartMeditate = .1;
@@ -793,31 +793,31 @@ public void draw() {
 
 
   //Visualisation
-  switch(currentPage) {
-  case "home":
+  // switch(currentPage) {
+  if(currentPage.equals("home")){
     if (!loading) {
       home();
     }
-    break;
-  case "overall":
+    // break;
+  }else if(currentPage.equals("overall")){
     trends.display();
-    break;
-  case "singleSession":
+    // break;
+  }else if(currentPage.equals("singleSession")){
     singleVisPage();
-    break;
-  case "eegActivity":
+    // break;
+  }else if(currentPage.equals("eegActivity")){
     //eegActivity();
     eegAct.display();
-    break;
-  case "assessmentActivity":
+    // break;
+  }else if(currentPage.equals("assessmentActivity")){
     //println("assessmentActivity");
     assessmentActivity();
-    break;
-  case "assessAct":
-    break;
-  case "newSession":
+    // break;
+  }else if(currentPage.equals("assessAct")){
+    // break;
+  }else if(currentPage.equals("newSession")){
     newSession();
-    break;
+    // break;
   }
 
   if (debug) {
@@ -911,11 +911,18 @@ void cleanUpSurvey() {
 }
 
 public void controlEvent(ControlEvent theControlEvent) {
+
   if (theControlEvent.isTab()) {
     println("got an event from tab : "+theControlEvent.getTab().getName()+" with id "+theControlEvent.getTab().getId());
   }
   String controlEventStr=theControlEvent.getName();
-  if (controlEventStr.equals("overall")) {
+  println("controlEvent String is "+controlEventStr);
+  if (controlEventStr.equals("overall")||controlEventStr.equals("overallTopRight")) {
+    cp5.getController("newSession").show();
+    cp5.getController("overallTopRight").hide();
+    cp5.getController("session").hide();
+    cp5.getController("overall").hide();
+    cp5.getController("startSession").hide();
     // case "overall":
     println("overall page");
     currentPage = "overall";
@@ -927,6 +934,10 @@ public void controlEvent(ControlEvent theControlEvent) {
     personalAvg.setup(visWidth, visHeight);
     // break;
   } else if (controlEventStr.equals("newSession")) {
+    cp5.getController("newSession").hide();
+    cp5.getController("overallTopRight").show();
+    cp5.getController("session").hide();
+    cp5.getController("overall").hide();
     //case "newSession":
     boxState = 0;
     sw.stop();
@@ -990,6 +1001,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getTab("default").bringToFront();
     currentPage = "home";
     cp5.getController("newSession").hide();
+    cp5.getController("overallTopRight").show();
     cp5.getController("overall").hide();
     cp5.getController("startSession").hide();
 
@@ -1080,6 +1092,7 @@ public void overall(int theValue) {
   modal = false;
   cp5.getController("overall").hide();
   cp5.getController("newSession").show();
+  cp5.getController("overallTopRight").hide();
   cp5.getTab("overall").bringToFront();
   cp5.getController("playPauseBt").hide();
   cp5.getController("stopBt").hide();
@@ -1109,6 +1122,7 @@ public void startSession(int theValue) {
   //currentPage = "meditate";
   boxState = 100;
   cp5.getController("newSession").hide();
+  cp5.getController("overallTopRight").show();
   //cp5.getController("overall").show();
 }
 
@@ -1283,7 +1297,6 @@ public void signup(int theValue) {
 
 public void loginCheck() {
   println("logincheck");
-
   if (debug) {
     println(currentUser);
     if (currentUser == "") {
@@ -1291,6 +1304,7 @@ public void loginCheck() {
     }
 
     cp5.getTab("overall").bringToFront();
+
     isLoggedIn = true;
 
     isWrongPassword = false;
@@ -1299,6 +1313,10 @@ public void loginCheck() {
     addUserAreaControllers();
 
     currentPage = "overall";
+
+    cp5.getController("newSession").show();
+    cp5.getController("overallTopRight").hide();
+
     loadFiles();
     loading = false;
   } else {
@@ -1318,6 +1336,9 @@ public void loginCheck() {
         currentPage = "overall";
         loadFiles();
         loading = false;
+        //the following line is not tested:
+        cp5.getController("newSession").show();
+        cp5.getController("overallTopRight").hide();
       } else if (m[1].equals("registered")) {
         registered = true;
         isWrongPassword = false;
@@ -1374,23 +1395,16 @@ public void addUserAreaControllers() {
       .setValue(1)
       .setBroadcast(true)
       .getCaptionLabel().align(CENTER, CENTER)
-
       ;
     cp5.getController("newSession").moveTo("global");
-
+    try{
     cp5.addButton("overall")
       .setLabel("< Your activity")// before "review"
       .setFont(createFont("font", 12))//Added by Eva
-      //.setColorBackground(color(255))
-      //.setColorForeground(color(255))
-      //.setColorLabel(textDarkColor)
       .setColorForeground(color(145, 44, 238))//Added by Eva
       .setColorBackground(color(85, 26, 139))//Added by Eva
       .setColorActive(color(85, 26, 139))//Added by Eva
       .setPosition(100, headerHeight + padding + 90)
-      //.setPosition(width/2 - buttonWidth/2 - 1, padding)
-      //.setPosition(visX - padding, visY - padding*2)
-      //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
       .setSize(120, 30)
       .setValue(1)
       .setBroadcast(true)
@@ -1398,6 +1412,24 @@ public void addUserAreaControllers() {
       ;
     cp5.getController("overall").moveTo("global");
     cp5.getController("overall").hide();
+  }catch(Exception e){
+    println("overall button exception");
+    println(e);
+  }
+    cp5.addButton("overallTopRight")
+      .setLabel("To your activity")
+      .setFont(createFont("font", 12))
+      .setColorForeground(color(145, 44, 238))
+      .setColorBackground(color(85, 26, 139))
+      .setColorActive(color(85, 26, 139))
+      .setPosition(width - 307, padding)
+      .setSize(120, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("overallTopRight").moveTo("global");
+    cp5.getController("overallTopRight").show();
 
     cp5.addButton("session")
       .setBroadcast(false)
