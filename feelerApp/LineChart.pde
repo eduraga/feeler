@@ -318,96 +318,101 @@ class LineChart {
         }
       }
     } else if (type == "personal") {
-      for (int i = 0; i < _listSize; i+=grainSize) {
-        float thisX = i * stepSize + visX + stepSize/2;
-        float previousX = (i-1) * stepSize + visX + stepSize/2;
-        float prevMeditate = 0;
-        float thisMeditate = 0;
-        float prevStudy = 0;
-        float thisStudy = 0;
+      try {
+        for (int i = 0; i < _listSize; i+=grainSize) {
+          float thisX = i * stepSize + visX + stepSize/2;
+          float previousX = (i-1) * stepSize + visX + stepSize/2;
+          float prevMeditate = 0;
+          float thisMeditate = 0;
+          float prevStudy = 0;
+          float thisStudy = 0;
 
-        thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
-        thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
-        //thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX);// original
-        //thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX, visHeight + visX);// original
+          thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
+          thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
+          //thisMeditate = map(float(assessmentData[i+3]), maxVal, 0, visX, visHeight + visX);// original
+          //thisStudy = map(float(assessmentData[i+6]), maxVal, 0, visX, visHeight + visX);// original
 
-        if (i > 0) {
-          prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
-          prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
-          //prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX);// original
-          //prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX, visHeight + visX);// original
+          if (i > 0) {
+            prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX + 100);// modified by Eva
+            prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX + 50, visHeight + visX);// modified by Eva
+            //prevMeditate = map(float(assessmentData[i-1+3]), maxVal, 0, visX, visHeight + visX);// original
+            //prevStudy = map(float(assessmentData[i-1+6]), maxVal, 0, visX, visHeight + visX);// original
 
-          stroke(relaxationColor);
-          line(
-            previousX,
-            prevMeditate,
-            thisX,
-            thisMeditate
-            );
+            stroke(relaxationColor);
+            line(
+              previousX, 
+              prevMeditate, 
+              thisX, 
+              thisMeditate
+              );
 
-          stroke(attentionColor);
-          line(
-            previousX,
-            prevStudy,
-            thisX,
-            thisStudy
-            );
-        }
-        noStroke();
+            stroke(attentionColor);
+            line(
+              previousX, 
+              prevStudy, 
+              thisX, 
+              thisStudy
+              );
+          }
+          noStroke();
 
-        if (mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2) {
-          if (mouseY >= upperBoundary && mouseY <= lowerBoundary) {
-            fill(250);
-            rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
+          if (mouseX >= thisX - dotSize/2 && mouseX <= thisX + dotSize/2) {
+            if (mouseY >= upperBoundary && mouseY <= lowerBoundary) {
+              fill(250);
+              rect(thisX - dotSize/2, upperBoundary, dotSize, visHeight);
 
-            pushStyle();
-            fill(255);
-            stroke(textLightColor);
-            rect(mouseX, mouseY, 160, padding*4);
-            fill(attentionColor);
-            text("Attention " + assessmentData[i+6], mouseX + padding, mouseY + padding);
-            fill(relaxationColor);
-            text("Relaxation " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
-            fill(textDarkColor);
-            text("Feeling " + assessmentData[i], mouseX + padding, mouseY + padding * 3);
-            popStyle();
+              pushStyle();
+              fill(255);
+              stroke(textLightColor);
+              rect(mouseX, mouseY, 160, padding*4);
+              fill(attentionColor);
+              text("Attention " + assessmentData[i+6], mouseX + padding, mouseY + padding);
+              fill(relaxationColor);
+              text("Relaxation " + assessmentData[i+3], mouseX + padding, mouseY + padding * 2);
+              fill(textDarkColor);
+              text("Feeling " + assessmentData[i], mouseX + padding, mouseY + padding * 3);
+              popStyle();
+            }
+          }
+
+
+          fill(relaxationColor);
+          ellipse(thisX, thisMeditate, dotSize, dotSize);
+
+          fill(attentionColor);
+          ellipse(thisX, thisStudy, dotSize, dotSize);
+
+          float offset = (thisX - previousX)/2;
+
+          if (i == 0) {
+            relaxEnd = thisX + offset;
+          }
+          if (i == 1) {
+            studyEnd = thisX + offset;
+          }
+          if (i == 2) {
+            playEnd = thisX + offset;
           }
         }
 
 
-        fill(relaxationColor);
-        ellipse(thisX, thisMeditate, dotSize, dotSize);
-
-        fill(attentionColor);
-        ellipse(thisX, thisStudy, dotSize, dotSize);
-
-        float offset = (thisX - previousX)/2;
-
-        if (i == 0) {
-          relaxEnd = thisX + offset;
-        }
-        if (i == 1) {
-          studyEnd = thisX + offset;
-        }
-        if (i == 2) {
-          playEnd = thisX + offset;
-        }
+        String[] fileDate = split(fileName[0], '-');
+        pushStyle();
+        fill(50);
+        pageH1("Review");// added by Eva
+        textSize(20);// eva modifying personal experience menu
+        textAlign(LEFT);
+        text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / Personal experience", 100, headerHeight + padding + 70);
+        fill(textDarkColor);
+        textSize(12);
+        fill(textDarkColor);
+        //text("Your personal experience during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);// old
+        text("Your personal experience during the different session stages", visX - padding - 100, visHeight + visX + padding * 5 + 10);
+        popStyle();
+      }catch(Exception e){
+        println("could not load personal assessment. File may be incomplete");
+        println(e);
       }
-
-
-      String[] fileDate = split(fileName[0], '-');
-      pushStyle();
-      fill(50);
-      pageH1("Review");// added by Eva
-      textSize(20);// eva modifying personal experience menu
-      textAlign(LEFT);
-      text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / Personal experience", 100, headerHeight + padding + 70);
-      fill(textDarkColor);
-      textSize(12);
-      fill(textDarkColor);
-      //text("Your personal experience during the different session stages", visX - padding, visHeight + visX + padding * 5 - 30);// old
-      text("Your personal experience during the different session stages", visX - padding - 100, visHeight + visX + padding * 5 + 10);
-      popStyle();
     } else {
       for (int i = 0; i < _listSize; i+=grainSize) {
         if (i >= grainSize) {
@@ -479,8 +484,8 @@ class LineChart {
 
     if (screenshots.get(i) != "" && screenshots.get(i) != null) {
       fill(255, 100);
-     // stroke(255,0,0);
-      rect(previousX.get(i), visX + padding/* + 20*/, max(minimumScreenshotWidth,thisX.get(i) - previousX.get(i) - 1), visHeight);
+      // stroke(255,0,0);
+      rect(previousX.get(i), visX + padding/* + 20*/, max(minimumScreenshotWidth, thisX.get(i) - previousX.get(i) - 1), visHeight);
     }
 
     //String currentScreenshot = "";
@@ -488,16 +493,16 @@ class LineChart {
 
     stroke(attentionColor);
     line(
-      previousX.get(i),
-      previousAtt.get(i),
-      thisX.get(i),
+      previousX.get(i), 
+      previousAtt.get(i), 
+      thisX.get(i), 
       thisAtt.get(i)
       );
     stroke(relaxationColor);
     line(
-      previousX.get(i),
-      previousRelax.get(i),
-      thisX.get(i),
+      previousX.get(i), 
+      previousRelax.get(i), 
+      thisX.get(i), 
       thisRelax.get(i)
       );
     noStroke();
