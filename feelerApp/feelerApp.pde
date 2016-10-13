@@ -991,6 +991,9 @@ public void controlEvent(ControlEvent theControlEvent) {
     currentPage = "eegActivity";
     //break;
   }
+  if (controlEventStr.equals("logoutBt")) {
+    cp5.getController("overallTopRight").hide();
+  }
 
 
   //clean up interface on logout
@@ -1001,7 +1004,6 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getTab("default").bringToFront();
     currentPage = "home";
     cp5.getController("newSession").hide();
-    cp5.getController("overallTopRight").show();
     cp5.getController("overall").hide();
     cp5.getController("startSession").hide();
 
