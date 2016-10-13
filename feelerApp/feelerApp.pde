@@ -498,7 +498,7 @@ public void setup() {
     //.setColorForeground(color(153))//Added by Eva
     //.setColorBackground(color(85))//Added by Eva
     //.setColorActive(color(50))//Added by Eva
-    .setPosition(width/2 + 10, containerPosY + padding * 3)//added by Eva
+    .setPosition(width/2-20/* + 10*/, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2, containerPosY + padding * 2)
     .setSize(80, 80)
     .setValue(1)
@@ -1571,7 +1571,7 @@ public void keyPressed() {
       break;
     case 'p':
       sw.stop();
-      cp5.getController("playPauseBt").show();
+//      cp5.getController("playPauseBt").show();
       cp5.getController("stopBt").show();
       boxState = 300;
       break;

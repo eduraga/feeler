@@ -23,7 +23,7 @@ class CountDown {
     startTime = millis();
     logger.restart();
     recording = true;
-    cp5.getController("playPauseBt").show();
+//    cp5.getController("playPauseBt").show();
     cp5.getController("stopBt").show();
   }
 
