@@ -26,6 +26,8 @@ int triggerLow = 20;
 int triggerMedium = 50;
 int triggerHigh = 80;
 
+boolean boxesAreTryingToConnect=false;
+
 void newSession() {
 
   if (boxState == 200) {
@@ -127,7 +129,7 @@ void newSession() {
       fill(textLightColor);
       text("Checking that I get some EEG data...", padding + 80 + 80, headerHeight + padding + 75 + 30 + 80);
       textSize(16);
-      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20,headerHeight + padding + 75 +30 + 80 + 20);
+      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, headerHeight + padding + 75 +30 + 80 + 20);
       popStyle();
       cp5.getController("startSession").hide();
     } else if (!feelerS.checkConnection() && !simulateBoxes) {
@@ -142,13 +144,8 @@ void newSession() {
       image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
       PImage three = loadImage("three.png");// Added by Eva
       image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
-      
-      if (!simulateBoxes) {
-        try {
-          feelerS.init("/dev/tty.Feeler-RNI-SPP");
-        }
-        catch (NullPointerException e) {
-        }
+      if (!boxesAreTryingToConnect) {
+        thread("tryGetFeelerSConnection");
       }
     } else {
       PImage one = loadImage("one.png");// Added by Eva
@@ -485,8 +482,8 @@ void simulate() {
     //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
     //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
 
-    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)),
-      int(random(20000)), int(random(20000)), int(random(20000)),
+    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
+      int(random(20000)), int(random(20000)), int(random(20000)), 
       int(random(20000)), int(random(20000)) );
   }
 }
@@ -543,7 +540,7 @@ public void rawEvent(int[] values) {
   //println("rawEvent: " + values);
 }
 
-public void eegEvent(int delta, int theta, int low_alpha,
+public void eegEvent(int delta, int theta, int low_alpha, 
   int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   logger._eegEvent(delta, theta, low_alpha, high_alpha, low_beta, high_beta, low_gamma, mid_gamma, longTimer.get());
   delta1 = delta;

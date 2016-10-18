@@ -8,7 +8,7 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = false;
+boolean simulateMindSet = true;
 boolean simulateBoxes = false;
 
 float countDownStartMeditate = .1;
