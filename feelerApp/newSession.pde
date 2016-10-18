@@ -142,6 +142,14 @@ void newSession() {
       image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
       PImage three = loadImage("three.png");// Added by Eva
       image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
+      
+      if (!simulateBoxes) {
+        try {
+          feelerS.init("/dev/tty.Feeler-RNI-SPP");
+        }
+        catch (NullPointerException e) {
+        }
+      }
     } else {
       PImage one = loadImage("one.png");// Added by Eva
       //image(one, padding + 80, headerHeight + padding + 70, 60, 60);// Added by Eva

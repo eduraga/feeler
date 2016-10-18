@@ -8,8 +8,8 @@
 // Set up //////////////////////////////////////////////////////////
 
 boolean debug = true;
-boolean simulateMindSet = true;
-boolean simulateBoxes = true;
+boolean simulateMindSet = false;
+boolean simulateBoxes = false;
 
 float countDownStartMeditate = .1;
 float countDownStartStudy = .1;
@@ -52,6 +52,9 @@ import feelerSerial.*;
 
 feelerSerial feelerS;
 boolean boxInit = false;
+//this is a quick patch that prevents the program from freezing once the user clicks new session.
+//where it used to init the feelerSerial, now it just sets this flag, and the init will happen at the end of next draw
+boolean initFeelerSerialInNextFrame=false;
 
 ControlP5 cp5;
 
@@ -794,28 +797,28 @@ public void draw() {
 
   //Visualisation
   // switch(currentPage) {
-  if(currentPage.equals("home")){
+  if (currentPage.equals("home")) {
     if (!loading) {
       home();
     }
     // break;
-  }else if(currentPage.equals("overall")){
+  } else if (currentPage.equals("overall")) {
     trends.display();
     // break;
-  }else if(currentPage.equals("singleSession")){
+  } else if (currentPage.equals("singleSession")) {
     singleVisPage();
     // break;
-  }else if(currentPage.equals("eegActivity")){
+  } else if (currentPage.equals("eegActivity")) {
     //eegActivity();
     eegAct.display();
     // break;
-  }else if(currentPage.equals("assessmentActivity")){
+  } else if (currentPage.equals("assessmentActivity")) {
     //println("assessmentActivity");
     assessmentActivity();
     // break;
-  }else if(currentPage.equals("assessAct")){
+  } else if (currentPage.equals("assessAct")) {
     // break;
-  }else if(currentPage.equals("newSession")){
+  } else if (currentPage.equals("newSession")) {
     newSession();
     // break;
   }
@@ -888,6 +891,9 @@ public void draw() {
     image(screenshotModal, modalWidth/4, modalHeight/4 + 5, modalWidth, modalHeight);
     image(close, modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
   }
+
+
+ 
 }
 
 
@@ -938,20 +944,16 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getController("overallTopRight").show();
     cp5.getController("session").hide();
     cp5.getController("overall").hide();
+
     //case "newSession":
     boxState = 0;
     sw.stop();
 
-    if (!simulateBoxes) {
-      try {
-        feelerS.init("/dev/tty.Feeler-RNI-SPP");
-      }
-      catch (NullPointerException e) {
-      }
-    }
+    initFeelerSerialInNextFrame=true;
+
     println("newSession page");
     currentPage = "newSession";
-    boxState = 0;
+
     //break;
   } else if (controlEventStr.equals("startSession")) {
     //case "startSession":
@@ -1399,25 +1401,26 @@ public void addUserAreaControllers() {
       .getCaptionLabel().align(CENTER, CENTER)
       ;
     cp5.getController("newSession").moveTo("global");
-    try{
-    cp5.addButton("overall")
-      .setLabel("< Your activity")// before "review"
-      .setFont(createFont("font", 12))//Added by Eva
-      .setColorForeground(color(145, 44, 238))//Added by Eva
-      .setColorBackground(color(85, 26, 139))//Added by Eva
-      .setColorActive(color(85, 26, 139))//Added by Eva
-      .setPosition(100, headerHeight + padding + 90)
-      .setSize(120, 30)
-      .setValue(1)
-      .setBroadcast(true)
-      .getCaptionLabel().align(CENTER, CENTER)
-      ;
-    cp5.getController("overall").moveTo("global");
-    cp5.getController("overall").hide();
-  }catch(Exception e){
-    println("overall button exception");
-    println(e);
-  }
+    try {
+      cp5.addButton("overall")
+        .setLabel("< Your activity")// before "review"
+        .setFont(createFont("font", 12))//Added by Eva
+        .setColorForeground(color(145, 44, 238))//Added by Eva
+        .setColorBackground(color(85, 26, 139))//Added by Eva
+        .setColorActive(color(85, 26, 139))//Added by Eva
+        .setPosition(100, headerHeight + padding + 90)
+        .setSize(120, 30)
+        .setValue(1)
+        .setBroadcast(true)
+        .getCaptionLabel().align(CENTER, CENTER)
+        ;
+      cp5.getController("overall").moveTo("global");
+      cp5.getController("overall").hide();
+    }
+    catch(Exception e) {
+      println("overall button exception");
+      println(e);
+    }
     cp5.addButton("overallTopRight")
       .setLabel("To your activity")
       .setFont(createFont("font", 12))
@@ -1571,7 +1574,7 @@ public void keyPressed() {
       break;
     case 'p':
       sw.stop();
-//      cp5.getController("playPauseBt").show();
+      //      cp5.getController("playPauseBt").show();
       cp5.getController("stopBt").show();
       boxState = 300;
       break;
