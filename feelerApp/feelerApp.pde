@@ -52,9 +52,7 @@ import feelerSerial.*;
 
 feelerSerial feelerS;
 boolean boxInit = false;
-//this is a quick patch that prevents the program from freezing once the user clicks new session.
-//where it used to init the feelerSerial, now it just sets this flag, and the init will happen at the end of next draw
-boolean initFeelerSerialInNextFrame=false;
+
 
 ControlP5 cp5;
 
@@ -948,8 +946,6 @@ public void controlEvent(ControlEvent theControlEvent) {
     //case "newSession":
     boxState = 0;
     sw.stop();
-
-    initFeelerSerialInNextFrame=true;
 
     println("newSession page");
     currentPage = "newSession";
