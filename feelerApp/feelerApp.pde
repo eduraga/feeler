@@ -1679,21 +1679,19 @@ void openModal(String img) {
 }
 
 
-void updateBoxData() {
-  while (true) {
-    if ( millis() % 500 == 0) {
-
-      try {
+long updateBoxDataTimer = millis();
+void updateBoxData(){
+  while(true){
+      if ( millis() - updateBoxDataTimer > 300) {
+      updateBoxDataTimer = millis();
+      
+      try{
         feelerS.sendValues();
-      }
-      catch (Exception e) {
-      }
-
-      try {
+      } catch (Exception e) {}
+      
+      try{
         feelerS.get();
-      }
-      catch (Exception e) {
-      }
+      } catch (Exception e) {}
     }
   }
 }
