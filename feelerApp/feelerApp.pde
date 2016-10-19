@@ -1695,6 +1695,8 @@ void updateBoxData() {
   }
 }
 boolean tryingGetFeelerSConnection=false;
+//pendant: This flag is vary probably integrated in the feelerSerial library. 
+//Let niklas review this function to clean the code from globals.
 boolean feelerSerialConnected=false;
 void tryGetFeelerSConnection() {
   if (!(tryingGetFeelerSConnection||feelerSerialConnected)) {
