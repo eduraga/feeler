@@ -7,9 +7,9 @@
 ////////////////////////////////////////////////////////////////////
 // Set up //////////////////////////////////////////////////////////
 
-boolean debug = true;
-boolean simulateMindSet = true;
-boolean simulateBoxes = true;
+boolean debug = false;
+boolean simulateMindSet = false;
+boolean simulateBoxes = false;
 
 float countDownStartMeditate = .1;
 float countDownStartStudy = .1;
@@ -200,7 +200,11 @@ PImage screenshot;
 /////////////////
 
 int boxState = 0;
-
+//this allows queuing functions after the draw.
+interface Command{
+  boolean execute();
+}
+ArrayList<Command> runAfterNextDraw = new ArrayList<Command>();
 //MindSet stuff
 MindSet mindSet;
 boolean mindSetOK = false;
@@ -888,6 +892,19 @@ public void draw() {
     image(screenshotModal, modalWidth/4, modalHeight/4 + 5, modalWidth, modalHeight);
     image(close, modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
   }
+  //run commands that have been added to the list
+  /*for (Command command : runAfterNextDraw)
+  {
+    if(command.execute()){
+      runAfterNextDraw.remove(command);
+    };
+  }*/
+  for(int i=0; i<runAfterNextDraw.size(); i++){
+    Command command=runAfterNextDraw.get(i);
+    if(command.execute()){
+      runAfterNextDraw.remove(command);
+    }
+  }
 }
 
 
@@ -942,11 +959,23 @@ public void controlEvent(ControlEvent theControlEvent) {
     boxState = 0;
     sw.stop();
 
-
+    runAfterNextDraw.add(new Command() {
+      int waits=10;
+      public boolean execute() {
+        if(waits<=0){
+          println("fnsh");
+          tryGetFeelerSConnection();
+          return true;
+        }else{
+          waits--;
+          println("waiting"+waits);
+          return false;
+        }
+      }
+    });
     println("newSession page");
     currentPage = "newSession";
     boxState = 0;
-    //break;
   } else if (controlEventStr.equals("startSession")) {
     //case "startSession":
     feelerS.play();
@@ -1701,10 +1730,11 @@ boolean feelerSerialConnected=false;
 void tryGetFeelerSConnection() {
   if (!(tryingGetFeelerSConnection||feelerSerialConnected)) {
     tryingGetFeelerSConnection=true;
+    println("trying to get feelerS connection");
     if (!simulateBoxes) {
       try {
         feelerS.init("/dev/tty.Feeler-RNI-SPP");
-        println("Feeler bluetooth serial connection succesful!");
+        println("Feeler bluetooth serial connection succesful");
         feelerSerialConnected=true;
       }
       catch (NullPointerException e) {

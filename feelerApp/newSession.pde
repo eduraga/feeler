@@ -27,7 +27,7 @@ int triggerMedium = 50;
 int triggerHigh = 80;
 
 void newSession() {
-
+  //tryGetFeelerSConnection();
   if (boxState == 200) {
     screenshotThresholds();
   }
@@ -189,7 +189,6 @@ void newSession() {
       boxState = 200;
       timerOn = false;
     }
-    tryGetFeelerSConnection();
     break;
   case 200:
     pageH1("New session");
