@@ -165,6 +165,9 @@ void newSession() {
     }
     break;
   case 100:
+    feelerS.setBoxState(1);//added by Eva 2016.09.14
+    feelerS.setBox2LedState(0);//added by Eva 2016.09.14
+    feelerS.sendValues();//added by Eva 2016.09.14
     cp5.getController("startSession").hide();
     pageH1("New session");
     PImage one = loadImage("one.png");// Added by Eva
@@ -172,7 +175,6 @@ void newSession() {
     textSize(24); //added by Eva
     text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
     recording = true;
-    logger.restart();
     timerOn = true;
     timeline = 1;
     fill(textDarkColor);
@@ -181,6 +183,9 @@ void newSession() {
     PImage meditatebox = loadImage("meditate_box.png");// Added by Eva
     image(meditatebox, padding + 80 + 80, headerHeight + padding + 120 + 30, 270, 386);// Added by Eva
     counterDisplay();
+
+    //feelerS.setBoxState(1);
+    //feelerS.setBox2LedState(0);
 
     feelerS.setBoxState(1);
     feelerS.setBox2LedState(0);
