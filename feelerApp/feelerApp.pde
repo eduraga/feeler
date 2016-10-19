@@ -794,28 +794,28 @@ public void draw() {
 
   //Visualisation
   // switch(currentPage) {
-  if(currentPage.equals("home")){
+  if (currentPage.equals("home")) {
     if (!loading) {
       home();
     }
     // break;
-  }else if(currentPage.equals("overall")){
+  } else if (currentPage.equals("overall")) {
     trends.display();
     // break;
-  }else if(currentPage.equals("singleSession")){
+  } else if (currentPage.equals("singleSession")) {
     singleVisPage();
     // break;
-  }else if(currentPage.equals("eegActivity")){
+  } else if (currentPage.equals("eegActivity")) {
     //eegActivity();
     eegAct.display();
     // break;
-  }else if(currentPage.equals("assessmentActivity")){
+  } else if (currentPage.equals("assessmentActivity")) {
     //println("assessmentActivity");
     assessmentActivity();
     // break;
-  }else if(currentPage.equals("assessAct")){
+  } else if (currentPage.equals("assessAct")) {
     // break;
-  }else if(currentPage.equals("newSession")){
+  } else if (currentPage.equals("newSession")) {
     newSession();
     // break;
   }
@@ -942,13 +942,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     boxState = 0;
     sw.stop();
 
-    if (!simulateBoxes) {
-      try {
-        feelerS.init("/dev/tty.Feeler-RNI-SPP");
-      }
-      catch (NullPointerException e) {
-      }
-    }
+
     println("newSession page");
     currentPage = "newSession";
     boxState = 0;
@@ -1399,25 +1393,26 @@ public void addUserAreaControllers() {
       .getCaptionLabel().align(CENTER, CENTER)
       ;
     cp5.getController("newSession").moveTo("global");
-    try{
-    cp5.addButton("overall")
-      .setLabel("< Your activity")// before "review"
-      .setFont(createFont("font", 12))//Added by Eva
-      .setColorForeground(color(145, 44, 238))//Added by Eva
-      .setColorBackground(color(85, 26, 139))//Added by Eva
-      .setColorActive(color(85, 26, 139))//Added by Eva
-      .setPosition(100, headerHeight + padding + 90)
-      .setSize(120, 30)
-      .setValue(1)
-      .setBroadcast(true)
-      .getCaptionLabel().align(CENTER, CENTER)
-      ;
-    cp5.getController("overall").moveTo("global");
-    cp5.getController("overall").hide();
-  }catch(Exception e){
-    println("overall button exception");
-    println(e);
-  }
+    try {
+      cp5.addButton("overall")
+        .setLabel("< Your activity")// before "review"
+        .setFont(createFont("font", 12))//Added by Eva
+        .setColorForeground(color(145, 44, 238))//Added by Eva
+        .setColorBackground(color(85, 26, 139))//Added by Eva
+        .setColorActive(color(85, 26, 139))//Added by Eva
+        .setPosition(100, headerHeight + padding + 90)
+        .setSize(120, 30)
+        .setValue(1)
+        .setBroadcast(true)
+        .getCaptionLabel().align(CENTER, CENTER)
+        ;
+      cp5.getController("overall").moveTo("global");
+      cp5.getController("overall").hide();
+    }
+    catch(Exception e) {
+      println("overall button exception");
+      println(e);
+    }
     cp5.addButton("overallTopRight")
       .setLabel("To your activity")
       .setFont(createFont("font", 12))
@@ -1571,7 +1566,7 @@ public void keyPressed() {
       break;
     case 'p':
       sw.stop();
-//      cp5.getController("playPauseBt").show();
+      //      cp5.getController("playPauseBt").show();
       cp5.getController("stopBt").show();
       boxState = 300;
       break;
@@ -1680,20 +1675,43 @@ void openModal(String img) {
 
 
 long updateBoxDataTimer = millis();
-void updateBoxData(){
-  while(true){
-      if ( millis() - updateBoxDataTimer > 300) {
+void updateBoxData() {
+  while (true) {
+    if ( millis() - updateBoxDataTimer > 300) {
       updateBoxDataTimer = millis();
-      
-      try{
+
+      try {
         feelerS.sendValues();
-      } catch (Exception e) {}
-      
-      try{
+      } 
+      catch (Exception e) {
+      }
+
+      try {
         feelerS.get();
-      } catch (Exception e) {}
+      } 
+      catch (Exception e) {
+      }
     }
   }
+}
+boolean tryingGetFeelerSConnection=false;
+boolean feelerSerialConnected=false;
+void tryGetFeelerSConnection() {
+  if (!(tryingGetFeelerSConnection||feelerSerialConnected)) {
+    tryingGetFeelerSConnection=true;
+    if (!simulateBoxes) {
+      try {
+        feelerS.init("/dev/tty.Feeler-RNI-SPP");
+        println("Feeler bluetooth serial connection succesful!");
+        feelerSerialConnected=true;
+      }
+      catch (NullPointerException e) {
+        println(e);
+        tryingGetFeelerSConnection=false;
+      }
+    }
+  }
+  tryingGetFeelerSConnection=false;
 }
 
 void exit() {

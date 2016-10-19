@@ -127,7 +127,7 @@ void newSession() {
       fill(textLightColor);
       text("Checking that I get some EEG data...", padding + 80 + 80, headerHeight + padding + 75 + 30 + 80);
       textSize(16);
-      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20,headerHeight + padding + 75 +30 + 80 + 20);
+      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, headerHeight + padding + 75 +30 + 80 + 20);
       popStyle();
       cp5.getController("startSession").hide();
     } else if (!feelerS.checkConnection() && !simulateBoxes) {
@@ -160,24 +160,24 @@ void newSession() {
     }
     break;
   case 100:
-      feelerS.setBoxState(1);//added by Eva 2016.09.14
-      feelerS.setBox2LedState(0);//added by Eva 2016.09.14
-      feelerS.sendValues();//added by Eva 2016.09.14
-      cp5.getController("startSession").hide();
-      pageH1("New session");
-      PImage one = loadImage("one.png");// Added by Eva
-      image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
-      textSize(24); //added by Eva
-      text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
-      recording = true;
-      timerOn = true;
-      timeline = 1;
-      fill(textDarkColor);
-      textSize(16); //added by Eva
-      text("Sync your breathing with the box lighting", padding + 80 + 80, headerHeight + padding + 90 + 30);
-      PImage meditatebox = loadImage("meditate_box.png");// Added by Eva
-      image(meditatebox, padding + 80 + 80, headerHeight + padding + 120 + 30,270,386);// Added by Eva
-      counterDisplay();
+    feelerS.setBoxState(1);//added by Eva 2016.09.14
+    feelerS.setBox2LedState(0);//added by Eva 2016.09.14
+    feelerS.sendValues();//added by Eva 2016.09.14
+    cp5.getController("startSession").hide();
+    pageH1("New session");
+    PImage one = loadImage("one.png");// Added by Eva
+    image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
+    textSize(24); //added by Eva
+    text("Meditate", padding + 80 + 80, headerHeight + padding + 60 + 30);
+    recording = true;
+    timerOn = true;
+    timeline = 1;
+    fill(textDarkColor);
+    textSize(16); //added by Eva
+    text("Sync your breathing with the box lighting", padding + 80 + 80, headerHeight + padding + 90 + 30);
+    PImage meditatebox = loadImage("meditate_box.png");// Added by Eva
+    image(meditatebox, padding + 80 + 80, headerHeight + padding + 120 + 30, 270, 386);// Added by Eva
+    counterDisplay();
 
     feelerS.setBoxState(1);
     feelerS.setBox2LedState(0);
@@ -189,6 +189,7 @@ void newSession() {
       boxState = 200;
       timerOn = false;
     }
+    tryGetFeelerSConnection();
     break;
   case 200:
     pageH1("New session");
@@ -479,8 +480,8 @@ void simulate() {
     //attentionEvent(int(map(mouseX, 0, width, 0, 100)));
     //meditationEvent(int(map(mouseY, 0, height, 0, 100)));
 
-    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)),
-      int(random(20000)), int(random(20000)), int(random(20000)),
+    eegEvent(int(random(20000)), int(random(20000)), int(random(20000)), 
+      int(random(20000)), int(random(20000)), int(random(20000)), 
       int(random(20000)), int(random(20000)) );
   }
 }
@@ -537,7 +538,7 @@ public void rawEvent(int[] values) {
   //println("rawEvent: " + values);
 }
 
-public void eegEvent(int delta, int theta, int low_alpha,
+public void eegEvent(int delta, int theta, int low_alpha, 
   int high_alpha, int low_beta, int high_beta, int low_gamma, int mid_gamma) {
   logger._eegEvent(delta, theta, low_alpha, high_alpha, low_beta, high_beta, low_gamma, mid_gamma, longTimer.get());
   delta1 = delta;
