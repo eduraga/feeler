@@ -26,7 +26,7 @@ int triggerLow = 20;
 int triggerMedium = 50;
 int triggerHigh = 80;
 
-boolean boxesAreTryingToConnect=false;
+
 
 void newSession() {
 
@@ -145,7 +145,7 @@ void newSession() {
       PImage three = loadImage("three.png");// Added by Eva
       image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
       if (!boxesAreTryingToConnect) {
-        thread("tryGetFeelerSConnection");
+        tryGetFeelerSConnection();
       }
     } else {
       PImage one = loadImage("one.png");// Added by Eva

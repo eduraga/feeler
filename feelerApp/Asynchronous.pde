@@ -302,17 +302,3 @@ class Clock {
     return (int) (System.currentTimeMillis()-startMillis)%module;
   }
 }
-
-void tryGetFeelerSConnection(){
-  boxesAreTryingToConnect=true;
-  if (!simulateBoxes) {
-    try {
-      feelerS.init("/dev/tty.Feeler-RNI-SPP");
-      boxesAreTryingToConnect=false;
-    }
-    catch (NullPointerException e) {
-      println(e);
-      boxesAreTryingToConnect=false;
-    }
-  }
-}
