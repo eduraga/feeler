@@ -7,9 +7,9 @@
 ////////////////////////////////////////////////////////////////////
 // Set up //////////////////////////////////////////////////////////
 
-boolean debug = true;
-boolean simulateMindSet = true;
-boolean simulateBoxes = true;
+boolean debug = false;
+boolean simulateMindSet = false;
+boolean simulateBoxes = false;
 
 float countDownStartMeditate = .1;
 float countDownStartStudy = .1;
@@ -20,10 +20,10 @@ float countDownStartStudy = .1;
 ////////////////////////////////////////////////////////////////////
 // Danger zone /////////////////////////////////////////////////////
 
-import processing.net.*; 
+import processing.net.*;
 import controlP5.*;
-import java.util.*; 
-import java.awt.Robot; 
+import java.util.*;
+import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.Rectangle;
 
@@ -31,15 +31,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.text.DecimalFormat;
 
-import java.util.HashMap; 
-import java.util.ArrayList; 
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.BufferedReader; 
-import java.io.PrintWriter; 
-import java.io.InputStream; 
-import java.io.OutputStream; 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.nio.*;
 
@@ -87,7 +87,7 @@ static boolean isEnabled = true;
 
 CountDown sw = new CountDown();
 CountUp cu = new CountUp();
-boolean recording = false; 
+boolean recording = false;
 
 //UI variables
 PImage logo;
@@ -136,24 +136,23 @@ PImage close1;
 boolean modal = false;
 float modalWidth;
 float modalHeight;
-PImage one;//Added by Eva
-PImage two;//Added by Eva
-PImage three;//Added by Eva
-PImage meditatebox;//Added by Eva
-PImage studybox;//Added by Eva
-PImage playbox;//Added by Eva
-PImage one_1;//Added by Eva
-PImage one_2;//Added by Eva
-PImage one_3;//Added by Eva
+PImage one;
+PImage two;
+PImage three;
+PImage meditatebox;
+PImage studybox;
+PImage playbox;
+PImage one_1;
+PImage one_2;
+PImage one_3;
 
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
 color textLightColor = color(180);
-color attentionColor = color(255, 71, 0); //added by Eva
-color relaxationColor = color(147, 192, 31); // added by Eva
-//color attentionColor = color(234, 79, 51); 
-//color relaxationColor = color(167, 196, 58);
+color attentionColor = color(255, 71, 0); 
+color relaxationColor = color(147, 192, 31); 
+
 
 // files handling
 int listSize;
@@ -184,14 +183,14 @@ String[] fileAssessmentArray;
 File directory2;
 
 float dataMin, dataMax;
-int deltaMax, deltaMin, thetaMax, thetaMin, lowAlphaMax, lowAlphaMin, highAlphaMax, highAlphaMin, lowBetaMax, lowBetaMin, highBetaMax, highBetaMin, lowGammaMax, lowGammaMin, midGammaMax, midGammaMin, blinkStMax, blinkStMin, attentionMin, attentionMax, meditationMin, meditationMax; 
+int deltaMax, deltaMin, thetaMax, thetaMin, lowAlphaMax, lowAlphaMin, highAlphaMax, highAlphaMin, lowBetaMax, lowBetaMin, highBetaMax, highBetaMin, lowGammaMax, lowGammaMin, midGammaMax, midGammaMin, blinkStMax, blinkStMin, attentionMin, attentionMax, meditationMin, meditationMax;
 float plotX1, plotY1;
 float plotX2, plotY2;
 
 int rowCount, rowCount1, rowCount2, rowCount3;
 long state1start, state2start, state3start;
 int columnCount;
-int currentColumn = 0; 
+int currentColumn = 0;
 char[] filenameCharArray = new char[20];
 /////////////////////////
 
@@ -200,52 +199,61 @@ PImage screenshot;
 /////////////////
 
 int boxState = 0;
-
+//this allows queuing functions after the draw.
+interface Command{
+  boolean execute();
+}
+ArrayList<Command> runAfterNextDraw = new ArrayList<Command>();
 //MindSet stuff
 MindSet mindSet;
 boolean mindSetOK = false;
 boolean mindSetPortOk = false;
 int mindSetId;
-
+//async log
+Clock longTimer=new Clock();
+Logger logger;
 public void setup() {
+  logger=new Logger();
   font = createFont("GlacialIndifference-Regular-48", 12);
   surface.setTitle("Feeler");
   smooth();
-  
+
   homeImg = loadImage("home.png");
-  
+
   close = loadImage("close.png");
   close1 = loadImage("close1.png");
-  
+
   trends = new LineChart();
   eegAct = new LineChart();
   personalExperience = new LineChart();
-  
-  hoverUpLeft = new PVector(0,0);
-  hoverDownRight = new PVector(0,0);
-  
+
+  hoverUpLeft = new PVector(0, 0);
+  hoverDownRight = new PVector(0, 0);
+
   //size(1200, 850);
   //size(1000, 700);
   size(displayWidth, displayHeight);
-  
+
   //fullScreen();
   surface.setResizable(true);
-//double width = screenSize.getWidth();
-//double height = screenSize.getHeight();
+  //double width = screenSize.getWidth();
+  //double height = screenSize.getHeight();
   //println((int)screenSize.getWidth());
-  
+
   noStroke();
   textSize(12);
 
   userTabsX = width/2;
-  
-  visX = (width/3)/2; //change visualisation left position
-  visY = headerHeight + padding + 100; //change visualisation top position
-  //visY = headerHeight + padding + 60;// old
-  visWidth = width - width/4; //change visualisation width
-  visHeight = 300; //change visualisation width
-  
-  //don't change these unless you know what you're doing
+
+  visX = (width/3)/2 - 43; //change visualisation left position
+  //visX = (width/3)/2; //change visualisation left position. OLD
+  visY = headerHeight + padding + 110; //change visualisation top position
+  //visY = headerHeight + padding + 100;// old
+  visWidth = (width - width/4) + 30; //change visualisation width
+  //visWidth = width - width/4; //change visualisation width. OLD
+  visHeight = 300; //change visualisation height
+
+  //don't change these unless you know what you're doing (modifies the height and width of the EEG linechart values)
   lowerBoundary = visHeight + visY + padding*3;
   upperBoundary = visY + padding*3;
 
@@ -270,16 +278,16 @@ public void setup() {
   containerPosY = 350;//added by Eva
   //containerPosY = height/2 - videoHeight/2;
   containerPosX = width/2 - videoWidth/2;
-  
+
   logo = loadImage("feeler-logo.png");
-  
+
   feelingRadioMeditation = new FeelingRadio(20 + 80, 250 + 10, "Meditation");
   feelingRadioStudy = new FeelingRadio(20 + 80, 250 + 50 + padding*5 + 10, "Study");
   feelingRadioPlay = new FeelingRadio(20 + 80, 250 + 50*2 + padding*10 + 10, "Play");
-  
+
   //Make a new feelerSerial
-  feelerS = new feelerSerial(this); 
-  
+  feelerS = new feelerSerial(this);
+
   thread("updateBoxData");
 
   // Feeler Serial stuff
@@ -290,12 +298,12 @@ public void setup() {
   //The settings are speeds(seconds) for the 3 different boxes.
   //first number speed for ledfade in box 1
   feelerS.setSettings(10000, 2000, 3000); //remove this line to use default settings.
-  
-  
-  
-  
+
+
+
+
   //PImage[] imgs = {loadImage("feeler-logo.png"), loadImage("feeler-logo.png"), loadImage("feeler-logo.png")};
-  
+
   //cp5.addButton("homeBt")
   //  .setBroadcast(false)
   //  .setPosition(20, 20)
@@ -313,35 +321,35 @@ public void setup() {
     .setLabel("home")
     .setId(1)
     ;
-    
+
   cp5.getWindow().setPositionOfTabs(0, -200);
 
   cp5.addTab("login");
   cp5.getTab("login")
-   .activateEvent(true)
-   .setId(2)
-   ;
+    .activateEvent(true)
+    .setId(2)
+    ;
 
   cp5.addTextlabel("label")
-  .setText("Login")
-  .setPosition(width/2 - 58, height/2 - 230)
-  //.setPosition(width/2 - 60, height/2 - 150)
-  .setColorValue(color(0))
-  .setFont(createFont("font",40))
-  ;
+    .setText("Login")
+    .setPosition(width/2 - 58, height/2 - 230)
+    //.setPosition(width/2 - 60, height/2 - 150)
+    .setColorValue(color(0))
+    .setFont(createFont("font", 40))
+    ;
   cp5.getController("label").moveTo("login");
 
   username = cp5.addTextfield("username")
     .setPosition(width/2 - 135, height/2 - 80 -70)
     .setSize(300, 60)
-    .setFont(createFont("font",14))// added by Eva
+    .setFont(createFont("font", 14))// added by Eva
     .setColorCaptionLabel(color(0))// added by Eva
     .setColorLabel(color(0))
     .setColorValue(color(0))// added by Eva
     .setColorBackground(color(209))//Added by Eva
     .setColorForeground(color(209))
-    .setColorActive(color(85,26,139))//Added by Eva
-    
+    .setColorActive(color(85, 26, 139))//Added by Eva
+
     .setLabel("username")
     .setFocus(true)
     ;
@@ -351,13 +359,13 @@ public void setup() {
   password = cp5.addTextfield("password")
     .setPosition(width/2 - 135, height/2 - 60)
     .setSize(300, 60)
-    .setFont(createFont("font",14))// added by Eva
+    .setFont(createFont("font", 14))// added by Eva
     .setColorCaptionLabel(color(0))// added by Eva
     .setColorLabel(color(0))
     .setColorValue(color(0))// added by Eva
     .setColorBackground(color(209))//Added by Eva
     .setColorForeground(color(209))
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPasswordMode(true)
     .setLabel("password")
     ;
@@ -367,11 +375,11 @@ public void setup() {
   cp5.addButton("submit")
     .setBroadcast(false)
     .setLabel("login")
-    .setFont(createFont("font",14))
+    .setFont(createFont("font", 14))
     .setPosition(width/2 - 135, height/2 + 40)
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setSize(300, 60)
     //.setSize(240, 40)
     .setValue(1)
@@ -383,10 +391,10 @@ public void setup() {
   cp5.addButton("signup")
     .setBroadcast(false)
     .setLabel("signup")
-    .setFont(createFont("font",14))
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 14))
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(width/2 - 135, height/2 + 120)
     //.setPosition(width/2 - 115, height/2 + 55)
     .setSize(300, 60)
@@ -398,32 +406,17 @@ public void setup() {
   cp5.getController("signup").moveTo("login");
 
   cp5.addButton("loginBt")
-     .setBroadcast(false)
+    .setBroadcast(false)
     .setLabel("Let's go")
-    .setFont(createFont("font",14))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(width/2 - 135, height/2 + 270)
     .setSize(300, 60)
     .setValue(1)
     .setBroadcast(true)
     .getCaptionLabel().align(CENTER, CENTER)
-    
-  //cp5.addButton("loginBt") //old
-    //.setBroadcast(false)
-    //.setLabel("Login")
-    //.setFont(createFont("font",12))//Added by Eva
-    //.setColorForeground(color(145,44,238))//Added by Eva
-    //.setColorBackground(color(85,26,139))//Added by Eva
-    //.setColorActive(color(85,26,139))//Added by Eva
-    //.setPosition(width - 180, 20)
-    //.setSize(80, 30)
-    //.setValue(1)
-    //.setBroadcast(true)
-    //.getCaptionLabel().align(CENTER, CENTER)
-    //.toUpperCase(false)
-    //.setFont(font)
     ;
   cp5.getController("loginBt").moveTo("default");
 
@@ -432,10 +425,10 @@ public void setup() {
     .setLabel("Logout")
     //.setPosition(width - 80, 10)
     .setPosition(width - 180, padding)
-     .setFont(createFont("font",12))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 12))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setSize(buttonWidth, 30)
     .setValue(1)
     .setBroadcast(true)
@@ -448,13 +441,10 @@ public void setup() {
   cp5.addButton("startSession")
     .setBroadcast(false)
     .setLabel("Record")
-    .setFont(createFont("font",16))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    //.setColorForeground(color(153))//Added by Eva
-    //.setColorBackground(color(85))//Added by Eva
-    //.setColorActive(color(50))//Added by Eva
+    .setFont(createFont("font", 16))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(padding + 80 + 80, headerHeight + padding * 11 + 30)
     .setSize(300, 60)
     .setValue(1)
@@ -468,13 +458,10 @@ public void setup() {
   cp5.addButton("playPauseBt")
     .setBroadcast(false)
     .setLabel("Pause")
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    .setFont(createFont("font",16))//Added by Eva
-    //.setColorForeground(color(153))//Added by Eva
-    //.setColorBackground(color(85))//Added by Eva
-    //.setColorActive(color(50))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
+    .setFont(createFont("font", 16))//Added by Eva
     .setPosition(width/2 - 90, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2 - 50, containerPosY + padding * 2)
     .setSize(80, 80)
@@ -484,18 +471,15 @@ public void setup() {
     ;
   cp5.getController("playPauseBt").moveTo("global");
   cp5.getController("playPauseBt").hide();
-  
+
   cp5.addButton("stopBt")
     .setBroadcast(false)
     .setLabel("Stop")
-    .setFont(createFont("font",16))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    //.setColorForeground(color(153))//Added by Eva
-    //.setColorBackground(color(85))//Added by Eva
-    //.setColorActive(color(50))//Added by Eva
-    .setPosition(width/2 + 10, containerPosY + padding * 3)//added by Eva
+    .setFont(createFont("font", 16))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
+    .setPosition(width/2-20/* + 10*/, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2, containerPosY + padding * 2)
     .setSize(80, 80)
     .setValue(1)
@@ -504,36 +488,33 @@ public void setup() {
     ;
   cp5.getController("stopBt").moveTo("global");
   cp5.getController("stopBt").hide();
-  
-  
+
+
   cp5.addButton("endGame")
-  .setBroadcast(false)
-  .setLabel("End game")
-  .setFont(createFont("font",16))//Added by Eva
-  .setColorForeground(color(145,44,238))//Added by Eva
-  .setColorBackground(color(85,26,139))//Added by Eva
-  .setColorActive(color(85,26,139))//Added by Eva
-  //.setColorForeground(color(153))//Added by Eva
-  //.setColorBackground(color(85))//Added by Eva
-  //.setColorActive(color(50))//Added by Eva
-  .setPosition(width/2 - 60, containerPosY + padding * 3)//added by Eva
-  //.setPosition(padding, headerHeight + padding * 4)
-  .setSize(120, 80)
-  //.setValue(1)
-  .setBroadcast(true)
-  .getCaptionLabel().align(CENTER, CENTER)
-  ;
+    .setBroadcast(false)
+    .setLabel("End game")
+    .setFont(createFont("font", 16))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
+    .setPosition(width/2 - 60, containerPosY + padding * 3)//added by Eva
+    //.setPosition(padding, headerHeight + padding * 4)
+    .setSize(120, 80)
+    //.setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
   cp5.getController("endGame").moveTo("global");
   cp5.getController("endGame").hide();
-  
+
   // assessment 1/3
   cp5.addButton("assess1Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setFont(createFont("font",14))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(padding + 260 + 80, headerHeight + padding * 29 + 10)
     .setSize(80, 40)
     .setValue(1)
@@ -542,14 +523,14 @@ public void setup() {
     ;
   cp5.getController("assess1Bt").moveTo("global");
   cp5.getController("assess1Bt").hide();
-  
+
   // assessment 2/3
   cp5.addSlider("assessRelaxationMeditation")
     //.setLabel("Meditation")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(relaxationColor))//Added by Eva
     .setColorForeground(color(relaxationColor))//Added by Eva
@@ -558,13 +539,13 @@ public void setup() {
     ;
   cp5.getController("assessRelaxationMeditation").moveTo("global");
   cp5.getController("assessRelaxationMeditation").hide();
-  
+
   cp5.addSlider("assessRelaxationStudy")
-  //.setLabel("Study")//old label
+    //.setLabel("Study")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(relaxationColor))//Added by Eva
     .setColorForeground(color(relaxationColor))//Added by Eva
@@ -573,13 +554,13 @@ public void setup() {
     ;
   cp5.getController("assessRelaxationStudy").moveTo("global");
   cp5.getController("assessRelaxationStudy").hide();
-  
+
   cp5.addSlider("assessRelaxationPlay")
-  //.setLabel("Play")//old label
+    //.setLabel("Play")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(relaxationColor))//Added by Eva
     .setColorForeground(color(relaxationColor))//Added by Eva
@@ -592,10 +573,10 @@ public void setup() {
   cp5.addButton("assess22Bt")
     .setBroadcast(false)
     .setLabel("Previous")
-    .setFont(createFont("font",14))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(padding + 160 + 80, headerHeight + padding * 23.2 + 10)
     .setSize(80, 40)
     .setValue(1)
@@ -604,14 +585,14 @@ public void setup() {
     ;
   cp5.getController("assess22Bt").moveTo("global");
   cp5.getController("assess22Bt").hide();
-  
+
   cp5.addButton("assess2Bt")
     .setBroadcast(false)
     .setLabel("Next")
-    .setFont(createFont("font",14))//Added by Eva
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
     .setPosition(padding + 260 + 80, headerHeight + padding * 23.2 + 10)
     .setSize(80, 40)
     .setValue(1)
@@ -620,14 +601,14 @@ public void setup() {
     ;
   cp5.getController("assess2Bt").moveTo("global");
   cp5.getController("assess2Bt").hide();
-  
+
   // assessment 3/3
   cp5.addSlider("assessAttentionMeditation")
-     //.setLabel("Meditation")//old label
+    //.setLabel("Meditation")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(attentionColor))//Added by Eva
     .setColorForeground(color(attentionColor))//Added by Eva
@@ -636,13 +617,13 @@ public void setup() {
     ;
   cp5.getController("assessAttentionMeditation").moveTo("global");
   cp5.getController("assessAttentionMeditation").hide();
-  
+
   cp5.addSlider("assessAttentionStudy")
-     //.setLabel("Study")//old label
+    //.setLabel("Study")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(attentionColor))//Added by Eva
     .setColorForeground(color(attentionColor))//Added by Eva
@@ -651,13 +632,13 @@ public void setup() {
     ;
   cp5.getController("assessAttentionStudy").moveTo("global");
   cp5.getController("assessAttentionStudy").hide();
-  
+
   cp5.addSlider("assessAttentionPlay")
     //.setLabel("Play")//old label
     .setLabel("%")
-    .setFont(createFont("font",20))//Added by Eva
+    .setFont(createFont("font", 20))//Added by Eva
     .setColorLabel(textDarkColor)
-    .setSize(340,60)
+    .setSize(340, 60)
     .setColorBackground(color(209))//Added by Eva
     .setColorActive(color(attentionColor))//Added by Eva
     .setColorForeground(color(attentionColor))//Added by Eva
@@ -688,78 +669,77 @@ public void setup() {
     ;
   cp5.getController("assess3Toggle2").moveTo("global");
   cp5.getController("assess3Toggle2").hide();
-  
-  
+
+
   cp5.addButton("assess33Bt")
-  .setBroadcast(false)
-  .setLabel("Previous")
-  .setFont(createFont("font",14))//Added by Eva
-  .setColorForeground(color(145,44,238))//Added by Eva
-  .setColorBackground(color(85,26,139))//Added by Eva
-  .setColorActive(color(85,26,139))//Added by Eva
-  .setPosition(padding + 160 + 80, headerHeight + padding * 23.2 + 10)
-  .setSize(80, 40)
-  //.setValue(1)
-  .setBroadcast(true)
-  .getCaptionLabel().align(CENTER, CENTER)
-  ;
+    .setBroadcast(false)
+    .setLabel("Previous")
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
+    .setPosition(padding + 160 + 80, headerHeight + padding * 23.2 + 10)
+    .setSize(80, 40)
+    //.setValue(1)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    ;
   cp5.getController("assess33Bt").moveTo("global");
   cp5.getController("assess33Bt").hide();
-  
+
   cp5.addButton("assess3Bt")
-  .setBroadcast(false)
-  .setLabel("Submit")
-  .setFont(createFont("font",14))//Added by Eva
-  .setColorForeground(color(145,44,238))//Added by Eva
-  .setColorBackground(color(85,26,139))//Added by Eva
-  .setColorActive(color(85,26,139))//Added by Eva
-  .setPosition(padding + 260 + 80, headerHeight + padding * 23.2 + 10)
-  .setSize(80, 40)
-  .setBroadcast(true)
-  .getCaptionLabel().align(CENTER, CENTER)
-  //.setValue(1)
-  ;
+    .setBroadcast(false)
+    .setLabel("Submit")
+    .setFont(createFont("font", 14))//Added by Eva
+    .setColorForeground(color(145, 44, 238))//Added by Eva
+    .setColorBackground(color(85, 26, 139))//Added by Eva
+    .setColorActive(color(85, 26, 139))//Added by Eva
+    .setPosition(padding + 260 + 80, headerHeight + padding * 23.2 + 10)
+    .setSize(80, 40)
+    .setBroadcast(true)
+    .getCaptionLabel().align(CENTER, CENTER)
+    //.setValue(1)
+    ;
   cp5.getController("assess3Bt").moveTo("global");
   cp5.getController("assess3Bt").hide();
-  
-  /////////////////////////////////
 
+  /////////////////////////////////
 }
 
 public void draw() {
   textFont(font);
   textAlign(LEFT);
-  
-  
+
+
   background(255);
   fill(0);
   image(logo, 100, 20);// added by Eva, margin left was before 20
-  
+
   //draw all the controllers in the beginning so that everything else will be drawn on top of them
   //put this after something if that something should be below the controllers
   cp5.draw();
-  
+
   if ( millis() % 100 == 0) {
     //feelerS.sendValues();
     try {
       feelerS.get();
-    } catch (NullPointerException e) {
     }
-    
+    catch (NullPointerException e) {
+    }
   }
-  
-  if(
+
+  if (
     mouseX > hoverUpLeft.x &&
     mouseX < hoverDownRight.x
     &&
     mouseY > hoverUpLeft.y &&
     mouseY < hoverDownRight.y
-  ){
+    ) {
     cursor(HAND);
   } else {
     cursor(ARROW);
   }
-  
+
 
   if (isLoggedIn) {
     pushStyle();
@@ -774,15 +754,15 @@ public void draw() {
     text("Wrong username or password", width/2, height/2 - 270);
     popStyle();
   }
-  
+
   if (registered) {
     pushStyle();
     textAlign(CENTER);
     text("New user successfully registered!\nPlease log in.", width/2, height/2 - 270);
     popStyle();
   }
-  
-  if(!serverAvailable){
+
+  if (!serverAvailable) {
     pushStyle();
     textAlign(CENTER);
     text("Server not available", width/2, height/2 - 270);
@@ -791,31 +771,31 @@ public void draw() {
 
 
   //Visualisation
-  switch(currentPage) {
-  case "home":
+  // switch(currentPage) {
+  if (currentPage.equals("home")) {
     if (!loading) {
       home();
     }
-    break;
-  case "overall":
+    // break;
+  } else if (currentPage.equals("overall")) {
     trends.display();
-    break;
-  case "singleSession":
+    // break;
+  } else if (currentPage.equals("singleSession")) {
     singleVisPage();
-    break;
-  case "eegActivity":
+    // break;
+  } else if (currentPage.equals("eegActivity")) {
     //eegActivity();
     eegAct.display();
-    break;
-  case "assessmentActivity":
+    // break;
+  } else if (currentPage.equals("assessmentActivity")) {
     //println("assessmentActivity");
     assessmentActivity();
-    break;
-  case "assessAct":
-    break;
-  case "newSession":
+    // break;
+  } else if (currentPage.equals("assessAct")) {
+    // break;
+  } else if (currentPage.equals("newSession")) {
     newSession();
-    break;
+    // break;
   }
 
   if (debug) {
@@ -833,11 +813,11 @@ public void draw() {
 
     fill(50);
     text(s, padding, height-90, width/3, height-90);
-    
-    if(userFolder != null){
+
+    if (userFolder != null) {
       text(userFolder, padding, height-110);
     }
-    
+
     if (simulateMindSet) {
       text("generating simulated data", padding, height-130);
     }
@@ -855,7 +835,7 @@ public void draw() {
       text(s3, (width/3)*2 + padding*2, height-90, width/2, height-90);
     }
   }
-  
+
   if (simulateMindSet) {
     simulate();
   }
@@ -866,81 +846,112 @@ public void draw() {
     //textSize(12);
     //fill(textLightColor);
   }
-  
-  if(modal){
-    if(
-        mouseX >= modalWidth/4 - padding - 10 &&
-        mouseX <= modalWidth/4 - padding - 10 + 30 &&
-        mouseY >= modalHeight/4 - padding - 10 &&
-        mouseY <= modalHeight/4 - padding - 10 + 30
-    ){
+
+  if (modal) {
+    if (
+      mouseX >= modalWidth/4 - padding - 10 &&
+      mouseX <= modalWidth/4 - padding - 10 + 30 &&
+      mouseY >= modalHeight/4 - padding - 10 &&
+      mouseY <= modalHeight/4 - padding - 10 + 30
+      ) {
       cursor(HAND);
-      
     }
-    
+
     fill(230);
     //fill(160);
-    stroke(85,26,139);
+    stroke(85, 26, 139);
     //strokeWeight(3);
     rect(modalWidth/4 - padding - 10, modalHeight/4 - padding - 10, modalWidth + padding*2 + 10 + 5, modalHeight + padding*2 + 10 +5);
     noStroke();
     image(screenshotModal, modalWidth/4, modalHeight/4 + 5, modalWidth, modalHeight);
-    image(close,modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
-    
+    image(close, modalWidth/4 - padding - 10, modalHeight/4 - padding - 10);
+  }
+  //run commands that have been added to the list
+  /*for (Command command : runAfterNextDraw)
+  {
+    if(command.execute()){
+      runAfterNextDraw.remove(command);
+    };
+  }*/
+  for(int i=0; i<runAfterNextDraw.size(); i++){
+    Command command=runAfterNextDraw.get(i);
+    if(command.execute()){
+      runAfterNextDraw.remove(command);
+    }
   }
 }
 
 
-void cleanUpSurvey(){
-    cp5.getController("session").hide();
-    cp5.getController("endGame").hide();
-    cp5.getController("assess1Bt").hide();
-    cp5.getController("assessRelaxationMeditation").hide();
-    cp5.getController("assessRelaxationStudy").hide();
-    cp5.getController("assessRelaxationPlay").hide();
-    cp5.getController("assess22Bt").hide();
-    cp5.getController("assess2Bt").hide();
-    cp5.getController("assessAttentionMeditation").hide();
-    cp5.getController("assessAttentionStudy").hide();
-    cp5.getController("assessAttentionPlay").hide();
-    cp5.getController("assess3Toggle1").hide();
-    cp5.getController("assess3Toggle2").hide();
-    cp5.getController("assess33Bt").hide();
-    cp5.getController("assess3Bt").hide();// added by Eva
-    //cp5.addButton("assess3Bt").hide();
+void cleanUpSurvey() {
+  cp5.getController("session").hide();
+  cp5.getController("endGame").hide();
+  cp5.getController("assess1Bt").hide();
+  cp5.getController("assessRelaxationMeditation").hide();
+  cp5.getController("assessRelaxationStudy").hide();
+  cp5.getController("assessRelaxationPlay").hide();
+  cp5.getController("assess22Bt").hide();
+  cp5.getController("assess2Bt").hide();
+  cp5.getController("assessAttentionMeditation").hide();
+  cp5.getController("assessAttentionStudy").hide();
+  cp5.getController("assessAttentionPlay").hide();
+  cp5.getController("assess3Toggle1").hide();
+  cp5.getController("assess3Toggle2").hide();
+  cp5.getController("assess33Bt").hide();
+  cp5.getController("assess3Bt").hide();// added by Eva
+  //cp5.addButton("assess3Bt").hide();
 }
 
 public void controlEvent(ControlEvent theControlEvent) {
+
   if (theControlEvent.isTab()) {
     println("got an event from tab : "+theControlEvent.getTab().getName()+" with id "+theControlEvent.getTab().getId());
   }
-
-  switch(theControlEvent.getName()) {
-  case "overall":
+  String controlEventStr=theControlEvent.getName();
+  println("controlEvent String is "+controlEventStr);
+  if (controlEventStr.equals("overall")||controlEventStr.equals("overallTopRight")) {
+    cp5.getController("newSession").show();
+    cp5.getController("overallTopRight").hide();
+    cp5.getController("session").hide();
+    cp5.getController("overall").hide();
+    cp5.getController("startSession").hide();
+    // case "overall":
     println("overall page");
     currentPage = "overall";
-    
+
     //clean up
     cleanUpSurvey();
-    
+
     personalAssSesion.setup(visWidth, visHeight);
     personalAvg.setup(visWidth, visHeight);
-    break;
-  case "newSession":
+    // break;
+  } else if (controlEventStr.equals("newSession")) {
+    cp5.getController("newSession").hide();
+    cp5.getController("overallTopRight").show();
+    cp5.getController("session").hide();
+    cp5.getController("overall").hide();
+    //case "newSession":
     boxState = 0;
     sw.stop();
-  
-    if(!simulateBoxes){
-      try{
-        feelerS.init("/dev/tty.Feeler-RNI-SPP");
-      } catch (NullPointerException e){
+
+    runAfterNextDraw.add(new Command() {
+      int waits=10;
+      public boolean execute() {
+        if(waits<=0){
+          println("fnsh");
+          tryGetFeelerSConnection();
+          return true;
+        }else{
+          waits--;
+          println("waiting"+waits);
+          return false;
+        }
       }
-    }
+    });
     println("newSession page");
     currentPage = "newSession";
     boxState = 0;
-    break;
-  case "startSession":
+  } else if (controlEventStr.equals("startSession")) {
+    //case "startSession":
     feelerS.play();
     feelerS.setBox2LedSpeed(2000);
     datetimestr0 = millis() / 1000;
@@ -958,21 +969,29 @@ public void controlEvent(ControlEvent theControlEvent) {
 
     //filePath = absolutePath + "/user-data/" + currentUser + "/" + "assessment/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2);
     //filename = absolutePath + "/user-data/" + currentUser + "/" + "log/"+nf(year(),4)+"."+nf(month(),2)+"."+nf(day(),2)+" "+nf(hour(),2)+"."+nf(minute(),2)+"."+nf(second(),2) + ".tsv";
-
-    filename = sessionPath + "/brain-activity.tsv";
+    String SLINE="time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline";
+    filename = sessionPath + "/brain-activity-old.tsv";
 
     output = createWriter(filename);
-    output.println("time" + TAB + "delta" + TAB + "theta" + TAB + "lowAlpha" + TAB + "highAlpha" + TAB + "lowBeta" + TAB + "highBeta" + TAB + "lowGamma" + TAB + "midGamma" + TAB + "blinkSt" + TAB + "attention" + TAB + "meditation" + TAB + "timeline");
-    break;
-  case "singleSession":
+    logger.setPath(sessionPath+"/brain-activity.tsv");
+    logger.writer.add(SLINE);
+    output.println(SLINE);
+    //break;
+  } else if (controlEventStr.equals("singleSession")) {
+    //case "singleSession":
     println("singleSession page");
     currentPage = "singleSession";
-    break;
-  case "eegActivity":
+    //break;
+  } else if (controlEventStr.equals("eegActivity")) {
+    //case "eegActivity":
     println("eegActivity page");
     currentPage = "eegActivity";
-    break;
+    //break;
   }
+  if (controlEventStr.equals("logoutBt")) {
+    cp5.getController("overallTopRight").hide();
+  }
+
 
   //clean up interface on logout
   if (theControlEvent.getLabel() == "Logout") {
@@ -984,10 +1003,10 @@ public void controlEvent(ControlEvent theControlEvent) {
     cp5.getController("newSession").hide();
     cp5.getController("overall").hide();
     cp5.getController("startSession").hide();
-    
+
     cp5.getController("playPauseBt").hide();
     cp5.getController("stopBt").hide();
-    
+
     cleanUpSurvey();
   }
 
@@ -1016,7 +1035,7 @@ public void controlEvent(ControlEvent theControlEvent) {
     client.write("Accept: application/xml\r\n");
     client.write("Accept-Charset: utf-8;q=0.7,*;q=0.7\r\n");
     client.write("Content-Type: application/x-www-form-urlencoded\r\n");
-    String contentLength = nf(23+currentUser.length()+currentPassword.length()); 
+    String contentLength = nf(23+currentUser.length()+currentPassword.length());
     client.write("Content-Length: "+contentLength+"\r\n\r\n");
 
     client.write("username="+currentUser+"&password="+currentPassword+"&\r\n");
@@ -1072,6 +1091,7 @@ public void overall(int theValue) {
   modal = false;
   cp5.getController("overall").hide();
   cp5.getController("newSession").show();
+  cp5.getController("overallTopRight").hide();
   cp5.getTab("overall").bringToFront();
   cp5.getController("playPauseBt").hide();
   cp5.getController("stopBt").hide();
@@ -1082,8 +1102,8 @@ public void overall(int theValue) {
 public void session(int theValue) {
   println("this session: " + currentSession);
   cp5.getController("session").hide();
-  
-  if(currentSession != ""){
+
+  if (currentSession != "") {
     currentPage = "singleSession";
     cp5.getTab("singleSession").bringToFront();
     currentSession = sessionFolders[currentItem];
@@ -1101,25 +1121,27 @@ public void startSession(int theValue) {
   //currentPage = "meditate";
   boxState = 100;
   cp5.getController("newSession").hide();
+  cp5.getController("overallTopRight").show();
   //cp5.getController("overall").show();
 }
 
-public void playPauseBt(int theValue){
+public void playPauseBt(int theValue) {
   sw.playPause();
   println(recording);
-  if(recording){
+  if (recording) {
     cp5.getController("playPauseBt").setLabel("Pause");
   } else {
     cp5.getController("playPauseBt").setLabel("Play");
   }
 }
 
-public void stopBt(int theValue){
+public void stopBt(int theValue) {
   boxState = 0;
+  logger.pause("stopBtnPressed");
   sw.stop();
 }
 
-public void endGame(int theValue){
+public void endGame(int theValue) {
   println("end game");
   assessQuestion = 1;
   cp5.getController("endGame").hide();
@@ -1131,12 +1153,12 @@ public void endGame(int theValue){
 }
 
 
-public void assess1Bt(int theValue) {  
-  if(feelingAssessMeditation == "" && feelingAssessStudy == "" && feelingAssessPlay == ""){
+public void assess1Bt(int theValue) {
+  if (feelingAssessMeditation == "" && feelingAssessStudy == "" && feelingAssessPlay == "") {
     final String[] options = {
       "Ok"
     };
-    
+
     JOptionPane.showOptionDialog(null, "Please answer the survey before continuing", "Warning", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
   } else {
     saveAssessmentTxt();
@@ -1144,7 +1166,7 @@ public void assess1Bt(int theValue) {
     cp5.getController("assessRelaxationMeditation").show();
     cp5.getController("assessRelaxationStudy").show();
     cp5.getController("assessRelaxationPlay").show();
-    
+
     cp5.getController("assess1Bt").hide();
     cp5.getController("assess2Bt").show();
     cp5.getController("assess22Bt").show();
@@ -1164,49 +1186,48 @@ public void assess22Bt(int theValue) {
 }
 
 public void assess2Bt(int theValue) {
-  if(int(assessRelaxationMeditation) == 0 && int(assessRelaxationStudy) == 0 && int(assessRelaxationPlay) == 0){
+  if (int(assessRelaxationMeditation) == 0 && int(assessRelaxationStudy) == 0 && int(assessRelaxationPlay) == 0) {
     final String[] options = {
       "Ok"
     };
     JOptionPane.showOptionDialog(null, "Please answer the survey before continuing", "Warning", JOptionPane.NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
   } else {
-      assessQuestion = 3;
-      
-      cp5.getController("assessRelaxationMeditation").hide();
-      cp5.getController("assessRelaxationStudy").hide();
-      cp5.getController("assessRelaxationPlay").hide();
-      
-      cp5.getController("assessAttentionMeditation").show();
-      cp5.getController("assessAttentionStudy").show();
-      cp5.getController("assessAttentionPlay").show();
-      
-      cp5.getController("assess2Bt").hide();
-      cp5.getController("assess22Bt").hide();
-      cp5.getController("assess33Bt").show();
-      cp5.getController("assess3Bt").show();
+    assessQuestion = 3;
+
+    cp5.getController("assessRelaxationMeditation").hide();
+    cp5.getController("assessRelaxationStudy").hide();
+    cp5.getController("assessRelaxationPlay").hide();
+
+    cp5.getController("assessAttentionMeditation").show();
+    cp5.getController("assessAttentionStudy").show();
+    cp5.getController("assessAttentionPlay").show();
+
+    cp5.getController("assess2Bt").hide();
+    cp5.getController("assess22Bt").hide();
+    cp5.getController("assess33Bt").show();
+    cp5.getController("assess3Bt").show();
   }
 }
 
 public void assess33Bt(int theValue) {
   assessQuestion = 2;
-  
+
   cp5.getController("assessRelaxationMeditation").show();
   cp5.getController("assessRelaxationStudy").show();
   cp5.getController("assessRelaxationPlay").show();
-  
+
   cp5.getController("assessAttentionMeditation").hide();
   cp5.getController("assessAttentionStudy").hide();
   cp5.getController("assessAttentionPlay").hide();
-  
+
   cp5.getController("assess2Bt").show();
   cp5.getController("assess22Bt").show();
   cp5.getController("assess3Bt").hide();
   cp5.getController("assess33Bt").hide();
-  
 }
 
 public void assess3Bt(int theValue) {
-  if(int(assessAttentionMeditation) == 0 && int(assessAttentionStudy) == 0 && int(assessAttentionPlay) == 0){
+  if (int(assessAttentionMeditation) == 0 && int(assessAttentionStudy) == 0 && int(assessAttentionPlay) == 0) {
     final String[] options = {
       "Ok"
     };
@@ -1215,19 +1236,19 @@ public void assess3Bt(int theValue) {
     saveAssessmentTxt();
     assessQuestion = 4;
     cu.start();
-    
+
     cp5.getController("assessAttentionMeditation").hide();
     cp5.getController("assessAttentionStudy").hide();
     cp5.getController("assessAttentionPlay").hide();
-    
+
     cp5.getController("assess3Bt").hide();
     cp5.getController("assess3Toggle1").hide();
     cp5.getController("assess3Toggle2").hide();
     cp5.getController("assess33Bt").hide();
-    
+
     output.flush();
     output.close();
-    
+
     feelingAssessMeditation = "";
     feelingAssessStudy = "";
     feelingAssessPlay = "";
@@ -1240,7 +1261,7 @@ public void assess3Bt(int theValue) {
   }
 }
 
-void saveAssessmentTxt(){
+void saveAssessmentTxt() {
   String[] assessment = {feelingAssessMeditation, feelingAssessStudy, feelingAssessPlay, str(assessRelaxationMeditation), str(assessRelaxationStudy), str(assessRelaxationPlay), str(assessAttentionMeditation), str(assessAttentionStudy), str(assessAttentionPlay)};
   // Writes the strings to a file, each on a separate line
   saveStrings(sessionPath + "/assessment.txt", assessment);
@@ -1275,7 +1296,6 @@ public void signup(int theValue) {
 
 public void loginCheck() {
   println("logincheck");
-
   if (debug) {
     println(currentUser);
     if (currentUser == "") {
@@ -1283,14 +1303,19 @@ public void loginCheck() {
     }
 
     cp5.getTab("overall").bringToFront();
+
     isLoggedIn = true;
 
     isWrongPassword = false;
     cp5.getController("logoutBt").show();
 
     addUserAreaControllers();
-    
+
     currentPage = "overall";
+
+    cp5.getController("newSession").show();
+    cp5.getController("overallTopRight").hide();
+
     loadFiles();
     loading = false;
   } else {
@@ -1310,6 +1335,9 @@ public void loginCheck() {
         currentPage = "overall";
         loadFiles();
         loading = false;
+        //the following line is not tested:
+        cp5.getController("newSession").show();
+        cp5.getController("overallTopRight").hide();
       } else if (m[1].equals("registered")) {
         registered = true;
         isWrongPassword = false;
@@ -1325,108 +1353,124 @@ public void loginCheck() {
     }
   }
 }
-
+boolean userAreaControllersAdded=false;
 public void addUserAreaControllers() {
+  if (!userAreaControllersAdded) {
 
-  cp5.addTab("newSession");
-  cp5.getTab("newSession")
-    .activateEvent(true)
-    .setId(3)
-    ;
+    cp5.addTab("newSession");
+    cp5.getTab("newSession")
+      .activateEvent(true)
+      .setId(3)
+      ;
 
-  cp5.addTab("overall");
-  cp5.getTab("overall")
-    .activateEvent(true)
-    .setId(4)
-    ;
+    cp5.addTab("overall");
+    cp5.getTab("overall")
+      .activateEvent(true)
+      .setId(4)
+      ;
 
-  cp5.addTab("singleSession");
-  cp5.getTab("singleSession")
-    .activateEvent(true)
-    .setId(5)
-    ;
+    cp5.addTab("singleSession");
+    cp5.getTab("singleSession")
+      .activateEvent(true)
+      .setId(5)
+      ;
 
-  cp5.addTab("eegActivity");
-  cp5.getTab("eegActivity")
-    .activateEvent(true)
-    .setId(6)
-    ;
+    cp5.addTab("eegActivity");
+    cp5.getTab("eegActivity")
+      .activateEvent(true)
+      .setId(6)
+      ;
 
-  //other controllers
-  cp5.addButton("newSession")
-    .setBroadcast(false)
-    .setLabel("New session")
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    .setFont(createFont("",12))//Added by Eva
-    .setPosition(width - 180 - 110, padding)
-    .setSize(100, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    
-    ;
-  cp5.getController("newSession").moveTo("global");
+    //other controllers
+    cp5.addButton("newSession")
+      .setBroadcast(false)
+      .setLabel("New session")
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setFont(createFont("", 12))//Added by Eva
+      .setPosition(width - 180 - 110, padding)
+      .setSize(100, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("newSession").moveTo("global");
+    try {
+      cp5.addButton("overall")
+        .setLabel("< Your activity")// before "review"
+        .setFont(createFont("font", 12))//Added by Eva
+        .setColorForeground(color(145, 44, 238))//Added by Eva
+        .setColorBackground(color(85, 26, 139))//Added by Eva
+        .setColorActive(color(85, 26, 139))//Added by Eva
+        .setPosition(100, headerHeight + padding + 90)
+        .setSize(120, 30)
+        .setValue(1)
+        .setBroadcast(true)
+        .getCaptionLabel().align(CENTER, CENTER)
+        ;
+      cp5.getController("overall").moveTo("global");
+      cp5.getController("overall").hide();
+    }
+    catch(Exception e) {
+      println("overall button exception");
+      println(e);
+    }
+    cp5.addButton("overallTopRight")
+      .setLabel("Review")
+      //.setLabel("To your activity")
+      .setFont(createFont("font", 12))
+      .setColorForeground(color(145, 44, 238))
+      .setColorBackground(color(85, 26, 139))
+      .setColorActive(color(85, 26, 139))
+      .setPosition(width - 180 - 110, padding)
+      .setSize(100, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("overallTopRight").moveTo("global");
+    cp5.getController("overallTopRight").show();
 
-  cp5.addButton("overall")
-    .setLabel("< Your activity")// before "review"
-    .setFont(createFont("font",12))//Added by Eva 
-    //.setColorBackground(color(255))
-    //.setColorForeground(color(255))
-    //.setColorLabel(textDarkColor)
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(100, headerHeight + padding + 90)
-    //.setPosition(width/2 - buttonWidth/2 - 1, padding)
-    //.setPosition(visX - padding, visY - padding*2)
-    //.setPosition(width - padding*3 - buttonWidth*3, padding)// upper position
-    .setSize(120, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("overall").moveTo("global");
-  cp5.getController("overall").hide();
-  
-  cp5.addButton("session")
-    .setBroadcast(false)
-    .setLabel("< current session")
-    .setFont(createFont("font",12))//Added by Eva 
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(100 + 130, headerHeight + padding + 90)
-    //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
-    //.setPosition(visX + 85, visY - padding*2 - 15)
-    //.setFont(font)
-    .setSize(170, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("session").moveTo("global");
-  cp5.getController("session").hide();
-  
-  cp5.addButton("export")
-    .setBroadcast(false)
-    .setLabel("export data")
-    .setFont(createFont("font",12))//Added by Eva 
-    .setColorForeground(color(145,44,238))//Added by Eva
-    .setColorBackground(color(85,26,139))//Added by Eva
-    .setColorActive(color(85,26,139))//Added by Eva
-    .setPosition(width - 120 - 110, headerHeight + padding + 90)
-    //.setPosition(width - padding - buttonWidth, padding*4)// old
-    .setSize(120, 30)
-    .setValue(1)
-    .setBroadcast(true)
-    .getCaptionLabel().align(CENTER, CENTER)
-    ;
-  cp5.getController("export").moveTo("singleSession");
-  
-  //avoid that controllers are drawn at the end of draw()
-  cp5.setAutoDraw(false);
+    cp5.addButton("session")
+      .setBroadcast(false)
+      .setLabel("< current session")
+      .setFont(createFont("font", 12))//Added by Eva
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setPosition(100 + 130, headerHeight + padding + 90)
+      //.setPosition(width - padding*4 - buttonWidth*3 - 130, padding)// old
+      //.setPosition(visX + 85, visY - padding*2 - 15)
+      //.setFont(font)
+      .setSize(170, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("session").moveTo("global");
+    cp5.getController("session").hide();
+
+    cp5.addButton("export")
+      .setBroadcast(false)
+      .setLabel("export data")
+      .setFont(createFont("font", 12))//Added by Eva
+      .setColorForeground(color(145, 44, 238))//Added by Eva
+      .setColorBackground(color(85, 26, 139))//Added by Eva
+      .setColorActive(color(85, 26, 139))//Added by Eva
+      .setPosition(width - 120 - 110, headerHeight + padding + 90)
+      //.setPosition(width - padding - buttonWidth, padding*4)// old
+      .setSize(120, 30)
+      .setValue(1)
+      .setBroadcast(true)
+      .getCaptionLabel().align(CENTER, CENTER)
+      ;
+    cp5.getController("export").moveTo("singleSession");
+
+    //avoid that controllers are drawn at the end of draw()
+    cp5.setAutoDraw(false);
+    userAreaControllersAdded=true;
+  }
 }
 
 public void timer() {
@@ -1466,35 +1510,35 @@ public void loadFilesList(int n) {
 }
 
 public void mousePressed() {
-  
+
   switch(currentPage) {
-    case "singleSession":
-      eegAvg.onClick(mouseX, mouseY);
-      personalAssSesion.onClick(mouseX, mouseY);
-      cp5.getController("session").show();
-      loadFile(currentItem);
-      break;
-    case "overall":
-      trends.onClick();
-      eegAct.onClick();
-      break;
-    case "eegActivity":
-      trends.onClick();
-      eegAct.onClick();
-      break;
+  case "singleSession":
+    eegAvg.onClick(mouseX, mouseY);
+    personalAssSesion.onClick(mouseX, mouseY);
+    cp5.getController("session").show();
+    loadFile(currentItem);
+    break;
+  case "overall":
+    trends.onClick();
+    eegAct.onClick();
+    break;
+  case "eegActivity":
+    trends.onClick();
+    eegAct.onClick();
+    break;
   }
-  
+
   feelingRadioMeditation.click();
   feelingRadioStudy.click();
   feelingRadioPlay.click();
-  
-  if(modal){
-    if(
-        mouseX >= modalWidth/4 - padding - 10 &&
-        mouseX <= modalWidth/4 - padding - 10 + 30 &&
-        mouseY >= modalHeight/4 - padding - 10 &&
-        mouseY <= modalHeight/4 - padding - 10 + 30
-    ){
+
+  if (modal) {
+    if (
+      mouseX >= modalWidth/4 - padding - 10 &&
+      mouseX <= modalWidth/4 - padding - 10 + 30 &&
+      mouseY >= modalHeight/4 - padding - 10 &&
+      mouseY <= modalHeight/4 - padding - 10 + 30
+      ) {
       modal = false;
     }
   }
@@ -1502,7 +1546,7 @@ public void mousePressed() {
 
 void mouseWheel(MouseEvent event) {
   e = event.getCount();
-} 
+}
 
 public void keyPressed() {
   if (debug) {
@@ -1526,14 +1570,14 @@ public void keyPressed() {
       break;
     case 'p':
       sw.stop();
-      cp5.getController("playPauseBt").show();
+      //      cp5.getController("playPauseBt").show();
       cp5.getController("stopBt").show();
       boxState = 300;
       break;
     case 'a':
       cp5.getController("playPauseBt").hide();
       sw.stop();
-      
+
       if (currentPage == "newSession") {
         boxState = 400;
         assessQuestion = 1;
@@ -1558,6 +1602,7 @@ public void keyPressed() {
   }
 }
 
+
 public void screenshot() {
   try {
     Robot robot_Screenshot = new Robot();
@@ -1570,33 +1615,34 @@ public void screenshot() {
   frame.setLocation(0, 0);
 }
 
-
 void folderSelected(File selection) {
   if (selection == null) {
     println("Window was closed or the user hit cancel.");
   } else {
     println("User selected " + selection.getAbsolutePath());
-      
+
     //save brain activity
     File fin = new File(userFolder + "/" + sessionFolders[currentItem] + "/brain-activity.tsv");
     File fout = new File(savePath(selection.getAbsolutePath() + "/" + currentUser + "/" + sessionFolders[currentItem] + "/brain-activity.tsv"));
-    
+
     try {
       FileInputStream fis  = new FileInputStream(fin);
       FileOutputStream fos = new FileOutputStream(fout);
-        
+
       byte[] buf = new byte[1024];
       int i = 0;
-      while((i=fis.read(buf))!=-1) {
+      while ((i=fis.read(buf))!=-1) {
         fos.write(buf, 0, i);
       }
       fis.close();
       fos.close();
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       println( "Error occured at ... " );
       e.printStackTrace();
-    } finally {
-      // what to do when finished trying and catching ...               
+    }
+    finally {
+      // what to do when finished trying and catching ...
     }
 
     //save assessment
@@ -1606,25 +1652,26 @@ void folderSelected(File selection) {
     try {
       FileInputStream fis  = new FileInputStream(fin2);
       FileOutputStream fos = new FileOutputStream(fout2);
-        
+
       byte[] buf = new byte[1024];
       int i = 0;
-      while((i=fis.read(buf))!=-1) {
+      while ((i=fis.read(buf))!=-1) {
         fos.write(buf, 0, i);
       }
       fis.close();
       fos.close();
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       println( "Error occured at ... " );
       e.printStackTrace();
-    } finally {
+    }
+    finally {
       // what to do when finished trying and catching ...
     }
-    
   }
 }
 
-void openModal(String img){
+void openModal(String img) {
   screenshotModal = loadImage(img);
   modalWidth = screenshotModal.width/1.5;
   modalHeight = screenshotModal.height/1.5;
@@ -1632,28 +1679,59 @@ void openModal(String img){
 
 
 long updateBoxDataTimer = millis();
-void updateBoxData(){
-  while(true){
-      if ( millis() - updateBoxDataTimer > 300) {
+void updateBoxData() {
+  while (true) {
+    if ( millis() - updateBoxDataTimer > 300) {
       updateBoxDataTimer = millis();
-      
-      try{
+
+      try {
         feelerS.sendValues();
-      } catch (Exception e) {}
-      
-      try{
+      } 
+      catch (Exception e) {
+      }
+
+      try {
         feelerS.get();
-      } catch (Exception e) {}
+      } 
+      catch (Exception e) {
+      }
     }
   }
+}
+boolean tryingGetFeelerSConnection=false;
+//pendant: This flag is vary probably integrated in the feelerSerial library. 
+//Let niklas review this function to clean the code from globals.
+boolean feelerSerialConnected=false;
+void tryGetFeelerSConnection() {
+  if (!(tryingGetFeelerSConnection||feelerSerialConnected)) {
+    tryingGetFeelerSConnection=true;
+    println("trying to get feelerS connection");
+    if (!simulateBoxes) {
+      try {
+        feelerS.init("/dev/tty.Feeler-RNI-SPP");
+        println("Feeler bluetooth serial connection succesful");
+        feelerSerialConnected=true;
+      }
+      catch (NullPointerException e) {
+        println(e);
+        tryingGetFeelerSConnection=false;
+      }
+    }
+  }
+  tryingGetFeelerSConnection=false;
 }
 
 void exit() {
   println("exiting");
-  if(!simulateMindSet){
-    mindSet.quit();
+  if (!simulateMindSet) {
+    try {
+      mindSet.quit();
+    }
+    catch(Exception e) {
+      println("didnt exit mindset because was not yet initialized");
+    }
   }
 
   println("closeWindow");
-  super.exit();  
+  super.exit();
 }

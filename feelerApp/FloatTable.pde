@@ -19,18 +19,18 @@ class FloatTable {
 
   FloatTable(String filename) {
     String[]  rows = loadStrings(filename);
-    
-    if(rows.length > 0){ // check if file is not empty
+
+    if (rows.length > 0) { // check if file is not empty
       String[] columns = split(rows[0], TAB);
-  
+
       columnNames = subset(columns, 1);               // upper-left corner ignored
       scrubQuotes(columnNames);
       columnCount = columnNames.length;
-  
+
       rowNames = new String[rows.length];
       data = new float[rows.length][];
       // start reading at row 1, because the first row was only the column headers
-  
+
       for (int i = 0; i < rows.length; i++) {
         if (trim(rows[i]).length() == 0) {
           continue; // skip empty rows
@@ -38,23 +38,22 @@ class FloatTable {
         if (rows[i].startsWith("#")) {
           continue;  // skip comment lines
         }
-  
+
         // split the row on the tabs
         String[] pieces = split(rows[i], TAB);
         scrubQuotes(pieces);
-    
+
         // copy row title
         rowNames[rowCount] = pieces[0];
         // copy data into the table starting at pieces[1]
         //data[rowCount] = parseFloat(subset(pieces, 1));
         data[rowCount] = parseFloat(pieces);
-        
+
         //check if all columns have content
-        if(data[rowCount].length == 13){
+        if (data[rowCount].length == 13) {
           //then increment the number of valid rows found so far
           rowCount++;
         }
-  
       }
       // resize the 'data' array as necessary
       data = (float[][]) subset(data, 0, rowCount);
@@ -80,24 +79,24 @@ class FloatTable {
     rowCount1 = 0;
     rowCount2 = 0;
     rowCount3 = 0;
-    
+
     /*
     if(data[rowCount-1].length == 13){
-      //println("data[" + i + "][11]: " + data[rowCount-1][11]);
-      println(rowCount);
-      println("length == 13");
-    } else {
-      println(rowCount);
-      println("length != 13");
-    }
-    */
-    
+     //println("data[" + i + "][11]: " + data[rowCount-1][11]);
+     println(rowCount);
+     println("length == 13");
+     } else {
+     println(rowCount);
+     println("length != 13");
+     }
+     */
+
     for (int o = 0; o < rowCount; o++) {
-      if (data[o][11] == 1) rowCount1++; 
-      else if (data[o][11] == 2) rowCount2++;          
+      if (data[o][11] == 1) rowCount1++;
+      else if (data[o][11] == 2) rowCount2++;
       else if (data[o][11] == 3) rowCount3++;
     }
-    
+
     if (i == 1) {
       return rowCount1;
     } else if (i == 2) {
@@ -107,7 +106,6 @@ class FloatTable {
     } else {
       return rowCount;
     }
-      
   }
 
 
@@ -121,7 +119,7 @@ class FloatTable {
   }
 
 
-  // Find a row by its name, returns -1 if no row found. 
+  // Find a row by its name, returns -1 if no row found.
   // This will return the index of the first row with this name.
   // A more efficient version of this function would put row names
   // into a Hashtable (or HashMap) that would map to an integer for the row.
@@ -136,7 +134,7 @@ class FloatTable {
   }
 
 
-  // technically, this only returns the number of columns 
+  // technically, this only returns the number of columns
   // in the very first row (which will be most accurate)
   int getColumnCount() {
     return columnCount;
@@ -213,11 +211,11 @@ class FloatTable {
           boolend = false;
         }
       }
-    } 
+    }
     return startState;
   }
-  
- long getStateEnd(int state) {
+
+  long getStateEnd(int state) {
     boolean boolstart = false;
     boolean boolend = false;
     long endState = 0;
@@ -235,10 +233,10 @@ class FloatTable {
           boolend = false;
         }
       }
-    } 
+    }
     return endState;
   }
-  
+
   float getColumnMax(int col) {
     float m = -Float.MAX_VALUE;
     for (int row = 0; row < rowCount; row++) {
@@ -264,7 +262,7 @@ class FloatTable {
       }
     }
     return m;
-  } 
+  }
 
 
   float getRowMax(int row) {
