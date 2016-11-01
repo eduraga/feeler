@@ -26,6 +26,9 @@ int triggerLow = 20;
 int triggerMedium = 50;
 int triggerHigh = 80;
 
+PImage learningGoal;
+PImage learningGoal2;
+
 void newSession() {
   //tryGetFeelerSConnection();
   if (boxState == 200) {
@@ -74,16 +77,24 @@ void newSession() {
 
   //display status of boxes
   if (feelerS.checkConnection() || simulateBoxes) {
-    text("Boxes: ok", width/2, padding);
+    text("Boxes", width/2 + padding*14, padding*2);
+    PImage learningGoal = loadImage("checked_small.png");
+    image(learningGoal, width/2 + padding*12, padding, 30, 30);// Boxes connected
   } else {
-    text("Boxes: disconnected", width/2, padding);
+    text("Boxes", width/2 + padding*14, padding*2);
+    PImage learningGoal2 = loadImage("tocheck_big.png");
+    image(learningGoal2, width/2 + padding*12, padding, 30, 30);// Boxes disconnected
   }
 
   //display status of MindWave
   if (mindSetOK || simulateMindSet) {//mindSetOK
-    text("EEG headset: ok", width/2, padding*2);
+    text("EEG headset", width/2 + padding*7.5, padding*2);
+    PImage learningGoal = loadImage("checked_small.png");
+    image(learningGoal, width/2 + padding*5.5, padding, 30, 30);// EEG headset connected
   } else {
-    text("EEG headset: check connection", width/2, padding*2);
+    text("EEG headset", width/2 + padding*7.5, padding*2);
+    PImage learningGoal2 = loadImage("tocheck_big.png");
+    image(learningGoal2, width/2 + padding*5.5, padding, 30, 30);//EEG headset disconnected
   }
 
   if (frameCount % 200 == 0) {
@@ -125,34 +136,34 @@ void newSession() {
       text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
       pushStyle();
       fill(textLightColor);
-      text("Checking that I get some EEG data...", padding + 80 + 80, headerHeight + padding + 75 + 30 + 80);
+      text("Connection established and waiting for data", padding + 80 + 80, headerHeight + padding + 75 + 30 + 80);
       textSize(16);
-      text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, headerHeight + padding + 75 +30 + 80 + 20);
+      //text("(I am connected, but make sure the headset is well placed!)", padding + 80 + 80 + 80 + 20, headerHeight + padding + 75 +30 + 80 + 20);
       popStyle();
       cp5.getController("startSession").hide();
     } else if (!feelerS.checkConnection() && !simulateBoxes) {
       PImage one = loadImage("one.png");// Added by Eva
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
       text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-      PImage learningGoal = loadImage("checked_big.png");
-      image(learningGoal, padding + 340 +80, headerHeight + padding + 50 + 30, 35, 35);
+      //PImage learningGoal = loadImage("checked_big.png");
+      //image(learningGoal, padding + 340 +80, headerHeight + padding + 50 + 30, 35, 35);
       PImage two = loadImage("two.png");// Added by Eva
       image(two, padding + 80, headerHeight + padding*2 + 100 + 30, 60, 60);// Added by Eva
       text("Connect the boxes", padding + 80 + 80, headerHeight + padding + 155 + 30);
-      image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
-      PImage three = loadImage("three.png");// Added by Eva
-      image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
+      //image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
+      //PImage three = loadImage("three.png");// Added by Eva
+      //image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
     } else {
       PImage one = loadImage("one.png");// Added by Eva
       //image(one, padding + 80, headerHeight + padding + 70, 60, 60);// Added by Eva
       image(one, padding + 80, headerHeight + padding + 40 + 30, 60, 60);// Added by Eva
       text("Connect the EEG headset", padding + 80 + 80, headerHeight + padding + 75 + 30);
-      PImage learningGoal = loadImage("checked_big.png");
-      image(learningGoal, padding + 340 + 80, headerHeight + padding + 50 + 30, 35, 35);
+      //PImage learningGoal = loadImage("checked_big.png");
+      //image(learningGoal, padding + 340 + 80, headerHeight + padding + 50 + 30, 35, 35);
       PImage two = loadImage("two.png");// Added by Eva
       image(two, padding + 80, headerHeight + padding*2 + 100 + 30, 60, 60);// Added by Eva
       text("Connect the boxes", padding + 80 + 80, headerHeight + padding + 155 + 30);
-      image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
+      //image(learningGoal, padding + 280 + 80, headerHeight + padding*2 + 110 + 30, 35, 35);
       PImage three = loadImage("three.png");// Added by Eva
       image(three, padding + 80, headerHeight + padding*2 + 180 + 30, 60, 60);// Added by Eva
 
@@ -287,6 +298,7 @@ void newSession() {
       textSize(20);// added by Eva
       textAlign(LEFT);
       assess(assessQuestion, "Answers saved!\nYour data is being loaded");
+       pageH6("You can remove the EEG helmet");
       if (!timerOn) {
         timerOn = true;
         //cp5.getController("stopBt").hide();

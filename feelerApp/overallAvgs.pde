@@ -21,11 +21,11 @@ class OverallAvgs{
   void display(int i){
     if(type == "assessment"){
       thisX = visX + rectWidth + padding*6;// commented by Eva
-      //thisY = visHeight; // added by Eva
+ 
       
     } else {
       //thisX = visX + rectWidth;
-      thisX = visX - 30;
+      thisX = visX -30;
     }
     thisY = visX + padding*7; // added by Eva, this modifies y position of the square barcharts
     //thisY = visY;
@@ -46,10 +46,9 @@ class OverallAvgs{
       
     }
     
-    rect(thisX - padding - 1 + 10, thisY - padding - 1, rectWidth + padding - 12, rectHeight + padding - 12);
-    //rect(thisX - padding, thisY - padding, rectWidth + padding*2, rectHeight + padding*2);// old
+    rect(thisX - padding - 1 + 10 + 40, thisY - padding - 1, rectWidth + padding - 12, rectHeight + padding - 12); // modifies rectangle backgroung
     fill(250);// commented by Eva
-    rect(thisX - 7, thisY - 10 - 7, rectWidth, rectHeight);//moves inside rectangles
+    rect(thisX - 7 + 40, thisY - 10 - 7, rectWidth, rectHeight);//moves inside rectangles
     
     if(fileName[0].charAt(0) != '.'){
       String[] fileDate = split(fileName[0], '-');
@@ -99,19 +98,19 @@ class OverallAvgs{
       textAlign(CENTER, CENTER);
     
       fill(relaxationColor);
-      rect(thisX - 7, thisY - 10 - 7, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      rect(thisX - 7 + 40, thisY - 10 - 7, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);
       //rect(thisX, thisY, map(rlxAvg, 0, 100, 0, rectWidth), rectHeight/2);//old
       fill(50);
       //fill(textDarkColor);
       textSize(24);// added by eva
-      text("Relaxation "+round(rlxAvg)+"%", thisX - 100, thisY - 10, rectWidth, rectHeight/2);
+      text("Relaxation "+round(rlxAvg)+"%", thisX - 100 + 40, thisY - 10, rectWidth, rectHeight/2);
       
       fill(attentionColor);
-      rect(thisX - 7, thisY + rectHeight/2 - 10 - 7, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
+      rect(thisX - 7 + 40, thisY + rectHeight/2 - 10 - 7, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);
       //rect(thisX, thisY + rectHeight/2, map(attAvg, 0, 100, 0, rectWidth), rectHeight/2);//old
       fill(50);
       //fill(textDarkColor);
-      text("Attention "+round(attAvg)+"%", thisX - 100, thisY + rectHeight/2 - 10, rectWidth, rectHeight/2);
+      text("Attention "+round(attAvg)+"%", thisX - 100 + 40, thisY + rectHeight/2 - 10, rectWidth, rectHeight/2);
       
       fill(textDarkColor);
       textAlign(LEFT, CENTER);

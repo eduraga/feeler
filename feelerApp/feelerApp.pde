@@ -146,6 +146,7 @@ PImage one_1;
 PImage one_2;
 PImage one_3;
 
+
 //Color
 color graphBgColor = color(240);
 color textDarkColor = color(100);
@@ -218,7 +219,7 @@ public void setup() {
   surface.setTitle("Feeler");
   smooth();
 
-  homeImg = loadImage("home.png");
+  homeImg = loadImage("home3.png");
 
   close = loadImage("close.png");
   close1 = loadImage("close1.png");
@@ -479,7 +480,7 @@ public void setup() {
     .setColorForeground(color(145, 44, 238))//Added by Eva
     .setColorBackground(color(85, 26, 139))//Added by Eva
     .setColorActive(color(85, 26, 139))//Added by Eva
-    .setPosition(width/2-20/* + 10*/, containerPosY + padding * 3)//added by Eva
+    .setPosition(width/2-40/* + 10*/, containerPosY + padding * 3)//added by Eva
     //.setPosition(width/2, containerPosY + padding * 2)
     .setSize(80, 80)
     .setValue(1)

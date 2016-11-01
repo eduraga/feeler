@@ -153,11 +153,15 @@ class LineChart {
     if (fileName != null && sessionFolders != null) {
       displayData();
     } else {
+      pageH1("Review");
+      textSize(20);
+      fill(50);
+      text("Your activity", 100, headerHeight + padding + 70);
       fill(textDarkColor);
       pushStyle();
       textAlign(CENTER);
       textSize(24);
-      text("Eager to see some data?\nStart a New session", visX - 30, visHeight/2 + visX - 50, visWidth, visHeight);
+      text("Eager to see some data?\nStart a New session", visX, visHeight/2 + visX + 50, visWidth, visHeight);
       popStyle();
     }
 
@@ -424,7 +428,7 @@ class LineChart {
       text("Your activity / " + fileDate[2] + "." + fileDate[1] + "." + fileDate[0] + ", " + fileDate[3] + ":" + fileDate[4] + ":" + fileDate[5] + " / EEG data", 100, headerHeight + padding + 70);
       textSize(12);
       fill(textDarkColor);
-      text("Your EEG data during the different session stages", visX - padding, visHeight + visX + padding * 10);
+      text("Your EEG data during the different session stages", visX - padding, visHeight + visX + padding * 9);
       popStyle();
     }
   }
