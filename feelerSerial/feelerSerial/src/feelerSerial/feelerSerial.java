@@ -13,7 +13,7 @@ public class feelerSerial {
 	
 	PApplet myParent;
 	
-	//	Stored message values to these
+	//Stored message values to these
 	public static char[] receivedSerial = new char[63];
 	public static int[] intValues = new int[63]; 
 	
@@ -170,8 +170,6 @@ public class feelerSerial {
 		  		}
 				if(getSettings() == true) {
 						mySerial.write("E");
-						//delay(2);
-						//mySerial.write("E");
 						break;
 					}
 				System.out.print(".");
@@ -194,19 +192,16 @@ public class feelerSerial {
 	// Get the serial information and return it if received successfully, else return NULL
 	static char[] getSerial(){
 		if(!debugMode){
-		//char[] receivedSerial = new char[maxLengthOfSerial];
 		boolean receiving = false;
 	    int index = 0;
 	    while (mySerial.available() > 0) {
 	        char input = (char)mySerial.read();
-	        //System.out.print(input);
 	        //Start receiving if startmarker is found, check else if
 	        if (receiving == true) {
 	        	receivedSerial[index] = input;
 	            if (index > maxLengthOfSerial-1) return null;  //return if max length of serial is filled
 	            if (input == endMarker) {
 	                receivedSerial[index+1] = '\0';
-	        		//System.out.println(receivedSerial);
 	                while(mySerial.available() > 0) mySerial.read(); //clear rest
 	                char[] arr2 = Arrays.copyOf(receivedSerial, index+2); //copy to new array, and make it the right length
 	                return arr2; //return array
@@ -245,7 +240,6 @@ public class feelerSerial {
 			// Start parsing if start marker is found, check else if
 			if (parsing == true) {
 				//Parse the numbers to the int array
-				//parseInt(index, serialSettings, intSettings, number);
 				while (isNumber(serialSettings[index])){
 					intSettings[number] = (intSettings[number]  * 10) + (serialSettings[index] - '0'); 
 			        if(intSettings[number] > 65535) break;
@@ -301,9 +295,7 @@ public class feelerSerial {
 		if(System.currentTimeMillis() - timer > 5000) connection = false;
 		// Get the serial and return if not received
 		char[] serialSettings = getSerial();
-		//System.out.println(serialSettings);
 		if (serialSettings == null) return false;
-		//Int buffer
 		int[] intSettings = new int[maxLengthOfSerial];
 		int index = 0;
 		boolean parsing = false;
@@ -312,7 +304,6 @@ public class feelerSerial {
 			//Start parsing if startcharacter is received, see else if
 			if (parsing == true) {
 				//Parse the numbers to the int array
-				//parseInt(index, serialSettings, intSettings, number);
 				while (isNumber(serialSettings[index])){
 					intSettings[number] = (intSettings[number]  * 10) + (serialSettings[index] - '0'); 
 			        if(intSettings[number] > 65535) break;
@@ -326,20 +317,10 @@ public class feelerSerial {
 					//set connection true
 					connection = true;
 					timer = System.currentTimeMillis();
-					
 					//Store settings when endmarker is reached
-					boxesConnected = intSettings[0];
-					//System.out.println("boxesConnected: " + Integer.toString(boxesConnected));	//debug
-					
-					//using number 4 from boxesConnected insted //playStopInput = intSettings[1];
-					
-					//System.out.println("boxesConnected: " + Integer.toString(boxesConnected));	//debug
-					boxStateInput = intSettings[1];
-					//System.out.println("playStopInput: " + Integer.toString(playStopInput));		//debug
+					boxesConnected = intSettings[0];	
+					boxStateInput = intSettings[1];	
 					box2LedStateInput = intSettings[2];
-					//replaced by game
-					//box3Button = intSettings[3]; 
-					//System.out.println("box3Button: " + Integer.toString(box3Button));			//debug
 					box2LedSpeedInput = intSettings[3];
 					box3GameValueInput = intSettings[4];
 					//Put the boxbool on according to the information
@@ -500,16 +481,6 @@ public class feelerSerial {
 	/*-------------------------------------------------------------------------------------------------------------
 	 * Tools
 	 *------------------------------------------------------------------------------------------------------------*/
-	//buggy when debug mode activated, why?
-	/*private static void parseInt(int index, char[] receivedC, int[] intSet, byte number){
-		//intSettings[number] = 0;
-		while (isNumber(receivedC[index])){
-			intSet[number] = (intSet[number]  * 10) + (receivedC[index] - '0'); 
-			index++;
-	        if(intSet[number] > 65535) break;
-	        
-	    }
-	}*/
 	
 	//Is the char an number
 	private static boolean isNumber(char input){
@@ -553,41 +524,5 @@ public class feelerSerial {
 		}
 	}
 	
-	
-	/*-------------------------------------------------------------------------------------------------------------
-	 * temp, not used
-	 *------------------------------------------------------------------------------------------------------------*/
-	/*NOT USED*/
-	/*
-	//List values, maybe using this
-	private void list(){
-		System.out.println(playStop);
-		System.out.println(box2LedState);
-		System.out.println("");
-	}
-	 
-	//Not used!
-	//Print one string with start and end marker
-	public void print(String print){
-		mySerial.write(startMarker + print + endMarker);
-	}
-	
-	//Not used!
-	//Print one string with start and end marker
-	public void write(String print){
-		mySerial.write(startMarker + print + endMarker);
-	}
-	
-	
-	*/
-	
-	
-	
-	/*
-	void serialEvent(Serial mySerial) {
-		get();	
-		sendValues();
-		
-	}	//*/
 }
 
