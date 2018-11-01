@@ -90,14 +90,9 @@ char* feelerSerial::getSerial(){
         while (Serial.available()) {
             
             char input = Serial.read();
-            
-            // not needed, but does it work?
-            //  if(input == -1) break;
-            
+       
             if (receiving == true) {
                 receivedChars[indexS] = input;
-              //  Serial.print(input);
-               // Serial.print(input);
                 //read more only if maxNumberOfChars is not filled
                 if (indexS > maxNumberOfChars-1) {
                     receiving = false;
@@ -121,7 +116,6 @@ char* feelerSerial::getSerial(){
                 receivedChars[indexS] = input;
                 indexS++;
             }
-//        }
     }
     } else{ //do this if softwareSerial is used
         while (softSerial->available() > 0 ) {
